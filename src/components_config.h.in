@@ -1,0 +1,8 @@
+#ifndef __COMPONENTS_CONFIG_H__
+#define __COMPONENTS_CONFIG_H__
+
+extern papi_vector_t @components_vector_list@;
+
+struct papi_vectors *_papi_hwd[] = {@components_vector_pointer_list@};
+
+#endif /* End of __COMPONENTS_CONFIG_H__ */
