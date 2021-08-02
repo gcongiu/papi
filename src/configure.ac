@@ -10,31 +10,6 @@ AC_INIT(PAPI, 6.0.0.1, ptools-perfapi@icl.utk.edu)
 AC_CONFIG_SRCDIR([papi.c])
 AC_CONFIG_HEADER([config.h])
 
-AC_DEFUN([AS_AC_EXPAND],
-         [EXP_VAR=[$1]
-          FROM_VAR=[$2]
-          prefix_save=$prefix
-          exec_prefix_save=$exec_prefix
-          if test "x$prefix" = "xNONE"; then
-            prefix="$ac_default_prefix"
-          fi
-          if test "x$exec_prefix" = "xNONE"; then
-            exec_prefix=$prefix
-          fi
-          full_var="$FROM_VAR"
-          while true; 
-            do
-              new_full_var="`eval echo $full_var`"
-              if test "x$new_full_var" = "x$full_var"; then 
-                break; 
-              fi
-              full_var=$new_full_var
-            done
-          full_var=$new_full_var
-          AC_DEFINE_UNQUOTED([$1], "$full_var")
-          prefix=$prefix_save
-          exec_prefix=$exec_prefix_save ])
-
 AC_MSG_CHECKING(for architecture)
 AC_ARG_WITH([arch],
             [AS_HELP_STRING([--with-arch=<arch>],
