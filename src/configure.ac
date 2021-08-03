@@ -10,6 +10,83 @@ AC_INIT(PAPI, 6.0.0.1, ptools-perfapi@icl.utk.edu)
 AC_CONFIG_SRCDIR([papi.c])
 AC_CONFIG_HEADER([config.h])
 
+dnl######## AUTOCONF Macro definitions begin
+
+dnl############################################################################
+dnl# FIXME: the following definitions should be moved to confdb/aclocal_util.m4
+dnl# when Automake support is added to the build system.
+dnl############################################################################
+
+dnl This is from autoconf-archive
+dnl It appends a FLAG to a FLAG-VARIABLE only if the FLAG is not already in it.
+dnl If the FLAGS-VARIABLE is empty it sets it to FLAG. If FLAG-VARIABLE is not
+dnl specified the current language flag is used (e.g. CFLAGS)
+AC_DEFUN([AX_APPEND_FLAG],
+[dnl
+AC_PREREQ(2.64)dnl for _AC_LANG_PREFIX and AS_VAR_SET_IF
+AS_VAR_PUSHDEF([FLAGS], [m4_default($2,_AC_LANG_PREFIX[FLAGS])])
+AS_VAR_SET_IF(FLAGS,[
+    AS_CASE([" AS_VAR_GET(FLAGS) "],
+        [*" $1 "*], [AC_RUN_LOG([: FLAGS already contains $1])],
+        [
+            AS_VAR_APPEND(FLAGS,[" $1"])
+            AC_RUN_LOG([: FLAGS="$FLAGS"])
+        ])
+    ],
+    [
+        AS_VAR_SET(FLAGS,[$1])
+        AC_RUN_LOG([: FLAGS="$FLAGS"])
+    ])
+AS_VAR_POPDEF([FLAGS])dnl
+])dnl AX_APPEND_FLAG
+
+dnl This is from autoconf-archive
+dnl It stores a copy of variable_name''s value and assigns it to 'value' If no value
+dnl is given, its original value is kept.
+AC_DEFUN([AX_VAR_PUSHVALUE],[
+    increment([$1_counter])
+
+    AS_VAR_PUSHDEF([variable],[$1]) dnl
+    AS_VAR_PUSHDEF([backup],[save_$1_]$1_counter) dnl
+
+    AS_VAR_SET(backup,$variable) dnl
+    AS_VAR_SET(variable,["]m4_default($2,$variable)["]) dnl
+
+    AS_VAR_POPDEF([variable]) dnl
+    AS_VAR_POPDEF([backup]) dnl
+])dnl AX_PUSH_VAR
+
+dnl This is from autoconf-archive
+dnl It restores the variable_name''s value changed by AX_VAR_PUSHVALUE.
+AC_DEFUN([AX_VAR_POPVALUE],[
+    AS_VAR_PUSHDEF([variable],[$1]) dnl
+    AS_VAR_PUSHDEF([backup],[save_$1_]$1_counter) dnl
+
+    AS_VAR_SET(variable,$backup) dnl
+
+    decrement([$1_counter])
+    AS_VAR_POPDEF([variable]) dnl
+    AS_VAR_POPDEF([backup]) dnl
+])dnl AX_POP_VAR
+
+m4_define([increment],[dnl
+    m4_ifdef([$1],dnl
+        [m4_define([$1],m4_incr($1))],dnl
+        [m4_define([$1],[1])]dnl
+    )dnl
+])dnl
+
+m4_define([decrement],[dnl
+    m4_ifdef([$1],dnl
+        [m4_if(m4_eval($1 > 0),
+            [1],m4_define([$1],m4_decr($1)),dnl
+            [m4_fatal([Missing call to AX_VAR_PUSHVALUE with var $1])]dnl
+    )],dnl
+    [m4_fatal([Missing call to AX_VAR_PUSHVALUE with var $1])])dnl
+])dnl
+
+dnl######## AUTOCONF Macro definition end
+
 AC_MSG_CHECKING(for architecture)
 AC_ARG_WITH([arch],
             [AS_HELP_STRING([--with-arch=<arch>],
@@ -86,7 +163,8 @@ AC_MSG_RESULT($NEC)
 AC_SUBST(NEC)
 
 
-CFLAGS="$CFLAGS -g"
+AX_APPEND_FLAG([-g],[CFLAGS])
+
 #If not set, set FFLAGS to null to prevent AC_PROG_F77 from defaulting it to -g -O2
 if test "x$FFLAGS" = "x"; then
   FFLAGS=""
@@ -144,14 +222,16 @@ fi
 # remark #869: parameter was never referenced 
 # remark #271: trailing comma is nonstandard
 if test "$CC_COMMON_NAME" = "icc"; then
-  CFLAGS="$CFLAGS -diag-disable 188,869,271"
+  AX_APPEND_FLAG([-diag-disable 188,869,271],[CFLAGS])
   if test "$MIC" = "yes"; then
-     CC="$CC -mmic -fPIC"
+     AX_APPEND_FLAG([-mmic],[CC])
+     AX_APPEND_FLAG([-fPIC],[CC])
   fi
 fi
 
 if test "$F77" = "ifort" -a "$MIC" = "yes"; then
-  F77="$F77 -mmic -fPIC"
+  AX_APPEND_FLAG([-mmic],[F77])
+  AX_APPEND_FLAG([-fPIC],[F77])
 fi
 
 AC_PROG_AWK
@@ -182,30 +262,28 @@ if test "${rtsymbols_in_base}" = "yes"; then
 else
 	AC_MSG_RESULT([not found])
 	AC_MSG_CHECKING([for timer_create and timer_*ettime symbols in -lrt])
-	SAVED_LIBS=${LIBS}
-	LIBS="${LIBS} -lrt"
+    AX_VAR_PUSHVALUE([LIBS],[-lrt])
 	AC_TRY_LINK([#include <signal.h>
                  #include <time.h>],
         [timer_t timerid; timer_create(CLOCK_REALTIME, NULL, &timerid);],
 		[has_lrt="yes"], [has_lrt="no"])
-	LIBS=${SAVED_LIBS}
+    AX_VAR_POPVALUE([LIBS])
 	if test "${has_lrt}" = "yes" ; then
 		AC_MSG_RESULT([found])
-	LRT="-lrt"
+	    AX_APPEND_FLAG([-lrt],[LRT])
 	else
 		AC_MSG_RESULT([not found])
 		AC_MSG_CHECKING([for timer_create and timer_*ettime symbols in -lrt -lpthread])
-		SAVED_LIBS=${LIBS}
-                LIBS="${LIBS} -lrt -lpthread"
+        AX_VAR_PUSHVALUE([LIBS],[-lrt -lpthread])
                 AC_TRY_LINK([#include <signal.h>
                              #include <time.h>],
                             [timer_t timerid; timer_create(CLOCK_REALTIME, NULL, &timerid);],
                             [has_lrt_lpthd="yes"],
                             [has_lrt_lpthd="no"])
-                LIBS=${SAVED_LIBS}
+                AX_VAR_POPVALUE([LIBS])
                 if test "${has_lrt_lpthd}" = "yes" ; then
                         AC_MSG_RESULT([found])
-                        LRT="-lrt -lpthread"
+                        AX_APPEND_FLAG([-lrt -lpthread],[LRT])
                 else
 			AC_MSG_ERROR([cannot find timer_create and timer_*ettime symbols neither in the base system libraries nor in -lrt, nor in -lrt -lpthread])
 		fi
@@ -228,12 +306,11 @@ if test "${dlsymbols_in_base}" = "yes"; then
 else
 	AC_MSG_RESULT([not found])
 	AC_MSG_CHECKING([for dlopen and dlerror symbols in -ldl])
-	SAVED_LIBS=${LIBS}
-	LIBS="${LIBS} -ldl"
+    AX_VAR_PUSHVALUE([LIBS],[-ldl])
 	AC_TRY_LINK([#include <dlfcn.h>],
 		[void *p = dlopen ("", 0); char *c = dlerror();],
 		[has_ldl="yes"], [has_ldl="no"])
-	LIBS=${SAVED_LIBS}
+    AX_VAR_POPVALUE([LIBS])
 	if test "${has_ldl}" = "yes" ; then
 		AC_MSG_RESULT([found])
   	LDL="-ldl"
@@ -273,7 +350,7 @@ elif test "$OS" = "bgq"; then
               [AS_HELP_STRING([--with-bgpm_installdir=<path>],
               [Specify the installation path of BGPM])],
               [BGPM_INSTALL_DIR=$withval
-              CFLAGS="$CFLAGS -I$withval"],
+               AX_APPEND_FLAG([-I$withval],[CFLAGS])],
               [AC_MSG_ERROR([BGQ CPU component requires installation path of BGPM (see --with-bgpm_installdir)])])
   bitmode=64
   tls=no
@@ -374,18 +451,18 @@ AC_ARG_WITH(debug,
             [debug=$withval])
 if test "$debug" = "yes"; then
   if test "$CC_COMMON_NAME" = "gcc"; then
-    CFLAGS="$CFLAGS -g3"
+    AX_APPEND_FLAG([-g3],[CFLAGS])
   fi
   OPTFLAGS="-O0"
-  PAPICFLAGS+=" -DDEBUG -DPAPI_NO_MEMORY_MANAGEMENT" 
+  AX_APPEND_FLAG([-DDEBUG -DPAPI_NO_MEMORY_MANAGEMENT],[PAPICFLAGS])
 elif test "$debug" = "memory"; then
   if test "$CC_COMMON_NAME" = "gcc"; then
-    CFLAGS="$CFLAGS -g3"
+    AX_APPEND_FLAG([-g3],[CFLAGS])
   fi
   OPTFLAGS="-O0"
-  PAPICFLAGS+=" -DDEBUG" 
+  AX_APPEND_FLAG([-DDEBUG],[PAPICFLAGS])
 else
-  PAPICFLAGS+="-DPAPI_NO_MEMORY_MANAGEMENT" 			
+  AX_APPEND_FLAG([-DPAPI_NO_MEMORY_MANAGEMENT],[PAPICFLAGS])
 fi
 AC_MSG_RESULT($debug)
 
@@ -394,24 +471,22 @@ if test "$CC_COMMON_NAME" = "gcc"; then
   major=`echo $gcc_version | sed 's/\([[^.]][[^.]]*\).*/\1/'`
   minor=`echo $gcc_version | sed 's/[[^.]][[^.]]*.\([[^.]][[^.]]*\).*/\1/'`
   if (test "$major" -ge 4 || test "$major" = 3 -a "$minor" -ge 4); then
-    CFLAGS+=" -Wextra"
+    AX_APPEND_FLAG([-Wextra],[CFLAGS])
   else
-    CFLAGS+=" -W"
+    AX_APPEND_FLAG([-W],[CFLAGS])
   fi
 # -Wextra => -Woverride-init on gcc >= 4.2
 # This issues a warning (error under -Werror) for some libpfm4 code. 
 	AC_MSG_CHECKING( for -Wno-override-init)
-		oldcflags="$CFLAGS"
-		CFLAGS+=" -Wall -Wextra -Werror -Wno-override-init"
+        AX_VAR_PUSHVALUE([CFLAGS],[-Wall -Wextra -Werror -Wno-override-init])
 		AC_COMPILE_IFELSE([AC_LANG_SOURCE( 
 						[ struct A { int x; int y; };
 						int main(void) { struct A a = {.x = 0, .y = 0, .y = 5 }; return a.x; }
 						])], 
 						[HAVE_NO_OVERRIDE_INIT=1],
 						[HAVE_NO_OVERRIDE_INIT=0] )
-		CFLAGS="$oldcflags"
+        AX_VAR_POPVALUE([CFLAGS])
 AC_MSG_RESULT($HAVE_NO_OVERRIDE_INIT)
-
 fi
 AC_MSG_CHECKING(for CPU type)
 AC_ARG_WITH(CPU,
@@ -420,7 +495,7 @@ AC_ARG_WITH(CPU,
             [CPU=$withval
              case "$CPU" in
                core|core2|i7|atom|p4|p3|opteron|athlon)
-                   MISCSRCS="$MISCSRCS x86_cpuid_info.c" 
+                   AX_APPEND_FLAG([x86_cpuid_info.c],[MISCSRCS])
              esac],
 	        [case "$OS" in
                aix)
@@ -435,16 +510,16 @@ AC_ARG_WITH(CPU,
                    family=`uname -m`
 
 		   if test "$family" = "amd64"; then
-                      MISCSRCS="$MISCSRCS x86_cpuid_info.c" 
+                      AX_APPEND_FLAG([x86_cpuid_info.c],[MISCSRCS])
 
 		   elif test "$family" = "i386"; then
-                      MISCSRCS="$MISCSRCS x86_cpuid_info.c" 
+                      AX_APPEND_FLAG([x86_cpuid_info.c],[MISCSRCS])
 		   fi ;;
 
 	       darwin)
                    family=`uname -m`
 
-                   MISCSRCS="$MISCSRCS x86_cpuid_info.c" 
+                   AX_APPEND_FLAG([x86_cpuid_info.c],[MISCSRCS])
 
 		   ;;
 
@@ -452,11 +527,11 @@ AC_ARG_WITH(CPU,
                    family=`uname -m`
 
 		   if test "$family" = "x86_64"; then
-                      MISCSRCS="$MISCSRCS x86_cpuid_info.c" 
+                     AX_APPEND_FLAG([x86_cpuid_info.c],[MISCSRCS])
 		      CPU="x86"
 
 		   elif test "$family" = "i686"; then
-                      MISCSRCS="$MISCSRCS x86_cpuid_info.c" 
+                      AX_APPEND_FLAG([x86_cpuid_info.c],[MISCSRCS])
 		      CPU="x86"
 
                    elif test "$family" = "ppc64"; then
@@ -471,7 +546,7 @@ AC_ARG_WITH(CPU,
 	           fi ;;
                solaris)
                  AC_CHECK_HEADER([libcpc.h],
-                                 [CFLAGS="$CFLAGS -lcpc"
+                                 [AX_APPEND_FLAG([-lcpc],[CFLAGS])
                                   AC_TRY_RUN([#include <stdlib.h>
                                               #include <libcpc.h> 
                                               int main() {
@@ -513,7 +588,7 @@ AC_DEFINE_UNQUOTED(CPU,$CPU,[cpu type])
 case $arch in
   aarch64|arm*|parisc*)
     pthread_mutexes=yes
-    CFLAGS="$CFLAGS -DUSE_PTHREAD_MUTEXES"
+    AX_APPEND_FLAG([-DUSE_PTHREAD_MUTEXES],[CFLAGS])
     echo "forcing use of pthread mutexes... " >&6
   ;;
 esac
@@ -523,7 +598,7 @@ AC_ARG_WITH(pthread-mutexes,
             [AS_HELP_STRING([--with-pthread-mutexes],
             [Specify use of pthread mutexes rather than custom PAPI locks])],
               [pthread_mutexes=yes
-	      CFLAGS="$CFLAGS -DUSE_PTHREAD_MUTEXES"
+               AX_APPEND_FLAG([-DUSE_PTHREAD_MUTEXES],[CFLAGS])
 	      ])
 
   AC_ARG_WITH(ffsll,
@@ -652,12 +727,9 @@ else
 fi
 AC_MSG_RESULT($walltimer)
 
-SAVED_LIBS=$LIBS
-SAVED_LDFLAGS=$LDFLAGS
-SAVED_CFLAGS=$CFLAGS
-LIBS=""
-LDFLAGS=""
-CFLAGS="-pthread"
+AX_VAR_PUSHVALUE([LIBS],[])
+AX_VAR_PUSHVALUE([LDFLAGS],[])
+AX_VAR_PUSHVALUE([CFLAGS],[-pthread])
 
 AC_ARG_WITH(tls,
             [AS_HELP_STRING([--with-tls=<keyword>],
@@ -849,9 +921,9 @@ AC_ARG_WITH(virtualtimer,
 	                                   virtualtimer="times"],
                                       [AC_MSG_RESULT(no)
 	                                   virtualtimer="default"]) ]) ])
-LDFLAGS=$SAVED_LDFLAGS
-CFLAGS=$SAVED_CFLAGS
-LIBS=$SAVED_LIBS
+AX_VAR_POPVALUE([LDFLAGS])
+AX_VAR_POPVALUE([CFLAGS])
+AX_VAR_POPVALUE([LIBS])
 
 AC_MSG_CHECKING(for which virtual timer to use)
 case "$virtualtimer" in
@@ -874,7 +946,7 @@ if test "$OS" = "aix"; then
               [PMAPI=$withval],
               [PMAPI="/usr/pmapi"])
   LIBS="-L$PMAPI/lib -lpmapi"
-  CPPFLAGS="$CPPFLAGS -I$PMAPI/include"
+  AX_APPEND_FLAG([-I$PMAPI/include],[CPPFLAGS])
   AC_CHECK_LIB([pmapi], [pm_initialize], 
                [PMINIT="-DPM_INITIALIZE"], 
                [AC_CHECK_LIB([pmapi], [pm_init], 
@@ -889,7 +961,7 @@ AC_ARG_WITH(static_user_events,
 		  [STATIC_USER_EVENTS=$withval],
 		  [STATIC_USER_EVENTS=no])
 if test "$STATIC_USER_EVENTS" = "yes"; then
-	PAPICFLAGS+=" -DSTATIC_USER_EVENTS"
+    AX_APPEND_FLAG([-DSTATIC_USER_EVENTS],[PAPICFLAGS])
 fi
 AC_MSG_RESULT($STATIC_USER_EVENTS)
 
@@ -900,7 +972,7 @@ AC_ARG_WITH(static_papi_events,
 		  [STATIC_PAPI_EVENTS=$withval],
 		  [STATIC_PAPI_EVENTS=yes])
 if test "$STATIC_PAPI_EVENTS" = "yes"; then
-	PAPICFLAGS+=" -DSTATIC_PAPI_EVENTS_TABLE"
+    AX_APPEND_FLAG([-DSTATIC_PAPI_EVENTS_TABLE],[PAPICFLAGS])
 fi
 AC_MSG_RESULT($STATIC_PAPI_EVENTS)
 
@@ -925,10 +997,10 @@ if test "$shared_lib" = "no" -a "$static_lib" = "no"; then
 fi
 
 if test "$shared_lib" = "yes"; then
-  papiLIBS="shared"
+    AX_APPEND_FLAG([shared],[papiLIBS])
 fi
 if test "$static_lib" = "yes"; then
-  papiLIBS="$papiLIBS static"
+    AX_APPEND_FLAG([static],[papiLIBS])
 fi
 
 if test "$shared_lib" = "no" -a "$static_lib" = "yes"; then
@@ -974,7 +1046,7 @@ if test "$shlib_tools" = "yes"; then
    fi
    LINKLIB='$(SHLIB)'
    # Set rpath and runpath to find libpfm.so and libpapi.so if not specified via LD_LIBRARY_PATH. The search path at runtime can be overriden by LD_LIBRARY_PATH.
-   LDFLAGS="$LDFLAGS -Wl,-rpath=$PWD/libpfm4/lib:$PWD,--enable-new-dtags"
+   AX_APPEND_FLAG([-Wl,-rpath=$PWD/libpfm4/lib:$PWD,--enable-new-dtags],[LDFLAGS])
 elif test "$shlib_tools" = "no"; then
    if test "$static_lib" != "yes"; then
       AC_MSG_ERROR([Building shared but specified static linking for tests and utilities])
@@ -1039,11 +1111,11 @@ if test "$perfctr" != 0; then
   dotest=0
   if test "x$perfctr_root" != "x"; then
     LIBS="-L$perfctr_root/usr.lib -lperfctr"
-    CPPFLAGS="$CPPFLAGS -I$perfctr_root/usr.lib -I$perfctr_root/linux/include"
+    AX_APPEND_FLAG([-I$perfctr_root/usr.lib -I$perfctr_root/linux/include],[CPPFLAGS])
     dotest=1
   elif test "x$perfctr_prefix" != "x"; then
     LIBS="-L$perfctr_prefix/lib -lperfctr"
-    CPPFLAGS="$CPPFLAGS -I$perfctr_prefix/include"
+    AX_APPEND_FLAG([-I$perfctr_prefix/include],[CPPFLAGS])
     perfctr_libdir="$perfctr_prefix/lib"
     perfctr_incdir="$perfctr_prefix/include"
     dotest=1
@@ -1061,8 +1133,7 @@ if test "$perfctr" != 0; then
   if test "$dotest" = 1; then
     AC_CHECK_LIB([perfctr], [vperfctr_open], 
                  [AC_CHECK_HEADERS([libperfctr.h], 
-                                   [oCFLAGS=$CFLAGS
-	                                CFLAGS="$CFLAGS -static"
+                                    AX_VAR_PUSHVALUE([CFLAGS],[-static])
 	                                AC_TRY_RUN([#include <stdlib.h>
 	                                            #include "libperfctr.h"
 	                                            int main() {
@@ -1072,7 +1143,7 @@ if test "$perfctr" != 0; then
 	                                            } ],
                                                 [perfctr=6],
                                                 [perfctr=7])
-	                                CFLAGS=$oCFLAGS], 
+                                    AX_VAR_POPVALUE([CFLAGS])
                                     [AC_MSG_ERROR([libperfctr.h not found, rerun configure with different flags])])],
                  [AC_MSG_ERROR([libperfctr.a not found, rerun configure with different flags]) ])
   else
@@ -1219,7 +1290,7 @@ esac],
 [enable_perfevent_rdpmc=true])
 
 if test "$enable_perfevent_rdpmc" = "true"; then
-	PECFLAGS="$PECFLAGS -DUSE_PERFEVENT_RDPMC=1"
+    AX_APPEND_FLAG([-DUSE_PERFEVENT_RDPMC=1],[PECFLAGS])
 fi
 
 # Uncore support
@@ -1250,7 +1321,7 @@ AS_IF([test "x$enable_perf_event_uncore" != "xno"],[
     ])
   fi
   if test "$perf_events" = "yes"; then
-      PECFLAGS="$PECFLAGS -DPEINCLUDE=\\\"$pe_incdir/perf_event.h\\\""
+      AX_APPEND_FLAG([-DPEINCLUDE=\\\"$pe_incdir/perf_event.h\\\"],[PECFLAGS])
   fi
 
 #
@@ -1267,20 +1338,20 @@ if test "$user_specified_interface" != "no"; then
 	if test "$user_specified_interface" = "perfmon"; then
 	   perfctr=0
 	   perf_events="no"
-	   PAPICFLAGS+=" $PFMCFLAGS"
+       AX_APPEND_FLAG([$PFMCFLAGS],[PAPICFLAGS])
 	   perfnec=0
 	else
 		if test "$user_specified_interface" = "pe"; then
 			   perfctr=0
 			   perfmon=0
-			   PAPICFLAGS+=" $PECFLAGS"
+               AX_APPEND_FLAG([$PECFLAGS],[PAPICFLAGS])
 			   perfnec=0
 		else
 			if test "$user_specified_interface" = "perfnec"; then
 				perfctr=0
 				perfmon=0
 				perf_events=0
-				PAPICFLAGS+=" -DPERFNEC"
+                AX_APPEND_FLAG([-DPERFNEC],[PAPICFLAGS])
 				AC_MSG_NOTICE([XXXXX user_specified_interface perfnec])
 
 			else
@@ -1291,10 +1362,10 @@ if test "$user_specified_interface" != "no"; then
    fi
 else
 	if test "$perfmon" != 0; then
-	   PAPICFLAGS+=" $PFMCFLAGS"
+        AX_APPEND_FLAG([$PFMCFLAGS],[PAPICFLAGS])
 	fi
 	if test "$perf_events" = "yes"; then
-	   PAPICFLAGS+=" $PECFLAGS"
+        AX_APPEND_FLAG([$PECFLAGS],[PAPICFLAGS])
 	fi
 fi
 
@@ -1322,7 +1393,7 @@ if test "$perfmon" != 0 -o "$perf_events" = "yes"; then
    fi
   if test "$dotest" = 1; then
     LIBS="-L$pfm_libdir -lpfm"
-    CPPFLAGS="$CPPFLAGS -I$pfm_incdir"
+    AX_APPEND_FLAG([-I$pfm_incdir],[CPPFLAGS])
     AC_CHECK_LIB([pfm], [pfm_initialize], 
                  [AC_CHECK_HEADERS([perfmon/pfmlib.h],
                                    [if test "$arch" = "ia64"; then
@@ -1489,12 +1560,12 @@ if test "$CC_COMMON_NAME" = "gcc"; then
 fi
 
 OPTFLAGS="$OPTFLAGS"
-PAPICFLAGS+=" -D_REENTRANT -D_GNU_SOURCE $NOTLS"
-CFLAGS="$CFLAGS $BITFLAGS"
+AX_APPEND_FLAG([-D_REENTRANT -D_GNU_SOURCE $NOTLS],[PAPICFLAGS])
+AX_APPEND_FLAG([$BITFLAGS],[CFLAGS])
 if test "$CC_COMMON_NAME" = "gcc"; then
-	CFLAGS="$CFLAGS -Wall"
+    AX_APPEND_FLAG([-Wall],[CFLAGS])
 fi
-FFLAGS="$CFLAGS $BITFLAGS $FFLAGS -Dlinux"
+AX_APPEND_FLAG([$CFLAGS $BITFLAGS -Dlinux],[FFLAGS])
 
 # OS Support
 
@@ -1563,9 +1634,9 @@ if (test "$MAKEVER" = "aix-power5" || test "$MAKEVER" = "aix-power6" || test "$M
   PAPI_EVENTS_CSV="papi_events.csv"
   MISCHDRS="aix.h components/perfctr_ppc/ppc64_events.h papi_events_table.h"
   MISCSRCS="aix.c"
-  CFLAGS+='-qenum=4 -Icomponents/perfctr_ppc -DNO_VARARG_MACRO -D_AIX -D_$(CPU_MODEL) -DNEED_FFSLL -DARCH_EVTS=\"$(ARCH_EVENTS).h\" -DCOMP_VECTOR=_ppc64_vectors -DSTATIC_PAPI_EVENTS_TABLE'
-  FFLAGS+='-WF,-D_$(CPU_MODEL) -WF,-DARCH_EVTS=\"$(ARCH_EVENTS).h\"'
-  CFLAGS+='-I$(PMAPI)/include -Icomponents/perfctr_ppc -qmaxmem=-1 -qarch=$(cpu_option) -qtune=$(cpu_option) -qlanglvl=extended $(BITFLAGS)'
+  AX_APPEND_FLAG([-qenum=4 -Icomponents/perfctr_ppc -DNO_VARARG_MACRO -D_AIX -D_$(CPU_MODEL) -DNEED_FFSLL -DARCH_EVTS=\"$(ARCH_EVENTS).h\" -DCOMP_VECTOR=_ppc64_vectors -DSTATIC_PAPI_EVENTS_TABLE],[CFLAGS])
+  AX_APPEND_FLAG([-I$(PMAPI)/include -Icomponents/perfctr_ppc -qmaxmem=-1 -qarch=$(cpu_option) -qtune=$(cpu_option) -qlanglvl=extended $(BITFLAGS)],[CFLAGS])
+  AX_APPEND_FLAG([-WF,-D_$(CPU_MODEL) -WF,-DARCH_EVTS=\"$(ARCH_EVENTS).h\"],[FFLAGS])
   if test $debug != "yes"; then
 	OPTFLAGS='-O3 -qstrict $(PMINIT)'
   else
@@ -1653,7 +1724,7 @@ elif test "$MAKEVER" = "CLE-perfmon2"; then
     VECTOR=_papi_pfm_vector
     PAPI_EVENTS_CSV="papi_events.csv"
   F77=gfortran
-  CFLAGS="$CFLAGS -D__crayxt"
+  AX_APPEND_FLAG([-D__crayxt],[CFLAGS])
   FFLAGS=""
 
 elif test "$MAKEVER" = "freebsd"; then
@@ -1667,7 +1738,7 @@ re.h"
     MISCSRCS="$MISCSRCS freebsd/map-unknown.c freebsd/map.c freebsd/map-p6.c freebsd/map-p6-m.c freebsd/map-p6-3.c freebsd/map-p6-2.c freebsd/map-p6-c.c freebsd/map-k7.c freebsd/map-k8.c freebsd/map-p4.c freebsd/map-atom.c freebsd/map-core.c freebsd/map-core2.c freebsd/map-core2-extreme.c freebsd/map-i7.c freebsd/map-westme\
 re.c"
   DESCR="FreeBSD -over libpmc- "
-  CFLAGS+=" -I. -Ifreebsd -DPIC -fPIC"
+  AX_APPEND_FLAG([-I. -Ifreebsd -DPIC -fPIC],[CFLAGS])
   CC_SHR='$(CC) -shared -Xlinker "-soname" -Xlinker "libpapi.so" -Xlinker "-rpath" -Xlinker "$(LIBDIR)" -DPIC -fPIC -I. -Ifreebsd'
 
 elif test "$MAKEVER" = "linux-generic"; then
@@ -1718,7 +1789,7 @@ elif (test "$MAKEVER" = "linux-perfctr-POWER5" || test "$MAKEVER" = "linux-perfc
       ARCH_EVENTS=ppc970_events
       ARCH_SPEC_EVTS=ppc970_events_map.c
     fi
-    CFLAGS="$CFLAGS -DPPC64 -D_$(CPU_MODEL) -D__perfctr__ -DARCH_EVTS=\"$(ARCH_EVENTS).h\" -DCOMP_VECTOR=_ppc64_vectors"
+    AX_APPEND_FLAG([$CFLAGS -DPPC64 -D_$(CPU_MODEL) -D__perfctr__ -DARCH_EVTS=\"$(ARCH_EVENTS).h\" -DCOMP_VECTOR=_ppc64_vectors],[CFLAGS])
     FFLAGS='-D_$(CPU_MODEL)'
 
 elif test "$MAKEVER" = "nec-nec"; then
@@ -1741,8 +1812,8 @@ elif (test "$MAKEVER" = "linux-pfm-ia64" || test "$MAKEVER" = "linux-pfm-itanium
     else
       CPU=3
     fi
-    CFLAGS="$CFLAGS -DITANIUM$CPU"
-    FFLAGS="$FFLAGS -DITANIUM$CPU"
+    AX_APPEND_FLAG([-DITANIUM$CPU],[CFLAGS])
+    AX_APPEND_FLAG([-DITANIUM$CPI],[FFLAGS])
 
   CC_SHR='$(CC) -fPIC -DPIC -shared -Wl,-soname -Wl,$(SHLIB) -Xlinker "-rpath" -Xlinker "$(LIBDIR)"'
 
@@ -1759,7 +1830,7 @@ elif test "$MAKEVER" = "solaris-ultra"; then
     CC_R="$CC" 
     CC_SHR="$CC -shared -fpic"
     OPTFLAGS=-O3
-    CFLAGS="$CFLAGS -DNEED_FFSLL"
+    AX_APPEND_FLAG([-DNEED_FFSLL],[CFLAGS])
     FFLAGS=$CFLAGS
   else 
     # Sun Workshop compilers: V5.0 and V6.0 R2
@@ -1801,12 +1872,12 @@ elif test "$MAKEVER" = "solaris-niagara2"; then
   NOOPT=-xO0 
   OPTFLAGS="-fast" 
   FOPTFLAGS=$OPTFLAGS
-  LDFLAGS="$LDFLAGS -lcpc" 
+  AX_APPEND_FLAG([-lcpc],[LDFLAGS])
   if test "$bitmode" = "64";  then
     LIBRARY=libpapi64.a
     SHLIB=libpapi64.so
-    CFLAGS="$CFLAGS -m64"
-    FFLAGS="$FFLAGS -m64"
+    AX_APPEND_FLAG([-m64],[CFLAGS])
+    AX_APPEND_FLAG([-m64],[FFLAGS])
   fi
 elif test "$MAKEVER" = "darwin"; then
   DESCR="Darwin"
@@ -1825,11 +1896,11 @@ MISCOBJS='$(MISCSRCS:.c=.o)'
 
 
 if test "$F77" = "pgf77"; then
-  FFLAGS="$FFLAGS -Wall -Mextend"
+    AX_APPEND_FLAG([-Wall -Mextend],[FFLAGS])
 elif test "$F77" = "ifort"; then
-  FFLAGS="$FFLAGS -warn all"
+    AX_APPEND_FLAG([-warn all],[FFLAGS])
 elif test "$F77" != "xlf"; then
-  FFLAGS="$FFLAGS -ffixed-line-length-132"
+    AX_APPEND_FLAG([-ffixed-line-length-132],[FFLAGS])
 fi
 
 if test "$CC_COMMON_NAME" = "icc"; then
@@ -1880,14 +1951,14 @@ tests="$tests comp_tests"
 for comp in $components; do
   # check for SDE component to determine if we need -lrt in LDFLAGS
   if test "x$comp" = "xsde" ; then
-    CFLAGS="$CFLAGS -DSDE"
-    LDFLAGS="$LDFLAGS $LRT"
-    LIBS="$LIBS $LRT"
+      AX_APPEND_FLAG([-DSDE],[CFLAGS])
+      AX_APPEND_FLAG([$LRT],[LDFLAGS])
+      AX_APPEND_FLAG([$LRT],[LIBS])
   fi
 
   # check for intel_gpu component to determine if we need -lstdc++ in LDFLAGS
   if test "x$comp" = "xintel_gpu" ; then
-    LDFLAGS="$LDFLAGS -lstdc++"
+      AX_APPEND_FLAG([-lstdc++],[LDFLAGS])
   fi
 
   # check for cuda component to determine if we need to check on Profiler.
