@@ -5,7 +5,7 @@
 # ARCH=mips CC=scgcc ./configure --with-arch=mips --host=mips64el-gentoo-linux-gnu- --with-ffsll --with-libpfm4 --with-perf-events --with-virtualtimer=times --with-walltimer=gettimeofday --with-tls=__thread --with-CPU=mips
 # cross compiling should work differently...
 
-AC_PREREQ(2.59)
+AC_PREREQ(2.69)
 AC_INIT(PAPI, 6.0.0.1, ptools-perfapi@icl.utk.edu)
 AC_CONFIG_SRCDIR([papi.c])
 AC_CONFIG_HEADER([config.h])
