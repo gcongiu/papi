@@ -217,13 +217,6 @@ elif `$CC -V 2>&1 | grep '^Intel(R) C' >/dev/null 2>&1` ; then
     CC_COMMON_NAME="icc"
     if test "$MPICC" = "mpicc"; then
         # Check if mpiicc is available
-        # FIXME: we should not be changing user settings under the table.
-        # If MPICC does not match icc simply report it and disable tests,
-        # like we do for IBM compiler.
-        AC_CHECK_PROG([MPIICC], [mpiicc], [mpiicc], [])
-        if test "x$MPIICC" = "xmpiicc"; then
-            MPICC=mpiicc
-        fi
         MPI_COMPILER_CHECK=`$MPICC -V 2>&1 | grep '^Intel(R) C'`
         if test "x$MPI_COMPILER_CHECK" = "x"; then
             AC_MSG_WARN([$MPICC is using a different compiler than $CC. MPI tests disabled.])
