@@ -872,16 +872,11 @@ if test "$OS" = "linux"; then
     if test "x$tls" = "x__thread"; then
         # On some linux distributions, TLS works in executables, but linking against
         # a shared library containing TLS fails with: undefined reference to '__tls_get_addr'
-        # FIXME: use AC_TRY_COMPILE instead of hand prepared file and build
-        rm -f conftest.c conftest.so conftest
-        echo "static __thread int foo; void main () { foo = 5; }" > conftest.c
-        gcc -fPIC --shared -o conftest.so conftest.c > /dev/null 2>&1
-        gcc -o conftest conftest.so > /dev/null 2>&1
-        if test ! -f conftest; then
-            AC_MSG_WARN([Disabling usage of __thread.]);
-            tls="no"
-        fi
-        rm -f conftest.c conftest.so conftest
+        AX_VAR_PUSHVALUE([CFLAGS],[-fPIC --shared])
+        AC_TRY_LINK([],
+                    [static __thread int foo; void main() { foo = 5; }],
+                    [],[AC_MSG_WARN([Disabling usage of __thread.]); tls=no])
+        AX_VAR_POPVALUE([CFLAGS])
     fi
 fi
 
