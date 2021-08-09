@@ -1612,11 +1612,6 @@ case "$OS" in
             AC_MSG_ERROR([HWPMC module not found. (see INSTALL.TXT)])
         fi
         # Determine the number of counters
-        # FIXME: use a template instead of manual file generation
-        echo "/* Automatically generated file by configure */" > freebsd-config.h
-        echo "#ifndef _FREEBSD_CONFIG_H_" >> freebsd-config.h
-        echo "#define _FREEBSD_CONFIG_H_" >> freebsd-config.h
-        echo "" >> freebsd-config.h
         AC_TRY_LINK([
                      #include <unistd.h>
                      #include <pmc.h>
@@ -1627,6 +1622,9 @@ case "$OS" in
         if test "${pmc_init_linked}" = "no" ; then
             AC_MSG_ERROR([Failed to link hwpmc example])
         fi
+        # FIXME: this test is bogus. Return values can only be in the range
+        # 1 - 255. If num pcm is out of range the return value will wrap
+        # around giving a wrong result.
         AC_TRY_RUN([
                     #include <unistd.h>
                     #include <pmc.h>
@@ -1643,9 +1641,10 @@ case "$OS" in
         if test "${num_counters}" = "0" ; then
             AC_MSG_ERROR([pmc_npmc info returned 0. Determine if the HWPMC module is loaded (see hwpmc(4))])
         fi
-        echo "#define HWPMC_NUM_COUNTERS ${num_counters}" >> freebsd-config.h
-        echo "" >> freebsd-config.h
-        echo "#endif" >> freebsd-config.h ;;
+        freebsd_pmc_counters=$num_counters
+        AC_SUBST([freebsd_pmc_counters])
+        AC_CONFIG_FILES([freebsd-config.h])
+        ;;
     linux)
         if test "$force_perf_events" = "yes" ; then
             MAKEVER="$OS"-pe
