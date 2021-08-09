@@ -439,41 +439,37 @@ else
     # mpitests is not a target
     tmp_tests=
     mpi_tests=no
-    # FIXME: why not simply use IF statement instead of CASE?
-    case "$with_tests" in
-        *ctests*)
-            tmp_tests+="ctests "
-            ;;
-    esac
-    case "$with_tests" in
-        *ftests*)
-            tmp_tests+="ftests "
-            ;;
-    esac
-    case "$with_tests" in
+
+    if test "x`echo $with_tests | grep 'ctests'`" != "x" ; then
+        tmp_tests+="ctests "
+    fi
+
+    if test "x`echo $with_tests | grep 'ftests'`" != "x" ; then
+        tmp_tests+="ftests "
+    fi
+
+    if test "x`echo $with_tests | grep 'mpitests'`" != "x" ; then
+        # we already checked if mpicc is working
         # FIXME: there must be a better way of doing this
-        *mpitests*)
-            # we already checked if mpicc is working
-            if test "x$MPICC" != "x"; then
-                if test "x$NO_MPI_TESTS" = "x"; then
-                    mpi_tests=yes
-                    # mpitests only works together with ctests
-                    if test "x$tmp_tests" = "x"; then
-                        AC_MSG_RESULT([no])
-                    else
-                        AC_MSG_RESULT([$tmp_tests mpitests])
-                    fi
-                fi
-            else
-                NO_MPI_TESTS=yes
-                if test "x$tmp_tests" = "x"; then
+        if test "x$MPICC" != "x" ; then
+            if test "x$NO_MPI_TESTS" = "x" ; then
+                mpi_tests=yes
+                # mpitests only works together with ctests
+                if test "x$tmp_tests" = "x" ; then
                     AC_MSG_RESULT([no])
                 else
-                    AC_MSG_RESULT([$tmp_tests])
+                    AC_MSG_RESULT([$tmp_tests mpitests])
                 fi
             fi
-            ;;
-    esac
+        else
+            NO_MPI_TESTS=yes
+            if test "x$tmp_tests" = "x" ; then
+                AC_MSG_RESULT([no])
+            else
+                AC_MSG_RESULT([$tmp_tests])
+            fi
+        fi
+    fi
     # do not list mpi_tests for makefile target
     tests=$tmp_tests
 
