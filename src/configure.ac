@@ -1622,7 +1622,7 @@ case "$OS" in
                      #include <pmc.h>
                     ],
                     [int i = pmc_init();],
-                    [pmc_pmc_init_linked="yes"], [pmc_pmc_init_linked="no"])
+                    [pmc_init_linked="yes"], [pmc_init_linked="no"])
 
         if test "${pmc_init_linked}" = "no" ; then
             AC_MSG_ERROR([Failed to link hwpmc example])
