@@ -127,7 +127,7 @@ AC_ARG_WITH([OSVER],
 if test "$with_OSVER" != "default"; then
     OSVER=$with_OSVER
 else
-    if test "$OS" != "bgp" -o "$OS" != "bgq" ; then
+    if test "$OS" != "bgp" -a "$OS" != "bgq" ; then
         OSVER=`uname -r`
     fi
 fi
