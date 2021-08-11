@@ -325,7 +325,6 @@ else
         fi
     fi
 fi
-AC_SUBST(LRT)
 
 #
 # Check if the system provides dl* symbols without -ldl, and if not,
@@ -2109,6 +2108,7 @@ tests="$tests comp_tests"
 for comp in $components; do
     # check for SDE component to determine if we need -lrt in LDFLAGS
     if test "x$comp" = "xsde" ; then
+        # FIXME: we should not put LRT into LDFLAGS
         AX_APPEND_FLAG([-DSDE],[CFLAGS])
         AX_APPEND_FLAG([$LRT],[LDFLAGS])
         AX_APPEND_FLAG([$LRT],[LIBS])
