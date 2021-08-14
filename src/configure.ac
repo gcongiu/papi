@@ -1868,8 +1868,10 @@ AC_CONFIG_FILES([components_config.h])
 # check for component tests
 # FIXME: As for previous loop above, comp can be 'path/comp'. Thus, we should be
 # removing the leading part of the path from here too.
+# FIXME: top_srcdir currently set to '.' should be set to absolute srcdir path.
+top_srcdir="."
 for comp in $components; do
-  if test "`find components/$comp -name "tests"`" != "" ; then
+  if test -d "${top_srcdir}/components/${comp}/tests" ; then
 	COMPONENTS="$COMPONENTS $comp"
   fi
 done
