@@ -45,8 +45,14 @@
 /* Define to 1 if you have the `cpc' library (-lcpc). */
 #undef HAVE_LIBCPC
 
+/* Define to 1 if you have the `perfctr' library (-lperfctr). */
+#undef HAVE_LIBPERFCTR
+
 /* perfctr header file */
 #undef HAVE_LIBPERFCTR_H
+
+/* Define to 1 if you have the `pfm' library (-lpfm). */
+#undef HAVE_LIBPFM
 
 /* Define to 1 if you have the `mach_absolute_time' function. */
 #undef HAVE_MACH_ABSOLUTE_TIME
@@ -125,12 +131,6 @@
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
-
-/* Define for _rtc() intrinsic. */
-#undef HAVE__RTC
-
-/* Define if _rtc() is not found. */
-#undef NO_RTC_INTRINSIC
 
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
