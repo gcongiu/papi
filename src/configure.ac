@@ -142,7 +142,7 @@ AC_ARG_WITH([assumed_kernel],
 
 if test "$with_assumed_kernel" != "default" ; then
     assumed_kernel=$with_assumed_kernel
-    AX_APPEND_FLAG([-DASSUME_KERNEL=$with_assumed_kernel],[CFLAGS])
+    AX_APPEND_FLAG([-DASSUME_KERNEL=$with_assumed_kernel],[CPPFLAGS])
 else
     assumed_kernel="autodetect"
 fi
