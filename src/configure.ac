@@ -1827,7 +1827,7 @@ if (test "$MAKEVER" = "aix-power5" || test "$MAKEVER" = "aix-power6" || test "$M
         CPU_MODEL=POWER6
         cpu_option=pwr6
         DESCR="AIX 5.1.0 or greater with POWER6"
-        CPPFLAGS="-qlanglvl=extended"
+        AX_APPEND_FLAG([-qlanglvl=extended],[CFLAGS])
         if test "$bitmode" = "64"; then
             DESCR="$DESCR 64 bit build"
         fi
@@ -1836,7 +1836,7 @@ if (test "$MAKEVER" = "aix-power5" || test "$MAKEVER" = "aix-power6" || test "$M
         CPU_MODEL=POWER7
         cpu_option=pwr7
         DESCR="AIX 5.1.0 or greater with POWER7"
-        CPPFLAGS="-qlanglvl=extended"
+        AX_APPEND_FLAG([-qlanglvl=extended],[CFLAGS])
         if test "$bitmode" = "64"; then
             DESCR="$DESCR 64 bit build"
         fi
