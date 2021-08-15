@@ -134,7 +134,7 @@ linux-timer.o: linux-timer.c $(HEADERS)
 	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c linux-timer.c -o linux-timer.o
 
 linux-common.o: linux-common.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c linux-common.c -o linux-common.o
+	$(CC) $(CPPFLAGS) $(LIBCFLAGS) $(OPTFLAGS) -c linux-common.c -o linux-common.o
 
 extras.o: extras.c $(HEADERS)
 	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c extras.c -o extras.o
