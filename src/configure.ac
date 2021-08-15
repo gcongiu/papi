@@ -1250,7 +1250,7 @@ if test "$perfctr" != 0; then
         fi
     fi
     if test "x$perfctr_incdir" != "x"; then
-        CPPFLAGS="-I$perfctr_incdir"
+        AX_APPEND_FLAG([-I$perfctr_incdir],[CPPFLAGS])
         dotest=1
     fi
 fi
