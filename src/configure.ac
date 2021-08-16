@@ -1801,12 +1801,12 @@ if (test "$MAKEVER" = "aix-power5" || test "$MAKEVER" = "aix-power6" || test "$M
     AX_APPEND_FLAG([-qenum=4],[CFLAGS])
     AX_APPEND_FLAG([-Icomponents/perfctr_ppc -DNO_VARARG_MACRO],[CPPFLAGS])
     AX_APPEND_FLAG([-D_AIX -D_$(CPU_MODEL) -DNEED_FFSLL],[CPPFLAGS])
-    AX_APPEND_FLAG([-DARCH_EVTS=\"$(ARCH_EVENTS).h\" -DCOMP_VECTOR=_ppc64_vectors],[CPPFLAGS])
+    AX_APPEND_FLAG([-DARCH_EVTS=\\\"$(ARCH_EVENTS).h\\\" -DCOMP_VECTOR=_ppc64_vectors],[CPPFLAGS])
     AX_APPEND_FLAG([-DSTATIC_PAPI_EVENTS_TABLE -I$(PMAPI)/include],[CPPFLAGS])
     AX_APPEND_FLAG([-Icomponents/perfctr_ppc],[CPPFLAGS])
     AX_APPEND_FLAG([-qmaxmem=-1 -qarch=$(cpu_option) -qtune=$(cpu_option) -qlanglvl=extended],[CFLAGS])
     AX_APPEND_FLAG([$(BITFLAGS)],[CC])
-    AX_APPEND_FLAG([-WF,-D_$(CPU_MODEL) -WF,-DARCH_EVTS=\"$(ARCH_EVENTS).h\"],[FFLAGS])
+    AX_APPEND_FLAG([-WF,-D_$(CPU_MODEL) -WF,-DARCH_EVTS=\\\"$(ARCH_EVENTS).h\\\"],[FFLAGS])
     if test $debug != "yes"; then
         OPTFLAGS='-O3 -qstrict $(PMINIT)'
     else
@@ -1952,7 +1952,7 @@ elif (test "$MAKEVER" = "linux-perfctr-POWER5" || test "$MAKEVER" = "linux-perfc
         ARCH_EVENTS=ppc970_events
         ARCH_SPEC_EVTS=ppc970_events_map.c
     fi
-    AX_APPEND_FLAG([-DPPC64 -D_$(CPU_MODEL) -D__perfctr__ -DARCH_EVTS=\"$(ARCH_EVENTS).h\" -DCOMP_VECTOR=_ppc64_vectors],[CPPFLAGS])
+    AX_APPEND_FLAG([-DPPC64 -D_$(CPU_MODEL) -D__perfctr__ -DARCH_EVTS=\\\"$(ARCH_EVENTS).h\\\" -DCOMP_VECTOR=_ppc64_vectors],[CPPFLAGS])
     FFLAGS='-D_$(CPU_MODEL)'
 elif test "$MAKEVER" = "nec-nec"; then
     FILENAME=Rules.perfnec
