@@ -382,7 +382,7 @@ elif test "$OS" = "bgq"; then
                 [AC_MSG_ERROR([BGQ CPU component requires installation path of BGPM (see --with-bgpm_installdir)])])
     if test "x$with_bgpm_installdir" != "x" ; then
         BGPM_INSTALL_DIR=$with_bgpm_installdir
-        AX_APPEND_FLAG([-I$with_bgpm_installdir],[CFLAGS])
+        AX_APPEND_FLAG([-I$with_bgpm_installdir],[CPPFLAGS])
     fi
     bitmode=64
     tls=no
@@ -490,17 +490,17 @@ if test "$with_debug" != "no" ; then
         if test "$CC_COMMON_NAME" = "gcc"; then
             AX_APPEND_FLAG([-g3],[CFLAGS])
         fi
-        OPTFLAGS="-O0"
-        AX_APPEND_FLAG([-DDEBUG -DPAPI_NO_MEMORY_MANAGEMENT],[PAPICFLAGS])
+        AX_APPEND_FLAG([-O0],[CFLAGS])
+        AX_APPEND_FLAG([-DDEBUG -DPAPI_NO_MEMORY_MANAGEMENT],[CPPFLAGS])
     elif test "$with_debug" = "memory"; then
         if test "$CC_COMMON_NAME" = "gcc"; then
             AX_APPEND_FLAG([-g3],[CFLAGS])
         fi
-        OPTFLAGS="-O0"
-        AX_APPEND_FLAG([-DDEBUG],[PAPICFLAGS])
+        AX_APPEND_FLAG([-O0],[CFLAGS])
+        AX_APPEND_FLAG([-DDEBUG],[CPPFLAGS])
     fi
 else
-    AX_APPEND_FLAG([-DPAPI_NO_MEMORY_MANAGEMENT],[PAPICFLAGS])
+    AX_APPEND_FLAG([-DPAPI_NO_MEMORY_MANAGEMENT],[CPPFLAGS])
 fi
 debug=$with_debug
 AC_MSG_RESULT([$debug])
@@ -639,7 +639,7 @@ AC_DEFINE_UNQUOTED([CPU],[$CPU],[cpu type])
 case $arch in
     aarch64|arm*|parisc*)
         pthread_mutexes=yes
-        AX_APPEND_FLAG([-DUSE_PTHREAD_MUTEXES],[CFLAGS])
+        AX_APPEND_FLAG([-DUSE_PTHREAD_MUTEXES],[CPPFLAGS])
         echo "forcing use of pthread mutexes... " >&6
         ;;
 esac
@@ -652,7 +652,7 @@ AC_ARG_WITH([pthread-mutexes],
             [])
 
 if test "x$pthread_mutexes" = "xyes" ; then
-    AX_APPEND_FLAG([-DUSE_PTHREAD_MUTEXES],[CFLAGS])
+    AX_APPEND_FLAG([-DUSE_PTHREAD_MUTEXES],[CPPFLAGS])
 fi
 
 AC_ARG_WITH([ffsll],
@@ -1077,7 +1077,7 @@ AC_ARG_WITH([static_user_events],
             [STATIC_USER_EVENTS=no])
 
 if test "$STATIC_USER_EVENTS" = "yes"; then
-    AX_APPEND_FLAG([-DSTATIC_USER_EVENTS],[PAPICFLAGS])
+    AX_APPEND_FLAG([-DSTATIC_USER_EVENTS],[CPPFLAGS])
 fi
 AC_MSG_RESULT([$STATIC_USER_EVENTS])
 
@@ -1089,7 +1089,7 @@ AC_ARG_WITH([static_papi_events],
             [STATIC_PAPI_EVENTS=yes])
 
 if test "$STATIC_PAPI_EVENTS" = "yes"; then
-    AX_APPEND_FLAG([-DSTATIC_PAPI_EVENTS_TABLE],[PAPICFLAGS])
+    AX_APPEND_FLAG([-DSTATIC_PAPI_EVENTS_TABLE],[CPPFLAGS])
 fi
 AC_MSG_RESULT([$STATIC_PAPI_EVENTS])
 
@@ -1490,20 +1490,20 @@ if test "$user_specified_interface" != "no"; then
         if test "$user_specified_interface" = "perfmon"; then
             perfctr=0
             perf_events="no"
-            AX_APPEND_FLAG([$PFMCFLAGS],[PAPICFLAGS])
+            AX_APPEND_FLAG([$PFMCFLAGS],[CPPFLAGS])
             perfnec=0
         else
             if test "$user_specified_interface" = "pe"; then
                 perfctr=0
                 perfmon=0
-                AX_APPEND_FLAG([$PECFLAGS],[PAPICFLAGS])
+                AX_APPEND_FLAG([$PECFLAGS],[CPPFLAGS])
                 perfnec=0
             else
                 if test "$user_specified_interface" = "perfnec"; then
                     perfctr=0
                     perfmon=0
                     perf_events=0
-                    AX_APPEND_FLAG([-DPERFNEC],[PAPICFLAGS])
+                    AX_APPEND_FLAG([-DPERFNEC],[CPPFLAGS])
                     AC_MSG_NOTICE([XXXXX user_specified_interface perfnec])
                 else
                     AC_MSG_ERROR(["Unknown user_specified_interface=$user_specified_interface perfctr=$perfctr perfmon=$perfmon perfmon2=$perfmon2 perf-events=$perf_events perfnec=$perfnec"])
@@ -1513,10 +1513,10 @@ if test "$user_specified_interface" != "no"; then
     fi
 else
     if test "$perfmon" != 0; then
-        AX_APPEND_FLAG([$PFMCFLAGS],[PAPICFLAGS])
+        AX_APPEND_FLAG([$PFMCFLAGS],[CPPFLAGS])
     fi
     if test "$perf_events" = "yes"; then
-        AX_APPEND_FLAG([$PECFLAGS],[PAPICFLAGS])
+        AX_APPEND_FLAG([$PECFLAGS],[CPPFLAGS])
     fi
 fi
 
@@ -1723,12 +1723,13 @@ if test "$CC_COMMON_NAME" = "gcc"; then
 fi
 
 OPTFLAGS="$OPTFLAGS"
-AX_APPEND_FLAG([-D_REENTRANT -D_GNU_SOURCE $NOTLS],[PAPICFLAGS])
-AX_APPEND_FLAG([$BITFLAGS],[CFLAGS])
+AX_APPEND_FLAG([-D_REENTRANT -D_GNU_SOURCE $NOTLS],[CPPFLAGS])
+AX_APPEND_FLAG([$BITFLAGS],[CC])
 if test "$CC_COMMON_NAME" = "gcc"; then
     AX_APPEND_FLAG([-Wall],[CFLAGS])
 fi
-AX_APPEND_FLAG([$CFLAGS $BITFLAGS -Dlinux],[FFLAGS])
+AX_APPEND_FLAG([-Dlinux],[FFLAGS])
+AX_APPEND_FLAG([$BITFLAGS],[F77])
 
 # OS Support
 
@@ -1797,8 +1798,14 @@ if (test "$MAKEVER" = "aix-power5" || test "$MAKEVER" = "aix-power6" || test "$M
     PAPI_EVENTS_CSV="papi_events.csv"
     MISCHDRS="aix.h components/perfctr_ppc/ppc64_events.h papi_events_table.h"
     MISCSRCS="aix.c"
-    AX_APPEND_FLAG([-qenum=4 -Icomponents/perfctr_ppc -DNO_VARARG_MACRO -D_AIX -D_$(CPU_MODEL) -DNEED_FFSLL -DARCH_EVTS=\"$(ARCH_EVENTS).h\" -DCOMP_VECTOR=_ppc64_vectors -DSTATIC_PAPI_EVENTS_TABLE],[CFLAGS])
-    AX_APPEND_FLAG([-I$(PMAPI)/include -Icomponents/perfctr_ppc -qmaxmem=-1 -qarch=$(cpu_option) -qtune=$(cpu_option) -qlanglvl=extended $(BITFLAGS)],[CFLAGS])
+    AX_APPEND_FLAG([-qenum=4],[CFLAGS])
+    AX_APPEND_FLAG([-Icomponents/perfctr_ppc -DNO_VARARG_MACRO],[CPPFLAGS])
+    AX_APPEND_FLAG([-D_AIX -D_$(CPU_MODEL) -DNEED_FFSLL],[CPPFLAGS])
+    AX_APPEND_FLAG([-DARCH_EVTS=\"$(ARCH_EVENTS).h\" -DCOMP_VECTOR=_ppc64_vectors],[CPPFLAGS])
+    AX_APPEND_FLAG([-DSTATIC_PAPI_EVENTS_TABLE -I$(PMAPI)/include],[CPPFLAGS])
+    AX_APPEND_FLAG([-Icomponents/perfctr_ppc],[CPPFLAGS])
+    AX_APPEND_FLAG([-qmaxmem=-1 -qarch=$(cpu_option) -qtune=$(cpu_option) -qlanglvl=extended],[CFLAGS])
+    AX_APPEND_FLAG([$(BITFLAGS)],[CC])
     AX_APPEND_FLAG([-WF,-D_$(CPU_MODEL) -WF,-DARCH_EVTS=\"$(ARCH_EVENTS).h\"],[FFLAGS])
     if test $debug != "yes"; then
         OPTFLAGS='-O3 -qstrict $(PMINIT)'
@@ -1849,14 +1856,8 @@ elif test "$MAKEVER" = "bgp"; then
     VECTOR=_bgp_vectors
     PAPI_EVENTS_CSV="papi_events.csv"
     MISCSRCS=
-    # FIXME: According to Autoconf documentation "If an option affects multiple phases of the compiler ...
-    # - if an option selects a 32-bit or 64-bit build [...] it must be put directly into CC. This is necessary
-    #   for config.guess to work
-    # - otherwise one approach is to put the option in CC. Another is to put it into both CPPFLAGS and LDFLAGS,
-    #   but not in CFLAGS"
-    # CFLAGS contains flags for the compiler as well as the pre-processor if the preprocessor is not
-    # passed the CFLAGS variable then it might fail to do what expected.
-    CFLAGS='-g -gdwarf-2 -O2 -Wall -I. -I$(BGP_SYSDIR)/arch/include -DCOMP_VECTOR=_bgp_vectors'
+    AX_APPEND_FLAG([-gdwarf-2 -Wall],[CFLAGS])
+    AX_APPEND_FLAG([-I. -I$(BGP_SYSDIR)/arch/include -DCOMP_VECTOR=_bgp_vectors],[CPPFLAGS])
     tests="$tests bgp_tests"
     SHOW_CONF=show_bgp_conf
     BGP_SYSDIR=/bgsys/drivers/ppcfloor
@@ -1892,7 +1893,7 @@ elif test "$MAKEVER" = "CLE-perfmon2"; then
     VECTOR=_papi_pfm_vector
     PAPI_EVENTS_CSV="papi_events.csv"
     F77=gfortran
-    AX_APPEND_FLAG([-D__crayxt],[CFLAGS])
+    AX_APPEND_FLAG([-D__crayxt],[CPPFLAGS])
     FFLAGS=""
 elif test "$MAKEVER" = "freebsd"; then
     CPUCOMPONENT_NAME=freebsd
@@ -1903,7 +1904,8 @@ elif test "$MAKEVER" = "freebsd"; then
     MISCHDRS="freebsd/map-unknown.h freebsd/map.h freebsd/map-p6.h freebsd/map-p6-m.h freebsd/map-p6-3.h freebsd/map-p6-2.h freebsd/map-p6-c.h freebsd/map-k7.h freebsd/map-k8.h freebsd/map-p4.h freebsd/map-atom.h freebsd/map-core.h freebsd/map-core2.h freebsd/map-core2-extreme.h freebsd/map-i7.h freebsd/map-westmere.h"
     MISCSRCS="$MISCSRCS freebsd/map-unknown.c freebsd/map.c freebsd/map-p6.c freebsd/map-p6-m.c freebsd/map-p6-3.c freebsd/map-p6-2.c freebsd/map-p6-c.c freebsd/map-k7.c freebsd/map-k8.c freebsd/map-p4.c freebsd/map-atom.c freebsd/map-core.c freebsd/map-core2.c freebsd/map-core2-extreme.c freebsd/map-i7.c freebsd/map-westmere.c"
     DESCR="FreeBSD -over libpmc- "
-    AX_APPEND_FLAG([-I. -Ifreebsd -DPIC -fPIC],[CFLAGS])
+    AX_APPEND_FLAG([-fPIC],[CFLAGS])
+    AX_APPEND_FLAG([-I. -Ifreebsd -DPIC],[CPPFLAGS])
     CC_SHR='$(CC) -shared -Xlinker "-soname" -Xlinker "libpapi.so" -Xlinker "-rpath" -Xlinker "$(LIBDIR)" -DPIC -fPIC -I. -Ifreebsd'
 elif test "$MAKEVER" = "linux-generic"; then
     CPUCOMPONENT_NAME=linux-generic
@@ -1950,7 +1952,7 @@ elif (test "$MAKEVER" = "linux-perfctr-POWER5" || test "$MAKEVER" = "linux-perfc
         ARCH_EVENTS=ppc970_events
         ARCH_SPEC_EVTS=ppc970_events_map.c
     fi
-    AX_APPEND_FLAG([$CFLAGS -DPPC64 -D_$(CPU_MODEL) -D__perfctr__ -DARCH_EVTS=\"$(ARCH_EVENTS).h\" -DCOMP_VECTOR=_ppc64_vectors],[CFLAGS])
+    AX_APPEND_FLAG([-DPPC64 -D_$(CPU_MODEL) -D__perfctr__ -DARCH_EVTS=\"$(ARCH_EVENTS).h\" -DCOMP_VECTOR=_ppc64_vectors],[CPPFLAGS])
     FFLAGS='-D_$(CPU_MODEL)'
 elif test "$MAKEVER" = "nec-nec"; then
     FILENAME=Rules.perfnec
@@ -1970,7 +1972,7 @@ elif (test "$MAKEVER" = "linux-pfm-ia64" || test "$MAKEVER" = "linux-pfm-itanium
     else
         CPU=3
     fi
-    AX_APPEND_FLAG([-DITANIUM$CPU],[CFLAGS])
+    AX_APPEND_FLAG([-DITANIUM$CPU],[CPPFLAGS])
     AX_APPEND_FLAG([-DITANIUM$CPI],[FFLAGS])
 
     CC_SHR='$(CC) -fPIC -DPIC -shared -Wl,-soname -Wl,$(SHLIB) -Xlinker "-rpath" -Xlinker "$(LIBDIR)"'
@@ -1987,14 +1989,15 @@ elif test "$MAKEVER" = "solaris-ultra"; then
         CC_R="$CC"
         CC_SHR="$CC -shared -fpic"
         OPTFLAGS=-O3
-        AX_APPEND_FLAG([-DNEED_FFSLL],[CFLAGS])
-        FFLAGS=$CFLAGS
+        AX_APPEND_FLAG([-DNEED_FFSLL],[CPPFLAGS])
+        FFLAGS="$CPPFLAGS $CFLAGS"
     else
         # Sun Workshop compilers: V5.0 and V6.0 R2
         CPP="$CC -E"
         CC_R="$CC -mt"
         CC_SHR="$CC -ztext -G -Kpic"
-        CFLAGS="-xtarget=ultra3 -xarch=v8plusa -DNO_VARARG_MACRO -D__EXTENSIONS__ -DPAPI_NO_MEMORY_MANAGEMENT -DCOMP_VECTOR=_solaris_vectors"
+        AX_APPEND_FLAG([-xtarget=ultra3 -xarch=v8plusa],[CFLAGS])
+        AX_APPEND_FLAG([-DNO_VARARG_MACRO -D__EXTENSIONS__ -DPAPI_NO_MEMORY_MANAGEMENT -DCOMP_VECTOR=_solaris_vectors],[CPPFLAGS])
         SMPCFLGS=-xexplicitpar
         OMPCFLGS=-xopenmp
         F77=f90
@@ -2006,7 +2009,8 @@ elif test "$MAKEVER" = "solaris-ultra"; then
     if test "$bitmode" = "64"; then
         LIBRARY=libpapi64.a
         SHLIB=libpapi64.so
-        CFLAGS="-xtarget=ultra3 -xarch=v9a -DNO_VARARG_MACRO -D__EXTENSIONS__ -DPAPI_NO_MEMORY_MANAGEMENT  -DCOMP_VECTOR=_solaris_vectors"
+        AX_APPEND_FLAG([-xtarget=ultra3 -xarch=v9a],[CFLAGS])
+        AX_APPEND_FLAG([-DNO_VARARG_MACRO -D__EXTENSIONS__ -DPAPI_NO_MEMORY_MANAGEMENT -DCOMP_VECTOR=_solaris_vectors],[CPPFLAGS])
         OPTFLAGS="-g -fast -xtarget=ultra3 -xarch=v9a"
     fi
 elif test "$MAKEVER" = "solaris-niagara2"; then
@@ -2015,7 +2019,8 @@ elif test "$MAKEVER" = "solaris-niagara2"; then
     CPUCOMPONENT_OBJ=solaris-niagara2.obj
     VECTOR=_niagara2_vector
     PAPI_EVENTS_CSV="papi_events.csv"
-    CFLAGS="-xtarget=native -xarch=native -DNO_VARARG_MACRO -D__EXTENSIONS__ -DCOMP_VECTOR=_niagara2_vector"
+    AX_APPEND_FLAG([-xtarget=native -xarch=native],[CFLAGS])
+    AX_APPEND_FLAG([-DNO_VARARG_MACRO -D__EXTENSIONS__ -DCOMP_VECTOR=_niagara2_vector],[CPPFLAGS])
     ORY_MANAGEMENT="-DCOMP_VECTOR=_solaris_vector"
     DESCR="Solaris 10 with libcpc2 and UltraSPARC T2 (Niagara 2)"
     CPP="$CC -E"
@@ -2024,7 +2029,7 @@ elif test "$MAKEVER" = "solaris-niagara2"; then
     SMPCFLGS=-xexplicitpar
     OMPCFLGS=-xopenmp
     F77=f90
-    FFLAGS=$CFLAGS
+    FFLAGS="$CPPFLAGS $CFLAGS"
     NOOPT=-xO0
     OPTFLAGS="-fast"
     FOPTFLAGS=$OPTFLAGS
@@ -2033,15 +2038,15 @@ elif test "$MAKEVER" = "solaris-niagara2"; then
         LIBRARY=libpapi64.a
         SHLIB=libpapi64.so
         # FIXME: -m64 should not be added to CFLAGS (FFLAGS) but CC (F77) instead
-        AX_APPEND_FLAG([-m64],[CFLAGS])
-        AX_APPEND_FLAG([-m64],[FFLAGS])
+        AX_APPEND_FLAG([-m64],[CC])
+        AX_APPEND_FLAG([-m64],[F77])
     fi
 elif test "$MAKEVER" = "darwin"; then
     DESCR="Darwin"
     CPUCOMPONENT_NAME=darwin
     CPUCOMPONENT=linux-generic.c
     CPUCOMPONENT=linux-generic.obj
-    CFLAGS="-DNEED_FFSLL"
+    AX_APPEND_FLAG([-DNEED_FFSLL],[CPPFLAGS])
     CC_SHR='$(CC) -fPIC -DPIC -shared -Wl,-dylib -Xlinker "-rpath" -Xlinker "$(LIBDIR)"'
     SHLIB=libpapi.dylib
 elif test "$MAKEVER" = "generic_platform"; then
@@ -2109,7 +2114,7 @@ for comp in $components; do
     # check for SDE component to determine if we need -lrt in LDFLAGS
     if test "x$comp" = "xsde" ; then
         # FIXME: we should not put LRT into LDFLAGS
-        AX_APPEND_FLAG([-DSDE],[CFLAGS])
+        AX_APPEND_FLAG([-DSDE],[CPPFLAGS])
         AX_APPEND_FLAG([$LRT],[LDFLAGS])
         AX_APPEND_FLAG([$LRT],[LIBS])
     fi
@@ -2122,14 +2127,16 @@ for comp in $components; do
     # check for cuda component to determine if we need to check on Profiler.
     if test "x$comp" = "xcuda" ; then
         if test "`find $PAPI_CUDA_ROOT -name "cupti_profiler_target.h"`" != "" ; then
-            AX_APPEND_FLAG([-DCUPTI_PROFILER=1],[CFLAGS])
+            AX_APPEND_FLAG([-DCUPTI_PROFILER=1],[CPPFLAGS])
         else
-            AX_APPEND_FLAG([-DCUPTI_PROFILER=0],[CFLAGS])
+            AX_APPEND_FLAG([-DCUPTI_PROFILER=0],[CPPFLAGS])
         fi
     fi
 done
 
 AC_MSG_RESULT([$components])
+
+AX_APPEND_FLAG([-I. -DOSLOCK=\\\"$OSLOCK\\\" -DOSCONTEXT=\\\"$OSCONTEXT\\\"],[CPPFLAGS])
 
 AC_MSG_CHECKING([for PAPI event CSV filename to use])
 if test "x$PAPI_EVENTS_CSV" == "x"; then
@@ -2184,7 +2191,6 @@ AC_SUBST(LIBRARY)
 AC_SUBST(SHLIB)
 AC_SUBST(PAPISOVER)
 AC_SUBST(VLIB)
-AC_SUBST(PAPICFLAGS)
 AC_SUBST(OPTFLAGS)
 AC_SUBST(CPUCOMPONENT_NAME)
 AC_SUBST(CPUCOMPONENT_C)
@@ -2192,8 +2198,6 @@ AC_SUBST(CPUCOMPONENT_OBJ)
 AC_SUBST(OSFILESSRC)
 AC_SUBST(OSFILESOBJ)
 AC_SUBST(OSFILESHDR)
-AC_SUBST(OSLOCK)
-AC_SUBST(OSCONTEXT)
 AC_SUBST(DESCR)
 AC_SUBST(LIBS)
 AC_SUBST(CTEST_TARGETS)
@@ -2218,7 +2222,6 @@ AC_SUBST(TESTS)
 AC_SUBST(tests)
 AC_SUBST(SHOW_CONF)
 AC_SUBST(BGP_SYSDIR)
-AC_SUBST(BITFLAGS)
 AC_SUBST(COMPONENT_RULES)
 AC_SUBST(COMPONENTS)
 AC_SUBST(FTEST_TARGETS)

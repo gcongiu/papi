@@ -98,5 +98,5 @@ CFLAGS += -I$(PAPI_CUDA_ROOT)/include -g $(NVML_MACS)
 LDFLAGS += $(LDL) -g
 
 linux-nvml.o: components/nvml/linux-nvml.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c components/nvml/linux-nvml.c -o linux-nvml.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/nvml/linux-nvml.c -o linux-nvml.o
 

@@ -16,7 +16,7 @@ endif
         PFM_INC_PATH := $(PFM_ROOT)/include
 endif
 ifneq (/usr/include,$(PFM_INC_PATH))
-CFLAGS	+= -I$(PFM_INC_PATH)
+CPPFLAGS	+= -I$(PFM_INC_PATH)
 endif
 endif
 
@@ -29,7 +29,7 @@ MISCOBJS = $(PFM_OBJS) $(MISCSRCS:.c=.o)
 ifeq (,$(PFM_OBJS))
 $(PFM_LIB_PATH)/libpfm.a:
 ifneq (,${PFM_ROOT})
-	$(MAKE) -C $(PFM_ROOT) ARCH="$(ARCH)" CC="$(CC) $(BITFLAGS)" CONFIG_PFMLIB_OLD_PFMV2="$(PFM_OLD_PFMV2)" lib
+	$(MAKE) -C CC=$(CC) $(PFM_ROOT) ARCH="$(ARCH)" CONFIG_PFMLIB_OLD_PFMV2="$(PFM_OLD_PFMV2)" lib
 else
 	@echo '$@ not installed!'; exit 1
 endif
@@ -45,7 +45,7 @@ $(PFM_OBJS): $(PFM_LIB_PATH)/libpfm.a
 	$(AR) xv $<
 
 papi_libpfm3_events.o: papi_libpfm3_events.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c papi_libpfm3_events.c -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_libpfm3_events.c -o $@
 
 native_clean:
 	-rm -f $(MISCOBJS)

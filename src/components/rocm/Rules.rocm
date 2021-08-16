@@ -117,5 +117,5 @@ CFLAGS += $(ROCM_MACS) $(ROCM_IDIRS) -g
 LDFLAGS += $(LDL) -g
 
 linux-rocm.o: components/rocm/linux-rocm.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c components/rocm/linux-rocm.c -o linux-rocm.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/rocm/linux-rocm.c -o linux-rocm.o
 

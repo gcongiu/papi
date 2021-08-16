@@ -106,10 +106,10 @@ CFLAGS += -I$(PAPI_CUDA_ROOT)/include -I$(PAPI_CUDA_ROOT)/extras/CUPTI/include -
 LDFLAGS += $(LDL) -g
 
 linux-cuda.o: components/cuda/linux-cuda.c $(HEADERS) cuda_sampling
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c components/cuda/linux-cuda.c -o linux-cuda.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/cuda/linux-cuda.c -o linux-cuda.o
 
 #	get just code expansion.
-#	$(CC) -E $(LIBCFLAGS) $(OPTFLAGS) -c components/cuda/linux-cuda.c -o linux-cuda.pre
+#	$(CC) -E $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/cuda/linux-cuda.c -o linux-cuda.pre
 
 cuda_sampling:
 	cd components/cuda/sampling; $(MAKE);

@@ -19,7 +19,6 @@ HEADERS  = $(MISCHDRS) $(OSFILESHDR) $(PAPI_EVENTS_TABLE) \
 	extras.h sw_multiplex.h \
 	papi_common_strings.h components_config.h
 
-LIBCFLAGS += -I. $(CFLAGS) -DOSLOCK=\"$(OSLOCK)\" -DOSCONTEXT=\"$(OSCONTEXT)\"
 FHEADERS = fpapi.h f77papi.h f90papi.h
 # pkgconfig directory
 LIBPC = $(LIBDIR)/pkgconfig
@@ -65,7 +64,7 @@ libpapi.so libpapi.so.$(PAPISOVER): $(SHLIB)
 
 $(SHLIB): $(HEADERS) $(SOURCES) $(SHLIBOBJS)
 	rm -f $(SHLIB) libpapi.so libpapi.so.$(PAPISOVER)
-	$(CC_SHR) $(LIBCFLAGS) $(OPTFLAGS) $(SOURCES) $(SHLIBOBJS) -o $@ $(SHLIBDEPS) $(LDFLAGS)
+	$(CC_SHR) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(SOURCES) $(SHLIBOBJS) -o $@ $(SHLIBDEPS) $(LDFLAGS)
 	@set -ex; if test "$(POST_BUILD)" != "" ; then \
 		-$(POST_BUILD) ; \
 	fi
@@ -80,148 +79,148 @@ upper_PAPI_FWRAPPERS.c: papi_fwrappers.c $(HEADERS)
 	$(CPP) $(CPPFLAGS) -DFORTRANCAPS papi_fwrappers.c > upper_PAPI_FWRAPPERS.c
 
 papi_fwrappers.o: papi_fwrappers.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c papi_fwrappers.c -o papi_fwrappers.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_fwrappers.c -o papi_fwrappers.o
 
 papi_fwrappers_.o: papi_fwrappers_.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c papi_fwrappers_.c -o papi_fwrappers_.o 
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_fwrappers_.c -o papi_fwrappers_.o
 
 papi_fwrappers__.o: papi_fwrappers__.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c papi_fwrappers__.c -o papi_fwrappers__.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_fwrappers__.c -o papi_fwrappers__.o
 
 upper_PAPI_FWRAPPERS.o: upper_PAPI_FWRAPPERS.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c upper_PAPI_FWRAPPERS.c -o upper_PAPI_FWRAPPERS.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c upper_PAPI_FWRAPPERS.c -o upper_PAPI_FWRAPPERS.o
 
 papi.o: papi.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c papi.c -o papi.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi.c $(CPPFLAGS) -o papi.o
 
 papi_internal.o: papi_internal.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c papi_internal.c -o papi_internal.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_internal.c -o papi_internal.o
 
 threads.o: threads.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c threads.c -o threads.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c threads.c -o threads.o
 
 cpus.o: cpus.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c cpus.c -o cpus.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c cpus.c -o cpus.o
 
 papi_hl.o: high-level/papi_hl.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c high-level/papi_hl.c -o papi_hl.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c high-level/papi_hl.c -o papi_hl.o
 
 aix-memory.o: aix-memory.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c aix-memory.c -o aix-memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c aix-memory.c -o aix-memory.o
 
 solaris-memory.o: solaris-memory.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c solaris-memory.c -o solaris-memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c solaris-memory.c -o solaris-memory.o
 
 solaris-common.o: solaris-common.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c solaris-common.c -o solaris-common.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c solaris-common.c -o solaris-common.o
 
 linux-bgp-memory.o: linux-bgp-memory.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c linux-bgp-memory.c -o linux-bgp-memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c linux-bgp-memory.c -o linux-bgp-memory.o
 
 linux-bgq-memory.o: linux-bgq-memory.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c linux-bgq-memory.c -o linux-bgq-memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c linux-bgq-memory.c -o linux-bgq-memory.o
 
 darwin-memory.o: darwin-memory.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c darwin-memory.c -o darwin-memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c darwin-memory.c -o darwin-memory.o
 
 darwin-common.o: darwin-common.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c darwin-common.c -o darwin-common.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c darwin-common.c -o darwin-common.o
 
 linux-memory.o: linux-memory.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c linux-memory.c -o linux-memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c linux-memory.c -o linux-memory.o
 
 linux-timer.o: linux-timer.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c linux-timer.c -o linux-timer.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c linux-timer.c -o linux-timer.o
 
 linux-common.o: linux-common.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(LIBCFLAGS) $(OPTFLAGS) -c linux-common.c -o linux-common.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c linux-common.c -o linux-common.o
 
 extras.o: extras.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c extras.c -o extras.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c extras.c -o extras.o
 
 papi_memory.o: papi_memory.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c papi_memory.c -o papi_memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_memory.c -o papi_memory.o
 
 papi_vector.o: papi_vector.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c papi_vector.c -o papi_vector.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_vector.c -o papi_vector.o
 
 papi_preset.o: papi_preset.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c papi_preset.c -o papi_preset.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_preset.c -o papi_preset.o
 
 sw_multiplex.o: sw_multiplex.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c sw_multiplex.c -o sw_multiplex.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c sw_multiplex.c -o sw_multiplex.o
 
 $(CPUCOMPONENT_OBJ): $(CPUCOMPONENT_C) $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c $(CPUCOMPONENT_C) -o $(CPUCOMPONENT_OBJ) 
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c $(CPUCOMPONENT_C) -o $(CPUCOMPONENT_OBJ)
 
 x86_cpuid_info.o: x86_cpuid_info.c x86_cpuid_info.h $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c x86_cpuid_info.c -o x86_cpuid_info.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c x86_cpuid_info.c -o x86_cpuid_info.o
 
 $(PAPI_EVENTS_TABLE): $(PAPI_EVENTS_CSV) papi_events_table.sh
 	sh papi_events_table.sh $(PAPI_EVENTS_CSV) > $@
 
 $(ARCH_EVENTS)_map.o: $(ARCH_EVENTS)_map.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c $(ARCH_EVENTS)_map.c -o $(ARCH_EVENTS)_map.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c $(ARCH_EVENTS)_map.c -o $(ARCH_EVENTS)_map.o
 
 # Required for BGP
 .SUFFIXES: .rts.o
 .c.rts.o:
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 bgp_tests:$(LIBRARY) null
 	$(SETPATH) $(MAKE) -C ctests/bgp CC="$(CC)" CC_R="$(CC_R)" MPICC="$(MPICC)" CFLAGS="-I.. -I../.. $(CFLAGS)" TOPTFLAGS="$(TOPTFLAGS)" SMPCFLGS="$(SMPCFLGS)" OMPCFLGS="$(OMPCFLGS)" NOOPT="$(NOOPT)" LDFLAGS="$(LDFLAGS) $(STATIC)" LIBRARY="../../$(LINKLIB)" bgp_tests
  
 #Required for freebsd
 freebsd-memory.o: freebsd-memory.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map.o: freebsd/map.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-unknown.o: freebsd/map-unknown.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-p6.o: freebsd/map-p6.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-p6-m.o: freebsd/map-p6-m.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-p6-3.o: freebsd/map-p6-3.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-p6-2.o: freebsd/map-p6-2.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-p6-c.o: freebsd/map-p6-c.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-k7.o: freebsd/map-k7.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-k8.o: freebsd/map-k8.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-p4.o: freebsd/map-p4.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-atom.o: freebsd/map-atom.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-core.o: freebsd/map-core.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-core2.o: freebsd/map-core2.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-core2-extreme.o: freebsd/map-core2-extreme.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-i7.o: freebsd/map-i7.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 freebsd/map-westmere.o: freebsd/map-westmere.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 test: ctests
 	$(SETPATH) ctests/zero

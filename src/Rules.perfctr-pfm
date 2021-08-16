@@ -19,16 +19,16 @@ else
 	PERFCTR_KINC_PATH := $(PERFCTR_INC_PATH)
 endif
 ifneq (/usr/include,$(PERFCTR_INC_PATH))
-CFLAGS += -I$(PERFCTR_INC_PATH) 
+CPPFLAGS += -I$(PERFCTR_INC_PATH)
 endif
 ifneq (/usr/include/linux/include,$(PERFCTR_KINC_PATH))
-CFLAGS += -I$(PERFCTR_KINC_PATH) 
+CPPFLAGS += -I$(PERFCTR_KINC_PATH)
 endif
 endif
 
-CFLAGS-2.6.x := -DPERFCTR26
-CFLAGS-2.7.x := $(CFLAGS-2.6.x)
-CFLAGS += $(CFLAGS-$(VERSION))
+CPPFLAGS-2.6.x := -DPERFCTR26
+CPPFLAGS-2.7.x := $(CPPFLAGS-2.6.x)
+CPPFLAGS += $(CPPFLAGS-$(VERSION))
 MISCHDRS += linux-lock.h mb.h
 MISCSRCS +=  $(ARCH_SPEC_EVTS)
 PERFCTR_OBJS = $(shell $(AR) t $(PERFCTR_LIB_PATH)/libperfctr.a 2> /dev/null)
@@ -37,11 +37,11 @@ ifeq (,$(PERFCTR_OBJS))
 $(PERFCTR_LIB_PATH)/libperfctr.a:
 ifneq (,${PERFCTR_ROOT})
  ifeq (ppc64,${ARCH})
-	$(MAKE) CC='$(CC) $(BITFLAGS)' -C $(PERFCTR_ROOT)
+	$(MAKE) CC=$(CC) -C $(PERFCTR_ROOT)
  endif
  ifeq (x86_64,${ARCH})
-   ifeq (-m32,${BITFLAGS})
-	$(MAKE) CC='$(CC) $(BITFLAGS)' LD_FLAGS="-melf_i386" ARCH="i386" -C $(PERFCTR_ROOT)
+   ifneq (,$(findstring -m32,${CC}))
+	$(MAKE) CC=$(CC) LD_FLAGS="-melf_i386" ARCH="i386" -C $(PERFCTR_ROOT)
    else
 	$(MAKE) CC="$(CC)" -C $(PERFCTR_ROOT)
    endif
@@ -86,11 +86,11 @@ endif
         PFM_INC_PATH := $(PFM_ROOT)/include
 endif
 ifneq (/usr/include,$(PFM_INC_PATH))
-CFLAGS	+= -I$(PFM_INC_PATH) 
+CPPFLAGS	+= -I$(PFM_INC_PATH)
 endif
 endif
 
-CFLAGS	+= -DPERFCTR_PFM_EVENTS
+CPPFLAGS	+= -DPERFCTR_PFM_EVENTS
 PFM_OBJS=$(shell $(AR) t $(PFM_LIB_PATH)/libpfm.a 2>/dev/null)
 PFM_LIBS=-L$(PFM_LIB_PATH) -lpfm
 MISCSRCS += papi_libpfm3_events.c 
@@ -117,10 +117,10 @@ $(PFM_OBJS): $(PFM_LIB_PATH)/libpfm.a
 	$(AR) xv $<
 
 #perfctr.o: perfctr.c $(HEADERS)
-#	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c perfctr.c -o $@
+#	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c perfctr.c -o $@
 
 papi_libpfm3_events.o: papi_libpfm3_events.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c papi_libpfm3_events.c -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_libpfm3_events.c -o $@
 
 native_clean:
 	-rm -f $(MISCOBJS) libperfctr.so*
@@ -141,7 +141,7 @@ ifneq (,${PFM_ROOT})
 	-$(MAKE) -C $(PFM_ROOT) ARCH="$(ARCH)" CC=$(CC) DESTDIR=$(DESTDIR) PREFIX=$(PREFIX) install_prefix=$(PREFIX) LIBDIR=$(LIBDIR) INCDIR=$(INCDIR) MANDIR=$(MANDIR) install
 endif
 ifneq (,${PERFCTR_ROOT})
-ifeq (-m32,${BITFLAGS})
+ifneq (,$(findstring -m32,${CC}))
 	$(MAKE) -C $(PERFCTR_ROOT) PREFIX=$(DESTDIR)$(PREFIX) BINDIR=$(DESTDIR)$(BINDIR) LIBDIR=$(DESTDIR)$(LIBDIR) INCLDIR=$(DESTDIR)$(INCDIR) ARCH="i386" install
 else
 	$(MAKE) -C $(PERFCTR_ROOT) PREFIX=$(DESTDIR)$(PREFIX) BINDIR=$(DESTDIR)$(BINDIR) LIBDIR=$(DESTDIR)$(LIBDIR) INCLDIR=$(DESTDIR)$(INCDIR) install
