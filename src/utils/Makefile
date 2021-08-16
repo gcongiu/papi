@@ -16,46 +16,46 @@ ALL = papi_avail papi_mem_info papi_cost papi_clockres papi_native_avail \
 default all utils: $(ALL)
 
 papi_avail: papi_avail.o $(PAPILIB) print_header.o
-	$(CC) -o papi_avail papi_avail.o print_header.o $(PAPILIB) $(LDFLAGS)
+	$(CC) -o papi_avail papi_avail.o print_header.o $(PAPILIB) $(LDFLAGS) $(LIBS)
 
 papi_clockres: papi_clockres.o $(PAPILIB) $(CLOCKCORE)
-	$(CC) -o papi_clockres papi_clockres.o $(PAPILIB) $(CLOCKCORE) -lm $(LDFLAGS)
+	$(CC) -o papi_clockres papi_clockres.o $(PAPILIB) $(CLOCKCORE) -lm $(LDFLAGS) $(LIBS)
 
 papi_command_line: papi_command_line.o $(PAPILIB) $(DOLOOPS)
-	$(CC) -o papi_command_line papi_command_line.o $(PAPILIB) $(DOLOOPS) $(LDFLAGS)
+	$(CC) -o papi_command_line papi_command_line.o $(PAPILIB) $(DOLOOPS) $(LDFLAGS) $(LIBS)
 
 papi_component_avail: papi_component_avail.o $(PAPILIB) print_header.o
-	$(CC) -o papi_component_avail papi_component_avail.o $(PAPILIB) print_header.o $(LDFLAGS)
+	$(CC) -o papi_component_avail papi_component_avail.o $(PAPILIB) print_header.o $(LDFLAGS) $(LIBS)
 
 papi_cost: papi_cost.o $(PAPILIB) cost_utils.o
-	$(CC) -o papi_cost papi_cost.o cost_utils.o $(PAPILIB) -lm $(LDFLAGS)
+	$(CC) -o papi_cost papi_cost.o cost_utils.o $(PAPILIB) -lm $(LDFLAGS) $(LIBS)
 
 papi_decode: papi_decode.o $(PAPILIB)
-	$(CC) -o papi_decode papi_decode.o $(PAPILIB) $(LDFLAGS)
+	$(CC) -o papi_decode papi_decode.o $(PAPILIB) $(LDFLAGS) $(LIBS)
 
 papi_error_codes: papi_error_codes.o $(PAPILIB)
-	$(CC) -o papi_error_codes papi_error_codes.o $(PAPILIB) $(LDFLAGS)
+	$(CC) -o papi_error_codes papi_error_codes.o $(PAPILIB) $(LDFLAGS) $(LIBS)
 
 papi_event_chooser: papi_event_chooser.o $(PAPILIB) print_header.o
-	$(CC) -o papi_event_chooser papi_event_chooser.o print_header.o $(PAPILIB) $(LDFLAGS)
+	$(CC) -o papi_event_chooser papi_event_chooser.o print_header.o $(PAPILIB) $(LDFLAGS) $(LIBS)
 
 papi_hybrid_native_avail: papi_hybrid_native_avail.o $(PAPILIB)
-	$(CC) -o papi_hybrid_native_avail papi_hybrid_native_avail.o $(PAPILIB) $(LDFLAGS)
+	$(CC) -o papi_hybrid_native_avail papi_hybrid_native_avail.o $(PAPILIB) $(LDFLAGS) $(LIBS)
 
 papi_mem_info: papi_mem_info.o $(PAPILIB)
-	$(CC) -o papi_mem_info papi_mem_info.o $(PAPILIB) $(LDFLAGS)
+	$(CC) -o papi_mem_info papi_mem_info.o $(PAPILIB) $(LDFLAGS) $(LIBS)
 
 papi_multiplex_cost: papi_multiplex_cost.o $(PAPILIB) cost_utils.o
-	$(CC) -o papi_multiplex_cost papi_multiplex_cost.o cost_utils.o $(PAPILIB) -lm $(LDFLAGS)
+	$(CC) -o papi_multiplex_cost papi_multiplex_cost.o cost_utils.o $(PAPILIB) -lm $(LDFLAGS) $(LIBS)
 
 papi_native_avail: papi_native_avail.o $(PAPILIB) print_header.o
-	$(CC) -o papi_native_avail papi_native_avail.o $(PAPILIB) print_header.o $(LDFLAGS)
+	$(CC) -o papi_native_avail papi_native_avail.o $(PAPILIB) print_header.o $(LDFLAGS) $(LIBS)
 
 papi_version: papi_version.o $(PAPILIB)
-	$(CC) -o papi_version papi_version.o $(PAPILIB) $(LDFLAGS)
+	$(CC) -o papi_version papi_version.o $(PAPILIB) $(LDFLAGS) $(LIBS)
 
 papi_xml_event_info: papi_xml_event_info.o $(PAPILIB)
-	$(CC) -o papi_xml_event_info papi_xml_event_info.o $(PAPILIB) $(LDFLAGS)
+	$(CC) -o papi_xml_event_info papi_xml_event_info.o $(PAPILIB) $(LDFLAGS) $(LIBS)
 
 
 

@@ -10,7 +10,7 @@ TARGETS = PAPI_set_domain sprofile multiplex PAPI_state PAPI_reset PAPI_profil P
 all: $(TARGETS) 
 
 $(TARGETS):  $$@.c 
-	$(CC) $? -o $@ $(CFLAGS)  $(LDFLAGS)
+	$(CC) $? -o $@ $(CFLAGS)  $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f *.o  $(TARGETS) 

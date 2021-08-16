@@ -12,13 +12,13 @@ benchPCP.o:	benchPCP.c
 	$(CC) $(CFLAGS) $(INCLUDE) -c benchPCP.c -o benchPCP.o -fverbose-asm -Wa,-adhln=benchPCP.s
 
 benchPCP: benchPCP.o $(UTILOBJS) $(PAPILIB)
-	$(CC) $(INCLUDE) -o benchPCP benchPCP.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS) -Xlinker -Map=benchPCP_link.map
+	$(CC) $(INCLUDE) -o benchPCP benchPCP.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS) $(LIBS) -Xlinker -Map=benchPCP_link.map
 
 benchStats.o:	benchStats.c
 	$(CC) $(CFLAGS) $(INCLUDE) -c benchStats.c -o benchStats.o 
 
 benchStats: benchStats.o $(UTILOBJS) $(PAPILIB)
-	$(CC) $(INCLUDE) -o benchStats benchStats.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS) -lm 
+	$(CC) $(INCLUDE) -o benchStats benchStats.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS) $(LIBS) -lm
 
 clean:
 	rm -f benchPCP benchPCP.o benchPCP.s 

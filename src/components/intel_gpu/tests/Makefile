@@ -18,16 +18,16 @@ TESTS = gpu_metric_read gpu_metric_list gpu_query_gemm gpu_thread_read
 intel_gpu_tests: $(TESTS)
 
 gpu_metric_list: gpu_metric_list.o $(PAPILIB)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o gpu_metric_list gpu_metric_list.o $(PAPILIB) $(LDFLAGS)
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o gpu_metric_list gpu_metric_list.o $(PAPILIB) $(LDFLAGS) $(LIBS)
 
 gpu_metric_read: gpu_metric_read.o $(PAPILIB)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o gpu_metric_read gpu_metric_read.o $(PAPILIB) $(LDFLAGS)
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o gpu_metric_read gpu_metric_read.o $(PAPILIB) $(LDFLAGS) $(LIBS)
 
 gpu_query_gemm: gpu_query_gemm.o $(PAPILIB)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -o gpu_query_gemm gpu_query_gemm.o $(GPULIB) $(PAPILIB) $(CPPLDFLAGS) $(LDFLAGS)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o gpu_query_gemm gpu_query_gemm.o $(GPULIB) $(PAPILIB) $(CPPLDFLAGS) $(LDFLAGS) $(LIBS)
 
 gpu_thread_read:  gpu_thread_read.o $(PAPILIB)
-	$(CC) $(CPPFLAGS) $(CFLAGS) -o gpu_thread_read gpu_thread_read.o $(PAPILIB) $(LDFLAGS)  -lpthread
+	$(CC) $(CPPFLAGS) $(CFLAGS) -o gpu_thread_read gpu_thread_read.o $(PAPILIB) $(LDFLAGS) $(LIBS)  -lpthread
 
 clean:
 	rm -f $(TESTS) *.o

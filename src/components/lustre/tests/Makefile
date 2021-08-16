@@ -9,7 +9,7 @@ TESTS = lustre_basic
 lustre_tests: $(TESTS)
 
 lustre_basic: lustre_basic.o $(UTILOBJS) $(PAPILIB)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o lustre_basic lustre_basic.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS)
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o lustre_basic lustre_basic.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f $(TESTS) *.o

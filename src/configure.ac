@@ -1059,8 +1059,8 @@ if test "$OS" = "aix"; then
                 [PMAPI=$withval],
                 [PMAPI="/usr/pmapi"])
 
-    # TODO: are we sure we want to overwrite existing LIBS variable?
-    LIBS="-L$PMAPI/lib -lpmapi"
+    AX_APPEND_FLAG([-L$PMAPI/lib],[LDFLAGS])
+    AX_APPEND_FLAG([-lpmapi],[LIBS])
     AX_APPEND_FLAG([-I$PMAPI/include],[CPPFLAGS])
     AC_CHECK_LIB([pmapi], [pm_initialize],
                  [PMINIT="-DPM_INITIALIZE"],
@@ -1114,10 +1114,10 @@ if test "$shared_lib" = "no" -a "$static_lib" = "no"; then
 fi
 
 if test "$shared_lib" = "yes"; then
-    AX_APPEND_FLAG([shared],[papiLIBS])
+    PAPILIBTYPE=shared
 fi
 if test "$static_lib" = "yes"; then
-    AX_APPEND_FLAG([static],[papiLIBS])
+    PAPILIBTYPE=static
 fi
 
 if test "$shared_lib" = "no" -a "$static_lib" = "yes"; then
@@ -1231,21 +1231,21 @@ AC_ARG_WITH([perfctr_libdir],
 if test "$perfctr" != 0; then
     dotest=0
     if test "x$perfctr_root" != "x"; then
-        # TODO: are we sure we want to overwrite existing LIBS variable?
-        LIBS="-L$perfctr_root/usr.lib -lperfctr"
+        AX_APPEND_FLAG([-L$perfctr_root/usr.lib],[LDFLAGS])
+        AX_APPEND_FLAG([-lperfctr],[LIBS])
         AX_APPEND_FLAG([-I$perfctr_root/usr.lib -I$perfctr_root/linux/include],[CPPFLAGS])
         dotest=1
     elif test "x$perfctr_prefix" != "x"; then
-        # TODO: are we sure we want to overwrite existing LIBS variable?
-        LIBS="-L$perfctr_prefix/lib -lperfctr"
+        AX_APPEND_FLAG([-L$perfctr_prefix/lib],[LDFLAGS])
+        AX_APPEND_FLAG([-lperfctr],[LIBS])
         AX_APPEND_FLAG([-I$perfctr_prefix/include],[CPPFLAGS])
         perfctr_libdir="$perfctr_prefix/lib"
         perfctr_incdir="$perfctr_prefix/include"
         dotest=1
     else
         if test "x$perfctr_libdir" != "x"; then
-            # TODO: are we sure we want to overwrite existing LIBS variable?
-            LIBS="-L$perfctr_libdir -lperfctr"
+            AX_APPEND_FLAG([-L$perfctr_libdir],[LDFLAGS])
+            AX_APPEND_FLAG([-lperfctr],[LIBS])
             dotest=1
         fi
     fi
@@ -1543,8 +1543,8 @@ if test "$perfmon" != 0 -o "$perf_events" = "yes"; then
         dotest=0
     fi
     if test "$dotest" = 1; then
-        # TODO: are we sure we want to overwrite existing LIBS variable?
-        LIBS="-L$pfm_libdir -lpfm"
+        AX_APPEND_FLAG([-L$pfm_libdir],[LDFLAGS])
+        AX_APPEND_FLAG([-lpfm],[LIBS])
         AX_APPEND_FLAG([-I$pfm_incdir],[CPPFLAGS])
         AC_CHECK_LIB([pfm], [pfm_initialize])
         if test "$ac_cv_lib_pfm_pfm_initialize" = "yes" ; then
@@ -1868,7 +1868,6 @@ elif test "$MAKEVER" = "bgp"; then
     TOPTFLAGS="-g -Wall -O0"
     SHLIB=libpapi.so
     DESCR="Linux for BlueGene/P"
-    LIBS=static
     CC_SHR='$(CC) -shared -Xlinker "-soname" -Xlinker "$(SHLIB)" -Xlinker "-rpath" -Xlinker "$(LIBDIR)"'
     OMPCFLGS=""
 elif test "$MAKEVER" = "bgq"; then
@@ -2164,7 +2163,7 @@ AC_SUBST(F77)
 AC_SUBST(CPP)
 AC_SUBST(CC)
 AC_SUBST(AR)
-AC_SUBST(papiLIBS)
+AC_SUBST(PAPILIBTYPE)
 AC_SUBST(STATIC)
 AC_SUBST(NO_MPI_TESTS)
 AC_SUBST(LDFLAGS)

@@ -46,7 +46,7 @@ icache_seq_kernel_0.o: icache_seq.c icache_seq.h
 	bash replicate.sh
 
 cat_collect: main.c branch.o d_cache eventstock.o flops i_cache
-	$(CC) $(CFLAGS) -fopenmp $(INCFLAGS) main.c flops_aux.o flops.o icache_seq.o icache.o branch.o dcache.o timing_kernels.o prepareArray.o compar.o eventstock.o -o cat_collect $(LDFLAGS)
+	$(CC) $(CFLAGS) -fopenmp $(INCFLAGS) main.c flops_aux.o flops.o icache_seq.o icache.o branch.o dcache.o timing_kernels.o prepareArray.o compar.o eventstock.o -o cat_collect $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f *.o
