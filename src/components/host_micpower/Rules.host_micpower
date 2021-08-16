@@ -17,4 +17,4 @@ LDFLAGS += -pthread $(LDL) $(SYSMGMT_LIBS)
 CFLAGS += $(SYSMGMT_CFLAGS)
 
 linux-host_micpower.o: components/host_micpower/linux-host_micpower.c $(HEADERS) 
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c components/host_micpower/linux-host_micpower.c -o linux-host_micpower.o 
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/host_micpower/linux-host_micpower.c -o linux-host_micpower.o

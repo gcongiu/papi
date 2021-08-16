@@ -88,4 +88,4 @@ CFLAGS += -g
 LDFLAGS += $(LDL) -g
 
 linux-rocm-smi.o: components/rocm_smi/linux-rocm-smi.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c components/rocm_smi/linux-rocm-smi.c -o linux-rocm-smi.o 
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/rocm_smi/linux-rocm-smi.c -o linux-rocm-smi.o

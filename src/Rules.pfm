@@ -20,9 +20,9 @@ endif
     PFM_INC_PATH := $(PFM_ROOT)/include
 endif
 
-OPTIM := $(CFLAGS)
-CFLAGS-3.y := -DPFM30 
-CFLAGS += -I$(PFM_INC_PATH) $(ALTIX) $(CFLAGS-$(VERSION))
+OPTIM := $(CPPFLAGS)
+CPPFLAGS-3.y := -DPFM30
+CPPFLAGS += -I$(PFM_INC_PATH) $(ALTIX) $(CPPFLAGS-$(VERSION))
 MISCHDRS += linux-lock.h mb.h
 SHLIBDEPS = -Bdynamic -L$(PFM_LIB_PATH) -lpfm
 PFM_OBJS = $(shell $(AR) t $(PFM_LIB_PATH)/libpfm.a 2>/dev/null)

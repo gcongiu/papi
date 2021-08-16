@@ -8,4 +8,4 @@ SDE_LD = -ldl -pthread
 F90FLAGS += -ffree-form -ffree-line-length-none -fPIC
 
 sde.o: components/sde/sde.c components/sde/sde_lib/sde_lib.h components/sde/sde_internal.h $(HEADERS)
-		$(CC) $(LIBCFLAGS) $(OPTFLAGS) $(LDFLAGS) $(SDE_INC) $(SDE_LD) -c $< -o $@
+		$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(LDFLAGS) $(SDE_INC) $(SDE_LD) -c $< -o $@

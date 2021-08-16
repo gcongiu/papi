@@ -7,4 +7,4 @@ CFLAGS += -I$(VMWARE_INCDIR) -DVMGUESTLIB=$(VMGUESTLIB) -DVMWARE_INCDIR=\"$(VMWA
 LDFLAGS += $(LDL)
 
 vmware.o: components/vmware/vmware.c $(HEADERS) 
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c components/vmware/vmware.c -o vmware.o 
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/vmware/vmware.c -o vmware.o

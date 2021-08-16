@@ -19,16 +19,16 @@ else
 	PERFCTR_KINC_PATH := $(PERFCTR_INC_PATH)
 endif
 ifneq (/usr/include,$(PERFCTR_INC_PATH))
-CFLAGS += -I$(PERFCTR_INC_PATH) 
+CPPFLAGS += -I$(PERFCTR_INC_PATH)
 endif
 ifneq (/usr/include/linux/include,$(PERFCTR_KINC_PATH))
-CFLAGS += -I$(PERFCTR_KINC_PATH) 
+CPPFLAGS += -I$(PERFCTR_KINC_PATH)
 endif
 endif
 
-CFLAGS-2.6.x := -DPERFCTR26
-CFLAGS-2.7.x := $(CFLAGS-2.6.x)
-CFLAGS += $(CFLAGS-$(VERSION))
+CPPFLAGS-2.6.x := -DPERFCTR26
+CPPFLAGS-2.7.x := $(CPPFLAGS-2.6.x)
+CPPFLAGS += $(CPPFLAGS-$(VERSION))
 MISCHDRS += linux-lock.h mb.h
 MISCSRCS +=  $(ARCH_SPEC_EVTS)
 SHLIBDEPS = -Bdynamic -L$(PERFCTR_LIB_PATH) -lperfctr
@@ -39,11 +39,11 @@ ifeq (,$(PERFCTR_OBJS))
 $(PERFCTR_LIB_PATH)/libperfctr.a:
 ifneq (,${PERFCTR_ROOT})
  ifeq (ppc64,${ARCH})
-	$(MAKE) CC='$(CC) $(BITFLAGS)' -C $(PERFCTR_ROOT)
+	$(MAKE) CC=$(CC) -C $(PERFCTR_ROOT)
  endif
  ifeq (x86_64,${ARCH})
-   ifeq (-m32,${BITFLAGS})
-	$(MAKE) CC='$(CC) $(BITFLAGS)' LD_FLAGS="-melf_i386" ARCH="i386" -C $(PERFCTR_ROOT)
+   ifneq (,$(findstring -m32,${CC}))
+	$(MAKE) CC=$(CC) LD_FLAGS="-melf_i386" ARCH="i386" -C $(PERFCTR_ROOT)
    else
 	$(MAKE) -C $(PERFCTR_ROOT)
    endif
@@ -79,10 +79,10 @@ $(PERFCTR_OBJS): $(PERFCTR_LIB_PATH)/libperfctr.a
 	$(AR) xv $<
 	
 $(CPU)_events.o: $(CPU)_events.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c $(CPU)_events.c -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c $(CPU)_events.c -o $@
 
 #perfctr.o: perfctr.c $(HEADERS)
-#	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c perfctr.c -o $@
+#	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c perfctr.c -o $@
 
 native_clean:
 	-rm -f $(MISCOBJS) libperfctr.so*
@@ -97,7 +97,7 @@ ifeq ($(ARCH),ppc64)
 	cp -Rf ./event_data $(DESTDIR)$(DATADIR)
 endif
 ifneq (,${PERFCTR_ROOT})
-ifeq (-m32,${BITFLAGS})
+ifneq (,$(findstring -m32,${CC}))
 	$(MAKE) -C $(PERFCTR_ROOT) PREFIX=$(DESTDIR)$(PREFIX) DESTDIR=$(DESTDIR) BINDIR=$(DESTDIR)$(BINDIR) LIBDIR=$(DESTDIR)$(LIBDIR) INCLDIR=$(DESTDIR)$(INCDIR) ARCH="i386" install
 else
 	$(MAKE) -C $(PERFCTR_ROOT) PREFIX=$(DESTDIR)$(PREFIX) DESTDIR=$(DESTDIR) BINDIR=$(DESTDIR)$(BINDIR) LIBDIR=$(DESTDIR)$(LIBDIR) INCLDIR=$(DESTDIR)$(INCDIR) install

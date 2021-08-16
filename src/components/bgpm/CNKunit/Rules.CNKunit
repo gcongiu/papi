@@ -4,4 +4,4 @@ COMPSRCS += components/bgpm/CNKunit/linux-CNKunit.c
 COMPOBJS += linux-CNKunit.o 
 
 linux-CNKunit.o: components/bgpm/CNKunit/linux-CNKunit.c components/bgpm/CNKunit/linux-CNKunit.h $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c components/bgpm/CNKunit/linux-CNKunit.c -o linux-CNKunit.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/bgpm/CNKunit/linux-CNKunit.c -o linux-CNKunit.o

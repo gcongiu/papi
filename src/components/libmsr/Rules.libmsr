@@ -88,5 +88,5 @@ CFLAGS += -I$(PAPI_LIBMSR_ROOT)/include -I$(PAPI_LIBMSR_ROOT)/include/msr -g $(L
 LDFLAGS += $(LDL) -g
 
 linux-libmsr.o: components/libmsr/linux-libmsr.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c components/libmsr/linux-libmsr.c -o linux-libmsr.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/libmsr/linux-libmsr.c -o linux-libmsr.o
 

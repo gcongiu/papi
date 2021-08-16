@@ -24,40 +24,40 @@ sde_tests: $(TESTS)
 prfx=Minimal
 
 Minimal_Test: $(prfx)/Minimal_Test.c
-	$(CC) $< -o $@ $(INCLUDE) $(CFLAGS) $(UTILOBJS) $(LDFLAGS)
+	$(CC) $< -o $@ $(INCLUDE) $(CPPFLAGS) $(CFLAGS) $(UTILOBJS) $(LDFLAGS)
 
 ################################################################################
 ## Simple test
 prfx=Simple
 
 libSimple.so: $(prfx)/Simple_Lib.c
-	$(CC) -shared -Wall -fPIC $(CFLAGS) $(INCLUDE) -o lib/$@ $^
+	$(CC) -shared -Wall -fPIC $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o lib/$@ $^
 
 Simple_Test: $(prfx)/Simple_Driver.c libSimple.so
-	$(CC) $< -o $@ $(INCLUDE) $(CFLAGS) $(UTILOBJS) -lSimple $(LDFLAGS) -lm
+	$(CC) $< -o $@ $(INCLUDE) $(CPPFLAGS) $(CFLAGS) $(UTILOBJS) -lSimple $(LDFLAGS) -lm
 
 ################################################################################
 ## Simple2 test
 prfx=Simple2
 
 libSimple2.so: $(prfx)/Simple2_Lib.c
-	$(CC) -shared -Wall -fPIC $(CFLAGS) $(INCLUDE) -o lib/$@ $^
+	$(CC) -shared -Wall -fPIC $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o lib/$@ $^
 
 Simple2_Test: $(prfx)/Simple2_Driver.c libSimple2.so
-	$(CC) $< -o $@ $(INCLUDE) $(CFLAGS) $(UTILOBJS) -lSimple2 $(LDFLAGS) -lm
+	$(CC) $< -o $@ $(INCLUDE) $(CPPFLAGS) $(CFLAGS) $(UTILOBJS) -lSimple2 $(LDFLAGS) -lm
 
 Simple2_NoPAPI_Test: $(prfx)/Simple2_NoPAPI_Driver.c libSimple2.so
-	$(CC) $< -o $@ $(INCLUDE) $(CFLAGS) -Llib -lSimple2 -lm -ldl
+	$(CC) $< -o $@ $(INCLUDE) $(CPPFLAGS) $(CFLAGS) -Llib -lSimple2 -lm -ldl
 
 ################################################################################
 ## Recorder test
 prfx=Recorder
 
 libRecorder.so: $(prfx)/Lib_With_Recorder.c
-	$(CC) -shared -Wall -fPIC $(CFLAGS) $(INCLUDE) -o lib/$@ $^
+	$(CC) -shared -Wall -fPIC $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o lib/$@ $^
 
 Recorder_Test: $(prfx)/Recorder_Driver.c libRecorder.so
-	$(CC) $< -o $@ $(INCLUDE) $(CFLAGS) $(UTILOBJS) -lRecorder $(LDFLAGS) -lm
+	$(CC) $< -o $@ $(INCLUDE) $(CPPFLAGS) $(CFLAGS) $(UTILOBJS) -lRecorder $(LDFLAGS) -lm
 
 
 ################################################################################
@@ -65,12 +65,12 @@ Recorder_Test: $(prfx)/Recorder_Driver.c libRecorder.so
 prfx=Created_Counter
 
 libCreated_Counter.so: $(prfx)/Lib_With_Created_Counter.c
-	$(CC) -shared -Wall -fPIC $(CFLAGS) $(INCLUDE) -o lib/$@ $^
+	$(CC) -shared -Wall -fPIC $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o lib/$@ $^
 
 Created_Counter_Test: $(prfx)/Created_Counter_Driver.c libCreated_Counter.so
-	$(CC) $< -o $@ $(INCLUDE) $(CFLAGS) $(UTILOBJS) -lCreated_Counter $(LDFLAGS) -lm
+	$(CC) $< -o $@ $(INCLUDE) $(CPPFLAGS) $(CFLAGS) $(UTILOBJS) -lCreated_Counter $(LDFLAGS) -lm
 Overflow_Test: $(prfx)/Overflow_Driver.c libCreated_Counter.so
-	$(CC) $< -o $@ $(INCLUDE) $(CFLAGS) $(UTILOBJS) -lCreated_Counter $(LDFLAGS) -lm
+	$(CC) $< -o $@ $(INCLUDE) $(CPPFLAGS) $(CFLAGS) $(UTILOBJS) -lCreated_Counter $(LDFLAGS) -lm
 
 ################################################################################
 ## Advanced test
@@ -78,11 +78,11 @@ prfx=Advanced_C+FORTRAN
 rcrd_prfx=Recorder
 
 libXandria.so: $(prfx)/Xandria.F90 $(prfx)/sde_symbols.c
-	$(CC) -shared -Wall -fPIC $(CFLAGS) $(INCLUDE) -c -o $(prfx)/sde_symbols.o $(prfx)/sde_symbols.c
+	$(CC) -shared -Wall -fPIC $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -c -o $(prfx)/sde_symbols.o $(prfx)/sde_symbols.c
 	$(F77) -shared -Wall -fPIC $(FFLAGS) $(INCLUDE) -o lib/$@ $(SDE_F08_API) $(prfx)/sde_symbols.o $<
 
 libGamum.so: $(prfx)/Gamum.c
-	$(CC) -shared -Wall -fPIC $(CFLAGS) $(INCLUDE) -o lib/$@ $^
+	$(CC) -shared -Wall -fPIC $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o lib/$@ $^
 
 sde_test_f08: $(prfx)/sde_test_f08.F90 $(UTILOBJS) $(PAPILIB) libXandria.so libGamum.so libRecorder.so
 	$(F77) $< -o $@ $(INCLUDE) $(FFLAGS) $(UTILOBJS) -lXandria -lGamum -lRecorder $(LDFLAGS)

@@ -17,11 +17,11 @@ ifneq (/usr,$(PFM_PREFIX))
       PFM_INC_PATH := $(PFM_ROOT)/include
    endif
    ifneq (/usr/include,$(PFM_INC_PATH))
-      LIBCFLAGS	+= -I$(PFM_INC_PATH)
+      CPPFLAGS	+= -I$(PFM_INC_PATH)
    endif
 endif
 
-LIBCFLAGS += -fvisibility=hidden
+CFLAGS += -fvisibility=hidden
 MISCHDRS += linux-lock.h mb.h papi_libpfm4_events.h
 MISCSRCS += papi_libpfm4_events.c
 SHLIBDEPS = -Bdynamic -L$(PFM_LIB_PATH) -lpfm
@@ -36,12 +36,12 @@ ifeq (,$(PFM_OBJS))
 $(PFM_LIB_PATH)/libpfm.a:
 ifneq (,${PFM_ROOT})
 ifeq ("$(CC_COMMON_NAME)","icc")
-	$(MAKE) -C $(PFM_ROOT) ARCH="$(ARCH)" CC="$(CC) $(BITFLAGS)" DBG="-g -Wall -Werror" $(FORCE_PFM_ARCH) lib
+	$(MAKE) -C $(PFM_ROOT) ARCH="$(ARCH)" CC=$(CC) DBG="-g -Wall -Werror" $(FORCE_PFM_ARCH) lib
 else
 ifeq (1,$(HAVE_NO_OVERRIDE_INIT))
-	$(MAKE) -C $(PFM_ROOT) ARCH="$(ARCH)" CC="$(CC) $(BITFLAGS) -Wno-override-init" $(FORCE_PFM_ARCH) lib
+	$(MAKE) -C $(PFM_ROOT) ARCH="$(ARCH)" CC="$(CC) -Wno-override-init" $(FORCE_PFM_ARCH) lib
 else 
-	$(MAKE) -C $(PFM_ROOT) ARCH="$(ARCH)" CC="$(CC) $(BITFLAGS)" $(FORCE_PFM_ARCH) lib
+	$(MAKE) -C $(PFM_ROOT) ARCH="$(ARCH)" CC=$(CC) $(FORCE_PFM_ARCH) lib
 endif
 endif
 else
@@ -59,7 +59,7 @@ $(PFM_OBJS): $(PFM_LIB_PATH)/libpfm.a
 	$(AR) xv $<
 
 papi_libpfm4_events.o: papi_libpfm4_events.c $(HEADERS)
-	$(CC) $(LIBCFLAGS) $(OPTFLAGS) -c papi_libpfm4_events.c -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_libpfm4_events.c -o $@
 
 native_clean:
 	-rm -f $(MISCOBJS)

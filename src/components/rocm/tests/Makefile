@@ -15,34 +15,35 @@ LDFLAGS = -ldl -g -L$(PAPI_ROCM_ROOT)/rocblas/lib -lrocblas
 
 %.o:%.c
 	@echo "INCLUDE=" $(INCLUDE)
-	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
 
 %.o:%.cpp
 	@echo "INCLUDE=" $(INCLUDE)
 	@echo "CFLAGS=" $(CFLAGS)
-	g++ $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
+	@echo "CPPFLAGS" $(CPPFLAGS)
+	g++ $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
 
 TESTS = 
 
 rocm_tests: $(TESTS)
 
 rocm_command_line: rocm_command_line.o $(UTILOBJS) $(PAPILIB)
-	$(CC) $(CFLAGS) $(INCLUDE) -o rocm_command_line rocm_command_line.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS) 
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o rocm_command_line rocm_command_line.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS)
 
 rocm_standalone_report_all: rocm_standalone_report_all.o $(UTILOBJS) $(PAPILIB)
-	$(CC) $(CFLAGS) $(INCLUDE) -o rocm_standalone_report_all rocm_standalone_report_all.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS) 
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o rocm_standalone_report_all rocm_standalone_report_all.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS)
 
 rocm_example.o: rocm_example.cpp $(UTILOBJS) $(PAPILIB)
-	$(HIPCC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+	$(HIPCC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 rocm_example: rocm_example.o $(UTILOBJS) $(PAPILIB)
-	$(HIPCC) $(CFLAGS) $(INCLUDE) -o $@ $< $(UTILOBJS) $(PAPILIB) $(LDFLAGS) 
+	$(HIPCC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o $@ $< $(UTILOBJS) $(PAPILIB) $(LDFLAGS)
 
 rocm_all.o: rocm_all.cpp $(UTILOBJS) $(PAPILIB)
-	$(HIPCC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+	$(HIPCC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 rocm_all: rocm_all.o $(UTILOBJS) $(PAPILIB)
-	$(HIPCC) $(CFLAGS) $(INCLUDE) -o $@ $< $(UTILOBJS) $(PAPILIB) $(LDFLAGS) 
+	$(HIPCC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o $@ $< $(UTILOBJS) $(PAPILIB) $(LDFLAGS)
 
 clean:
 	rm -f $(TESTS) *.o

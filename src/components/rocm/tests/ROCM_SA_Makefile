@@ -17,16 +17,16 @@ CFLAGS += -I$(PAPI_ROCM_ROOT)/include
 
 # Step
 rocm_standalone.pre: rocm_standalone.cpp 
-	$(HIPCC) $(CFLAGS) -E rocm_standalone.cpp -o $@ $(LDFLAGS)
+	$(HIPCC) $(CPPFLAGS) $(CFLAGS) -E rocm_standalone.cpp -o $@ $(LDFLAGS)
 
 rocm_standalone: rocm_standalone.cpp 
-	$(HIPCC) $(CFLAGS) rocm_standalone.cpp -o $@ $(LDFLAGS)
+	$(HIPCC) $(CPPFLAGS) $(CFLAGS) rocm_standalone.cpp -o $@ $(LDFLAGS)
 
 rocm_failure_demo.pre: rocm_failure_demo.cpp 
-	$(HIPCC) $(CFLAGS) -E rocm_failure_demo.cpp -o $@ $(LDFLAGS)
+	$(HIPCC) $(CPPFLAGS) $(CFLAGS) -E rocm_failure_demo.cpp -o $@ $(LDFLAGS)
 
 rocm_failure_demo: rocm_failure_demo.cpp 
-	$(HIPCC) $(CFLAGS) rocm_failure_demo.cpp -o $@ $(LDFLAGS)
+	$(HIPCC) $(CPPFLAGS) $(CFLAGS) rocm_failure_demo.cpp -o $@ $(LDFLAGS)
 
 checkpath: 
 	echo HIP_PATH = $(HIP_PATH)
