@@ -30,7 +30,7 @@ else
              TARGETS = $(TARGETS_NTHD)  
         endif
         LDFLAGS += $(PAPILIB)
-        LDFLAGS_PTHREAD = $(LDFLAGS) -lpthread
+        LDFLAGS_PTHREAD = $(LDFLAGS) $(LIBS) -lpthread
     endif
  endif
 endif
@@ -38,7 +38,7 @@ endif
 all: $(TARGETS) 
 
 $(TARGETS_NTHD):  %:%.o 
-	$(CC) -o $@ $(CFLAGS) $^  $(LDFLAGS)
+	$(CC) -o $@ $(CFLAGS) $^  $(LDFLAGS) $(LIBS)
 
 $(TARGETS_PTHREAD):  %:%.o 
 	$(CC) -o $@ $(CFLAGS) $^  $(LDFLAGS_PTHREAD)

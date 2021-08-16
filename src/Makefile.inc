@@ -23,7 +23,7 @@ FHEADERS = fpapi.h f77papi.h f90papi.h
 # pkgconfig directory
 LIBPC = $(LIBDIR)/pkgconfig
 
-all: $(SHOW_CONF) $(LIBS) utils tests 
+all: $(SHOW_CONF) $(PAPILIBTYPE) utils tests
 .PHONY : all test fulltest tests testlib utils ctests ftests comp_tests validation_tests null
 
 include $(COMPONENT_RULES)
@@ -64,7 +64,7 @@ libpapi.so libpapi.so.$(PAPISOVER): $(SHLIB)
 
 $(SHLIB): $(HEADERS) $(SOURCES) $(SHLIBOBJS)
 	rm -f $(SHLIB) libpapi.so libpapi.so.$(PAPISOVER)
-	$(CC_SHR) $(CPPFLAGS) $(CFLAGS) $(SOURCES) $(SHLIBOBJS) -o $@ $(SHLIBDEPS) $(LDFLAGS)
+	$(CC_SHR) $(CPPFLAGS) $(CFLAGS) $(SOURCES) $(SHLIBOBJS) -o $@ $(SHLIBDEPS) $(LDFLAGS) $(LIBS)
 	@set -ex; if test "$(POST_BUILD)" != "" ; then \
 		-$(POST_BUILD) ; \
 	fi
@@ -233,23 +233,23 @@ tests: $(TESTS)
 testlib:
 	$(SETPATH) $(MAKE) -C testlib
 
-utils: $(LIBS) testlib
+utils: $(PAPILIBTYPE) testlib
 	$(MAKE) -C utils
 
-validation_tests:	$(LIBS) testlib
+validation_tests:	$(PAPILIBTYPE) testlib
 	$(SETPATH) $(MAKE) -C validation_tests
 
-ctests: $(LIBS) testlib validation_tests
+ctests: $(PAPILIBTYPE) testlib validation_tests
 	$(SETPATH) $(MAKE) -C ctests
 
-ftests: $(LIBS) testlib
+ftests: $(PAPILIBTYPE) testlib
 	$(SETPATH) $(MAKE) -C ftests
 
 
 
 
 # compile tests added to components
-comp_tests:	$(LIBS) testlib
+comp_tests:	$(PAPILIBTYPE) testlib
 ifneq (${COMPONENTS},)
 	@set -ex; for comp in ${COMPONENTS} ; do \
 		$(SETPATH) $(MAKE) -C components/$$comp/tests ; \

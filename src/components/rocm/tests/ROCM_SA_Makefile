@@ -2,7 +2,7 @@
 # Requires PAPI_ROCM_ROOT be defined.
 # At runtime, LD_LIBRARY_PATH needs to be set to get two libraries:
 # export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$PAPI_ROCM_ROOT/hsa/lib/:$PAPI_ROCM_ROOT/rocprofiler/lib/ 
-LDFLAGS =  -ldl -lhsa-runtime64 -lrocprofiler64 
+LIBS = -ldl -lhsa-runtime64 -lrocprofiler64
 CFLAGS	=  -g -Wextra  -Wall -O2 
 HIP_PATH = $(PAPI_ROCM_ROOT)/hip
 
@@ -17,16 +17,16 @@ CFLAGS += -I$(PAPI_ROCM_ROOT)/include
 
 # Step
 rocm_standalone.pre: rocm_standalone.cpp 
-	$(HIPCC) $(CPPFLAGS) $(CFLAGS) -E rocm_standalone.cpp -o $@ $(LDFLAGS)
+	$(HIPCC) $(CPPFLAGS) $(CFLAGS) -E rocm_standalone.cpp -o $@ $(LDFLAGS) $(LIBS)
 
 rocm_standalone: rocm_standalone.cpp 
-	$(HIPCC) $(CPPFLAGS) $(CFLAGS) rocm_standalone.cpp -o $@ $(LDFLAGS)
+	$(HIPCC) $(CPPFLAGS) $(CFLAGS) rocm_standalone.cpp -o $@ $(LDFLAGS) $(LIBS)
 
 rocm_failure_demo.pre: rocm_failure_demo.cpp 
-	$(HIPCC) $(CPPFLAGS) $(CFLAGS) -E rocm_failure_demo.cpp -o $@ $(LDFLAGS)
+	$(HIPCC) $(CPPFLAGS) $(CFLAGS) -E rocm_failure_demo.cpp -o $@ $(LDFLAGS) $(LIBS)
 
 rocm_failure_demo: rocm_failure_demo.cpp 
-	$(HIPCC) $(CPPFLAGS) $(CFLAGS) rocm_failure_demo.cpp -o $@ $(LDFLAGS)
+	$(HIPCC) $(CPPFLAGS) $(CFLAGS) rocm_failure_demo.cpp -o $@ $(LDFLAGS) $(LIBS)
 
 checkpath: 
 	echo HIP_PATH = $(HIP_PATH)

@@ -16,13 +16,13 @@ MPI_test_infiniband_events.o:MPI_test_infiniband_events.c
 	$(CC) $(CFLAGS) $(INCLUDE) -c -o $@ $<
 
 infiniband_list_events: infiniband_list_events.o $(UTILOBJS) $(PAPILIB)
-	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $^ $(LDFLAGS) $(LIBS)
 
 infiniband_values_by_code: infiniband_values_by_code.o $(UTILOBJS) $(PAPILIB)
-	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $^ $(LDFLAGS) $(LIBS)
 
 MPI_test_infiniband_events: MPI_test_infiniband_events.o $(UTILOBJS) $(PAPILIB)
-	$(MPICC) $(INCLUDE) -o $@ $^ $(LDFLAGS)
+	$(MPICC) $(INCLUDE) -o $@ $^ $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f $(TESTS) *.o

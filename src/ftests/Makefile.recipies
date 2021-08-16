@@ -8,67 +8,67 @@ ALL = strtest zero zeronamed first second tenth description fdmemtest accum cost
 all default ftests ftest: $(ALL)
 
 serial_hl: serial_hl.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) serial_hl.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) -o serial_hl
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) serial_hl.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) $(LIBS) -o serial_hl
 
 clockres: clockres.F $(TESTLIB) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) clockres.F $(TESTLIB) $(PAPILIB) $(LDFLAGS) -o clockres
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) clockres.F $(TESTLIB) $(PAPILIB) $(LDFLAGS) $(LIBS) -o clockres
 
 avail: avail.F $(TESTLIB)  $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) avail.F  $(TESTLIB) $(PAPILIB) $(LDFLAGS) -o avail
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) avail.F  $(TESTLIB) $(PAPILIB) $(LDFLAGS) $(LIBS) -o avail
 
 eventname: eventname.F $(TESTLIB)  $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) eventname.F $(TESTLIB) $(PAPILIB) $(LDFLAGS) -o eventname
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) eventname.F $(TESTLIB) $(PAPILIB) $(LDFLAGS) $(LIBS) -o eventname
 
 case1: case1.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) case1.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) -o case1
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) case1.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) $(LIBS) -o case1
 
 case2: case2.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) case2.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) -o case2
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) case2.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) $(LIBS) -o case2
 
 fdmemtest: fdmemtest.F $(TESTLIB)  $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) fdmemtest.F $(TESTLIB) $(PAPILIB) $(LDFLAGS) -o fdmemtest
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) fdmemtest.F $(TESTLIB) $(PAPILIB) $(LDFLAGS) $(LIBS) -o fdmemtest
 
 fmatrixlowpapi: fmatrixlowpapi.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) fmatrixlowpapi.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) -o fmatrixlowpapi
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) fmatrixlowpapi.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) $(LIBS) -o fmatrixlowpapi
 
 strtest: strtest.F $(TESTLIB)  $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) strtest.F $(TESTLIB) $(PAPILIB) $(LDFLAGS) -o strtest
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) strtest.F $(TESTLIB) $(PAPILIB) $(LDFLAGS) $(LIBS) -o strtest
 
 description: description.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) description.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) -o description
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) description.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) $(LDFLAGS) $(LIBS) -o description
 
 accum: accum.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) accum.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o accum $(LDFLAGS)
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) accum.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o accum $(LDFLAGS) $(LIBS)
 
 openmp: openmp.F $(TESTLIB) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) openmp.F $(TESTLIB) $(PAPILIB) -o openmp $(LDFLAGS) $(OMPCFLGS)
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) openmp.F $(TESTLIB) $(PAPILIB) -o openmp $(LDFLAGS) $(LIBS) $(OMPCFLGS)
 
 zero: zero.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) zero.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o zero $(LDFLAGS)
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) zero.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o zero $(LDFLAGS) $(LIBS)
 
 zeronamed: zeronamed.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) zeronamed.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o zeronamed $(LDFLAGS)
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) zeronamed.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o zeronamed $(LDFLAGS) $(LIBS)
 
 first: first.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) first.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o first $(LDFLAGS)
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) first.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o first $(LDFLAGS) $(LIBS)
 
 second: second.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) second.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o second $(LDFLAGS)
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) second.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o second $(LDFLAGS) $(LIBS)
 
 tenth: tenth.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) tenth.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o tenth $(LDFLAGS)
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) tenth.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o tenth $(LDFLAGS) $(LIBS)
 
 cost: cost.F $(TESTLIB) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) cost.F $(TESTLIB) $(PAPILIB) -o cost $(LDFLAGS)
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) cost.F $(TESTLIB) $(PAPILIB) -o cost $(LDFLAGS) $(LIBS)
 
 johnmay2: johnmay2.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) johnmay2.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o johnmay2 $(LDFLAGS)
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) johnmay2.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o johnmay2 $(LDFLAGS) $(LIBS)
 
 fmultiplex1: fmultiplex1.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) fmultiplex1.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o fmultiplex1 $(LDFLAGS)
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) fmultiplex1.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o fmultiplex1 $(LDFLAGS) $(LIBS)
 
 fmultiplex2: fmultiplex2.F $(TESTLIB) $(DOLOOPS) $(PAPILIB)
-	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) fmultiplex2.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o fmultiplex2 $(LDFLAGS)
+	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) fmultiplex2.F $(TESTLIB) $(DOLOOPS) $(PAPILIB) -o fmultiplex2 $(LDFLAGS) $(LIBS)
 
 clean:
 	rm -f *.o *genmod.f90 *genmod.mod *.stderr *.stdout core *~ $(ALL)
