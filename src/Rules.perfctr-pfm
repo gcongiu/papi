@@ -117,10 +117,10 @@ $(PFM_OBJS): $(PFM_LIB_PATH)/libpfm.a
 	$(AR) xv $<
 
 #perfctr.o: perfctr.c $(HEADERS)
-#	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c perfctr.c -o $@
+#	$(CC) $(CPPFLAGS) $(CFLAGS) -c perfctr.c -o $@
 
 papi_libpfm3_events.o: papi_libpfm3_events.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_libpfm3_events.c -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c papi_libpfm3_events.c -o $@
 
 native_clean:
 	-rm -f $(MISCOBJS) libperfctr.so*

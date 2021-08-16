@@ -64,7 +64,7 @@ libpapi.so libpapi.so.$(PAPISOVER): $(SHLIB)
 
 $(SHLIB): $(HEADERS) $(SOURCES) $(SHLIBOBJS)
 	rm -f $(SHLIB) libpapi.so libpapi.so.$(PAPISOVER)
-	$(CC_SHR) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(SOURCES) $(SHLIBOBJS) -o $@ $(SHLIBDEPS) $(LDFLAGS)
+	$(CC_SHR) $(CPPFLAGS) $(CFLAGS) $(SOURCES) $(SHLIBOBJS) -o $@ $(SHLIBDEPS) $(LDFLAGS)
 	@set -ex; if test "$(POST_BUILD)" != "" ; then \
 		-$(POST_BUILD) ; \
 	fi
@@ -79,88 +79,88 @@ upper_PAPI_FWRAPPERS.c: papi_fwrappers.c $(HEADERS)
 	$(CPP) $(CPPFLAGS) -DFORTRANCAPS papi_fwrappers.c > upper_PAPI_FWRAPPERS.c
 
 papi_fwrappers.o: papi_fwrappers.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_fwrappers.c -o papi_fwrappers.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c papi_fwrappers.c -o papi_fwrappers.o
 
 papi_fwrappers_.o: papi_fwrappers_.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_fwrappers_.c -o papi_fwrappers_.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c papi_fwrappers_.c -o papi_fwrappers_.o
 
 papi_fwrappers__.o: papi_fwrappers__.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_fwrappers__.c -o papi_fwrappers__.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c papi_fwrappers__.c -o papi_fwrappers__.o
 
 upper_PAPI_FWRAPPERS.o: upper_PAPI_FWRAPPERS.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c upper_PAPI_FWRAPPERS.c -o upper_PAPI_FWRAPPERS.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c upper_PAPI_FWRAPPERS.c -o upper_PAPI_FWRAPPERS.o
 
 papi.o: papi.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi.c $(CPPFLAGS) -o papi.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c papi.c $(CPPFLAGS) -o papi.o
 
 papi_internal.o: papi_internal.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_internal.c -o papi_internal.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c papi_internal.c -o papi_internal.o
 
 threads.o: threads.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c threads.c -o threads.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c threads.c -o threads.o
 
 cpus.o: cpus.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c cpus.c -o cpus.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c cpus.c -o cpus.o
 
 papi_hl.o: high-level/papi_hl.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c high-level/papi_hl.c -o papi_hl.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c high-level/papi_hl.c -o papi_hl.o
 
 aix-memory.o: aix-memory.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c aix-memory.c -o aix-memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c aix-memory.c -o aix-memory.o
 
 solaris-memory.o: solaris-memory.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c solaris-memory.c -o solaris-memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c solaris-memory.c -o solaris-memory.o
 
 solaris-common.o: solaris-common.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c solaris-common.c -o solaris-common.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c solaris-common.c -o solaris-common.o
 
 linux-bgp-memory.o: linux-bgp-memory.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c linux-bgp-memory.c -o linux-bgp-memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c linux-bgp-memory.c -o linux-bgp-memory.o
 
 linux-bgq-memory.o: linux-bgq-memory.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c linux-bgq-memory.c -o linux-bgq-memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c linux-bgq-memory.c -o linux-bgq-memory.o
 
 darwin-memory.o: darwin-memory.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c darwin-memory.c -o darwin-memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c darwin-memory.c -o darwin-memory.o
 
 darwin-common.o: darwin-common.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c darwin-common.c -o darwin-common.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c darwin-common.c -o darwin-common.o
 
 linux-memory.o: linux-memory.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c linux-memory.c -o linux-memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c linux-memory.c -o linux-memory.o
 
 linux-timer.o: linux-timer.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c linux-timer.c -o linux-timer.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c linux-timer.c -o linux-timer.o
 
 linux-common.o: linux-common.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c linux-common.c -o linux-common.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c linux-common.c -o linux-common.o
 
 extras.o: extras.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c extras.c -o extras.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c extras.c -o extras.o
 
 papi_memory.o: papi_memory.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_memory.c -o papi_memory.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c papi_memory.c -o papi_memory.o
 
 papi_vector.o: papi_vector.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_vector.c -o papi_vector.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c papi_vector.c -o papi_vector.o
 
 papi_preset.o: papi_preset.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_preset.c -o papi_preset.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c papi_preset.c -o papi_preset.o
 
 sw_multiplex.o: sw_multiplex.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c sw_multiplex.c -o sw_multiplex.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c sw_multiplex.c -o sw_multiplex.o
 
 $(CPUCOMPONENT_OBJ): $(CPUCOMPONENT_C) $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c $(CPUCOMPONENT_C) -o $(CPUCOMPONENT_OBJ)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(CPUCOMPONENT_C) -o $(CPUCOMPONENT_OBJ)
 
 x86_cpuid_info.o: x86_cpuid_info.c x86_cpuid_info.h $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c x86_cpuid_info.c -o x86_cpuid_info.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c x86_cpuid_info.c -o x86_cpuid_info.o
 
 $(PAPI_EVENTS_TABLE): $(PAPI_EVENTS_CSV) papi_events_table.sh
 	sh papi_events_table.sh $(PAPI_EVENTS_CSV) > $@
 
 $(ARCH_EVENTS)_map.o: $(ARCH_EVENTS)_map.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c $(ARCH_EVENTS)_map.c -o $(ARCH_EVENTS)_map.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(ARCH_EVENTS)_map.c -o $(ARCH_EVENTS)_map.o
 
 # Required for BGP
 .SUFFIXES: .rts.o

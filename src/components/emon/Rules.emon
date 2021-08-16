@@ -4,4 +4,4 @@ COMPSRCS += components/emon/linux-emon.c
 COMPOBJS += linux-emon.o
 
 linux-emon.o: components/emon/linux-emon.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/emon/linux-emon.c -o linux-emon.o -I/bgsys/drivers/ppcfloor
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c components/emon/linux-emon.c -o linux-emon.o -I/bgsys/drivers/ppcfloor

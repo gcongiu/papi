@@ -2,7 +2,7 @@ NAME=coretemp
 include ../../Makefile_comp_tests.target
 
 %.o:%.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -c -o $@ $<
 
 TESTS = coretemp_basic coretemp_pretty
 

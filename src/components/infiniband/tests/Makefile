@@ -13,7 +13,7 @@ MPI_test_infiniband_events.o:MPI_test_infiniband_events.c
 	$(MPICC) $(INCLUDE) -c -o $@ $<
 
 %.o:%.c
-	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
+	$(CC) $(CFLAGS) $(INCLUDE) -c -o $@ $<
 
 infiniband_list_events: infiniband_list_events.o $(UTILOBJS) $(PAPILIB)
 	$(CC) $(CFLAGS) $(INCLUDE) -o $@ $^ $(LDFLAGS)

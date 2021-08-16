@@ -6,7 +6,7 @@ TESTS = sensors_ppc_basic
 sensors_ppc_tests: $(TESTS)
 
 sensors_ppc_basic.o:	sensors_ppc_basic.c
-	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c sensors_ppc_basic.c -o sensors_ppc_basic.o
+	$(CC) $(CFLAGS) $(INCLUDE) -c sensors_ppc_basic.c -o sensors_ppc_basic.o
 
 sensors_ppc_basic: sensors_ppc_basic.o $(UTILOBJS) $(PAPILIB)
 	$(CC) $(INCLUDE) -o sensors_ppc_basic sensors_ppc_basic.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS)

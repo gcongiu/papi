@@ -8,10 +8,10 @@ CPPLDFLAGS+=-lsupc++ -lstdc++ -ldl
 GPULIB=-L$(INTEL_L0_LIB64) -lze_loader
 
 %.o:%.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -g -fPIC -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -g -fPIC -c -o $@ $<
 
 %.o:%.cc
-	$(CXX) $(CPPFLAGS) $(CFLAGS) $(CPPFLAGS) $(OPTFLAGS) $(INCLUDE) -I$(INTEL_L0_HEADERS) -DENABLE_PAPI -g -fPIC -c -o $@ $<
+	$(CXX) $(CPPFLAGS) $(CFLAGS) $(CPPFLAGS) $(INCLUDE) -I$(INTEL_L0_HEADERS) -DENABLE_PAPI -g -fPIC -c -o $@ $<
 
 TESTS = gpu_metric_read gpu_metric_list gpu_query_gemm gpu_thread_read
 

@@ -79,10 +79,10 @@ $(PERFCTR_OBJS): $(PERFCTR_LIB_PATH)/libperfctr.a
 	$(AR) xv $<
 	
 $(CPU)_events.o: $(CPU)_events.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c $(CPU)_events.c -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(CPU)_events.c -o $@
 
 #perfctr.o: perfctr.c $(HEADERS)
-#	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c perfctr.c -o $@
+#	$(CC) $(CPPFLAGS) $(CFLAGS) -c perfctr.c -o $@
 
 native_clean:
 	-rm -f $(MISCOBJS) libperfctr.so*

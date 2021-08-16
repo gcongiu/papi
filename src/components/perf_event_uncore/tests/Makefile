@@ -2,7 +2,7 @@ NAME=perf_event_uncore
 include ../../Makefile_comp_tests.target
 
 %.o:%.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -c -o $@ $<
 
 TESTS = perf_event_uncore perf_event_uncore_attach perf_event_uncore_multiple \
 	perf_event_amd_northbridge perf_event_uncore_cbox

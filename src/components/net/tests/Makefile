@@ -7,7 +7,7 @@ net_tests: $(TESTS)
 
 
 %.o:%.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -c -o $@ $<
 
 net_list_events: net_list_events.o $(UTILOBJS) $(PAPILIB)
 	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -o $@ net_list_events.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS)
