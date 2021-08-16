@@ -11,7 +11,7 @@ ALL = papi_avail papi_mem_info papi_cost papi_clockres papi_native_avail \
 	papi_version papi_multiplex_cost papi_component_avail papi_error_codes
 
 %.o:%.c
-	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c $<
+	$(CC) $(CFLAGS) $(INCLUDE) -c $<
 
 default all utils: $(ALL)
 
@@ -60,10 +60,10 @@ papi_xml_event_info: papi_xml_event_info.o $(PAPILIB)
 
 
 cost_utils.o: ../testlib/papi_test.h cost_utils.c
-	$(CC) $(INCLUDE) $(CFLAGS) $(OPTFLAGS) -c cost_utils.c
+	$(CC) $(INCLUDE) $(CFLAGS) -c cost_utils.c
 
 print_header.o: print_header.h print_header.c
-	$(CC) $(INCLUDE) $(CFLAGS) $(OPTFLAGS) -c print_header.c
+	$(CC) $(INCLUDE) $(CFLAGS) -c print_header.c
 
 clean:
 	rm -f *.o *.stderr *.stdout core *~ $(ALL)

@@ -3,4 +3,4 @@ COMPSRCS += components/infiniband/linux-infiniband.c
 COMPOBJS += linux-infiniband.o
 
 linux-infiniband.o: components/infiniband/linux-infiniband.c components/infiniband/pscanf.h $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/infiniband/linux-infiniband.c -o linux-infiniband.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c components/infiniband/linux-infiniband.c -o linux-infiniband.o

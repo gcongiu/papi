@@ -6,7 +6,7 @@ TESTS = testPCP
 pcp_tests: $(TESTS)
 
 testPCP.o:	testPCP.c
-	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c testPCP.c -o testPCP.o -fverbose-asm -Wa,-adhln=testPCP.s
+	$(CC) $(CFLAGS) $(INCLUDE) -c testPCP.c -o testPCP.o -fverbose-asm -Wa,-adhln=testPCP.s
 
 testPCP: testPCP.o $(UTILOBJS) $(PAPILIB)
 	$(CC) $(INCLUDE) -o testPCP testPCP.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS) -Xlinker -Map=testPCP_link.map

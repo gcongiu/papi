@@ -11,32 +11,32 @@ ALL = fp_validation_hl \
 all: $(ALL)
 
 %.o:%.c
-	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c $<
+	$(CC) $(CFLAGS) $(INCLUDE) -c $<
 
 display_error.o:	display_error.c display_error.h
-	$(CC) $(INCLUDE) $(CFLAGS) $(OPTFLAGS) -c display_error.c
+	$(CC) $(INCLUDE) $(CFLAGS) -c display_error.c
 
 cache_helper.o:	cache_helper.c cache_helper.h
-	$(CC) $(INCLUDE) $(CFLAGS) $(OPTFLAGS) -c cache_helper.c
+	$(CC) $(INCLUDE) $(CFLAGS) -c cache_helper.c
 
 
 branches_testcode.o:	branches_testcode.c testcode.h
-	$(CC) $(INCLUDE) $(CFLAGS) $(OPTFLAGS) -c branches_testcode.c
+	$(CC) $(INCLUDE) $(CFLAGS) -c branches_testcode.c
 
 busy_work.o:	busy_work.c testcode.h
-	$(CC) $(INCLUDE) $(CFLAGS) $(OPTFLAGS) -c busy_work.c
+	$(CC) $(INCLUDE) $(CFLAGS) -c busy_work.c
 
 cache_testcode.o:	cache_testcode.c testcode.h
-	$(CC) $(INCLUDE) $(CFLAGS) $(OPTFLAGS) -c cache_testcode.c
+	$(CC) $(INCLUDE) $(CFLAGS) -c cache_testcode.c
 
 flops_testcode.o:	flops_testcode.c testcode.h
-	$(CC) $(INCLUDE) $(CFLAGS) $(OPTFLAGS) -c flops_testcode.c
+	$(CC) $(INCLUDE) $(CFLAGS) -c flops_testcode.c
 
 instructions_testcode.o:	instructions_testcode.c testcode.h
-	$(CC) $(INCLUDE) $(CFLAGS) $(OPTFLAGS) -c instructions_testcode.c
+	$(CC) $(INCLUDE) $(CFLAGS) -c instructions_testcode.c
 
 matrix_multiply.o:	matrix_multiply.c matrix_multiply.h
-	$(CC) $(INCLUDE) $(CFLAGS) $(OPTFLAGS) -c matrix_multiply.c
+	$(CC) $(INCLUDE) $(CFLAGS) -c matrix_multiply.c
 
 fp_validation_hl: fp_validation_hl.o $(TESTLIB) $(PAPILIB) flops_testcode.o
 	$(CC) -o fp_validation_hl fp_validation_hl.o $(TESTLIB) flops_testcode.o $(PAPILIB) $(LDFLAGS) $(EXTRALIB) -lpthread

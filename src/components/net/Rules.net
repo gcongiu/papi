@@ -4,5 +4,5 @@ COMPSRCS += components/net/linux-net.c
 COMPOBJS += linux-net.o
 
 linux-net.o: components/net/linux-net.c components/net/linux-net.h $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/net/linux-net.c -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c components/net/linux-net.c -o $@
 

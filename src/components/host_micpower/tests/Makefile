@@ -2,7 +2,7 @@ NAME=host_micpower
 include ../../Makefile_comp_tests.target
 
 %.o:%.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -c -o $@ $<
 
 TESTS = host_micpower_basic
 host_micpower_tests : $(TESTS)

@@ -2,7 +2,7 @@ NAME=example
 include ../../Makefile_comp_tests.target
 
 %.o:%.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -c -o $@ $<
 
 TESTS = example_basic example_multiple_components
 

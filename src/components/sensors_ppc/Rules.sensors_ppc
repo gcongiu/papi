@@ -3,4 +3,4 @@ COMPSRCS += components/sensors_ppc/linux-sensors-ppc.c
 COMPOBJS += linux-sensors-ppc.o
 
 linux-sensors-ppc.o: components/sensors_ppc/linux-sensors-ppc.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/sensors_ppc/linux-sensors-ppc.c -o linux-sensors-ppc.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c components/sensors_ppc/linux-sensors-ppc.c -o linux-sensors-ppc.o

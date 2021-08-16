@@ -9,13 +9,13 @@ retZero.o: retZero.c
 	$(CC) -O0 $(INCLUDE) -c retZero.c -o retZero.o
  
 benchPCP.o:	benchPCP.c
-	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c benchPCP.c -o benchPCP.o -fverbose-asm -Wa,-adhln=benchPCP.s
+	$(CC) $(CFLAGS) $(INCLUDE) -c benchPCP.c -o benchPCP.o -fverbose-asm -Wa,-adhln=benchPCP.s
 
 benchPCP: benchPCP.o $(UTILOBJS) $(PAPILIB)
 	$(CC) $(INCLUDE) -o benchPCP benchPCP.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS) -Xlinker -Map=benchPCP_link.map
 
 benchStats.o:	benchStats.c
-	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c benchStats.c -o benchStats.o 
+	$(CC) $(CFLAGS) $(INCLUDE) -c benchStats.c -o benchStats.o 
 
 benchStats: benchStats.o $(UTILOBJS) $(PAPILIB)
 	$(CC) $(INCLUDE) -o benchStats benchStats.o $(UTILOBJS) $(PAPILIB) $(LDFLAGS) -lm 

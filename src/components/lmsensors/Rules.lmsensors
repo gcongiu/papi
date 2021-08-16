@@ -88,4 +88,4 @@ CFLAGS += -I$(PAPI_LMSENSORS_ROOT)/include -I$(PAPI_LMSENSORS_ROOT)/include/sens
 LDFLAGS += $(LDL) -g
 
 linux-lmsensors.o: components/lmsensors/linux-lmsensors.c 
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/lmsensors/linux-lmsensors.c -o linux-lmsensors.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c components/lmsensors/linux-lmsensors.c -o linux-lmsensors.o

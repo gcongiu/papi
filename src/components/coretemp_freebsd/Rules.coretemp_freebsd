@@ -4,4 +4,4 @@ COMPSRCS += components/coretemp_freebsd/coretemp_freebsd.c
 COMPOBJS += coretemp_freebsd.o
 
 coretemp_freebsd.o: components/coretemp_freebsd/coretemp_freebsd.c components/coretemp_freebsd/coretemp_freebsd.h
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/coretemp_freebsd/coretemp_freebsd.c -o coretemp_freebsd.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c components/coretemp_freebsd/coretemp_freebsd.c -o coretemp_freebsd.o

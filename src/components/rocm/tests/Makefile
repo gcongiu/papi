@@ -15,13 +15,13 @@ LDFLAGS = -ldl -g -L$(PAPI_ROCM_ROOT)/rocblas/lib -lrocblas
 
 %.o:%.c
 	@echo "INCLUDE=" $(INCLUDE)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -c -o $@ $<
 
 %.o:%.cpp
 	@echo "INCLUDE=" $(INCLUDE)
 	@echo "CFLAGS=" $(CFLAGS)
 	@echo "CPPFLAGS" $(CPPFLAGS)
-	g++ $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
+	g++ $(CPPFLAGS) $(CFLAGS) $(INCLUDE) -c -o $@ $<
 
 TESTS = 
 

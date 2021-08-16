@@ -87,4 +87,4 @@ CFLAGS += -I$(PAPI_PCP_ROOT)/include -I$(PAPI_PCP_ROOT)/include/pcp -g $(PCP_MAC
 LDFLAGS += $(LDL) -g
 
 linux-pcp.o: components/pcp/linux-pcp.c 
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/pcp/linux-pcp.c -o linux-pcp.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c components/pcp/linux-pcp.c -o linux-pcp.o

@@ -45,7 +45,7 @@ $(PFM_OBJS): $(PFM_LIB_PATH)/libpfm.a
 	$(AR) xv $<
 
 papi_libpfm3_events.o: papi_libpfm3_events.c $(HEADERS)
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c papi_libpfm3_events.c -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c papi_libpfm3_events.c -o $@
 
 native_clean:
 	-rm -f $(MISCOBJS)

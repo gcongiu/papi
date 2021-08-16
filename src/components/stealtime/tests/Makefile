@@ -2,7 +2,7 @@ NAME=stealtime
 include ../../Makefile_comp_tests.target
 
 %.o:%.c
-	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c -o $@ $<
+	$(CC) $(CFLAGS) $(INCLUDE) -c -o $@ $<
 
 TESTS = stealtime_basic
 

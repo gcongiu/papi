@@ -3,4 +3,4 @@ COMPSRCS += components/rapl/linux-rapl.c
 COMPOBJS += linux-rapl.o
 
 linux-rapl.o: components/rapl/linux-rapl.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(OPTFLAGS) -c components/rapl/linux-rapl.c -o linux-rapl.o
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c components/rapl/linux-rapl.c -o linux-rapl.o
