@@ -17,7 +17,7 @@
 #define NUM_INNER_LOCK  9
 #define PAPI_MAX_LOCK   (NUM_INNER_LOCK + PAPI_NUM_LOCK)
 
-#include OSLOCK
+#include "os-lock.h"
 
 
 #endif

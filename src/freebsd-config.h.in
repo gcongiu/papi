@@ -1,7 +1,0 @@
-/* do not modify. This template is used by configure to generate freebsd-config.h */
-#ifndef __FREEBSD_CONFIG_H__
-#define __FREEBSD_CONFIG_H__
-
-#define HWPMC_NUM_COUNTERS @freebsd_pmc_counters@
-
-#endif
