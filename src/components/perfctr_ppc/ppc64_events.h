@@ -11,7 +11,7 @@
 */
 
 #ifdef ARCH_EVTS
-#include ARCH_EVTS
+#include "powerpc_events.h"
 #else
 #define GROUP_INTS 8
 #if defined(_POWER5)

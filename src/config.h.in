@@ -1,7 +1,4 @@
-/* config.h.in.  Generated from configure.ac by autoheader.  */
-
-/* cpu type */
-#undef CPU
+/* src/config.h.in.  Generated from configure.ac by autoheader.  */
 
 /* POSIX 1b clock */
 #undef HAVE_CLOCK_GETTIME
@@ -15,11 +12,17 @@
 /* POSIX 1b per-thread clock */
 #undef HAVE_CLOCK_GETTIME_THREAD
 
+/* Define to 1 if you have the <cupti_profiler_target.h> header file. */
+#undef HAVE_CUPTI_PROFILER_TARGET_H
+
 /* Native access to a hardware cycle counter */
 #undef HAVE_CYCLE
 
 /* Define to 1 if you have the <c_asm.h> header file. */
 #undef HAVE_C_ASM_H
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
 
 /* This platform has the ffsll() function */
 #undef HAVE_FFSLL
@@ -48,7 +51,7 @@
 /* Define to 1 if you have the `perfctr' library (-lperfctr). */
 #undef HAVE_LIBPERFCTR
 
-/* perfctr header file */
+/* Define to 1 if have perfctr header file */
 #undef HAVE_LIBPERFCTR_H
 
 /* Define to 1 if you have the `pfm' library (-lpfm). */
@@ -132,6 +135,12 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
+#undef LT_OBJDIR
+
+/* Name of package */
+#undef PACKAGE
+
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
 
@@ -183,6 +192,9 @@
 # undef __EXTENSIONS__
 #endif
 
+
+/* Version number of package */
+#undef VERSION
 
 /* Define to 1 if on MINIX. */
 #undef _MINIX

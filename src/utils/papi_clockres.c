@@ -25,7 +25,7 @@
 
 #include "papi.h"
 
-#include "../testlib/clockcore.h"
+#include "clockcore.h"
 
 int
 main( int argc, char **argv )

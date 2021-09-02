@@ -6,7 +6,7 @@
 */
 
 #include "perfmon/pfmlib.h"
-#include PEINCLUDE
+#include "perfmon/perf_event.h"
 
 struct native_event_t {
   int component;

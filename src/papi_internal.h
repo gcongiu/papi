@@ -116,7 +116,7 @@ extern char **_papi_errlist;
 #include "config.h"
 #endif
 
-#include OSCONTEXT
+#include "os-context.h"
 #include "papi_preset.h"
 
 #ifndef inline_static

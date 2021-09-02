@@ -34,7 +34,7 @@
 #include "papi_libpfm4_events.h"
 #include "components/perf_event/pe_libpfm4_events.h"
 #include "perfmon/pfmlib.h"
-#include PEINCLUDE
+#include "perfmon/perf_event.h"
 
 /* Linux-specific includes */
 #include "mb.h"
