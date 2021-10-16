@@ -1098,7 +1098,8 @@ static int _cuda_primaryLinkLibraries(void)
     if (strlen(cuda_cupti) > 0) {                                       // If override given, it MUST work.
         dl3 = dlopen(cuda_cupti, RTLD_NOW | RTLD_GLOBAL);               // Try to open that path.
         if (dl3 == NULL) {
-            int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "PAPI_CUDA_CUPTI override '%s' given in Rules.cuda not found.", cuda_cupti);
+            int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "PAPI_CUDA_CUPTI override '%s' given in Rules.cuda: %s", cuda_cupti,
+                                dlerror());
             _cuda_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
             if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
             return(PAPI_ENOSUPP);   // Override given but not found.
@@ -1112,7 +1113,8 @@ static int _cuda_primaryLinkLibraries(void)
 
     // Step 3: Try the explicit install default.
     if (dl3 == NULL && cuda_root != NULL) {                                         // If ROOT given, it doesn't HAVE to work.
-        int strErr=snprintf(path_lib, sizeof(path_lib)-2, "%s/extras/CUPTI/lib64/libcupti.so", cuda_root);   // PAPI Root check.
+        int strErr=snprintf(path_lib, sizeof(path_lib)-2, "%s/extras/CUPTI/lib64/libcupti.so: %s", cuda_root,
+                            dlerror());   // PAPI Root check.
         path_lib[sizeof(path_lib)-1]=0;
         if (strErr > (int) sizeof(path_lib)-2) HANDLE_STRING_ERROR;
         dl3 = dlopen(path_lib, RTLD_NOW | RTLD_GLOBAL);                             // Try to open that path.
@@ -1120,7 +1122,7 @@ static int _cuda_primaryLinkLibraries(void)
 
     // Check for failure.
     if (dl3 == NULL) {
-        int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "libcupti.so not found.");
+        int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "libcupti.so: %s", dlerror());
         _cuda_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
         if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
         return(PAPI_ENOSUPP);   // Not found on default paths.
@@ -1152,7 +1154,8 @@ static int _cuda_linkCudaLibraries(void)
         int strErr;
         dl1 = dlopen(cuda_main, RTLD_NOW | RTLD_GLOBAL);        // Try to open that path.
         if (dl1 == NULL) {
-            strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "PAPI_CUDA_MAIN override '%s' given in Rules.cuda not found.", cuda_main);
+            strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "PAPI_CUDA_MAIN override '%s' given in Rules.cuda: %s", cuda_main,
+                            dlerror());
             _cuda_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
             if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
             return(PAPI_ENOSUPP);   // Override given but not found.
@@ -1166,7 +1169,8 @@ static int _cuda_linkCudaLibraries(void)
 
     // Step 3: Try the explicit install default.
     if (dl1 == NULL && cuda_root != NULL) {                          // if root given, try it.
-        int strErr=snprintf(path_lib, sizeof(path_lib)-2, "%s/lib64/libcuda.so", cuda_root);  // PAPI Root check.
+        int strErr=snprintf(path_lib, sizeof(path_lib)-2, "%s/lib64/libcuda.so: %s", cuda_root,
+                            dlerror());  // PAPI Root check.
         path_lib[sizeof(path_lib)-1]=0;
         if (strErr > (int) sizeof(path_lib)-2) HANDLE_STRING_ERROR;
         dl1 = dlopen(path_lib, RTLD_NOW | RTLD_GLOBAL);              // Try to open that path.
@@ -1174,7 +1178,8 @@ static int _cuda_linkCudaLibraries(void)
 
     // Check for failure.
     if (dl1 == NULL) {
-        int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "libcuda.so not found.");
+        int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "libcuda.so not found: %s",
+                            dlerror());
         _cuda_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
         if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
         return(PAPI_ENOSUPP);
@@ -1208,7 +1213,8 @@ static int _cuda_linkCudaLibraries(void)
     if (strlen(cuda_runtime) > 0) {                                // If override given, it has to work.
         dl2 = dlopen(cuda_runtime, RTLD_NOW | RTLD_GLOBAL);        // Try to open that path.
         if (dl2 == NULL) {
-            int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "PAPI_CUDA_RUNTIME override '%s' given in Rules.cuda not found.", cuda_runtime);
+            int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "PAPI_CUDA_RUNTIME override '%s' given in Rules.cuda: %s", cuda_runtime,
+                                dlerror());
             _cuda_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
             if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
             return(PAPI_ENOSUPP);   // Override given but not found.
@@ -1222,7 +1228,8 @@ static int _cuda_linkCudaLibraries(void)
 
     // Step 3: Try the explicit install default.
     if (dl2 == NULL && cuda_root != NULL) {                             // if root given, try it.
-        int strErr=snprintf(path_lib, sizeof(path_lib)-2, "%s/lib64/libcudart.so", cuda_root);   // PAPI Root check.
+        int strErr=snprintf(path_lib, sizeof(path_lib)-2, "%s/lib64/libcudart.so: %s", cuda_root,
+                            dlerror());   // PAPI Root check.
         path_lib[sizeof(path_lib)-1]=0;
         if (strErr > (int) sizeof(path_lib)-2) HANDLE_STRING_ERROR; 
         dl2 = dlopen(path_lib, RTLD_NOW | RTLD_GLOBAL);                 // Try to open that path.
@@ -1230,7 +1237,8 @@ static int _cuda_linkCudaLibraries(void)
 
     // Check for failure.
     if (dl2 == NULL) {
-        int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "libcudart.so not found.");
+        int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "libcudart.so: %s",
+                            dlerror());
         _cuda_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
         if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
         return(PAPI_ENOSUPP);
@@ -1319,7 +1327,8 @@ static int _cuda_linkCudaLibraries(void)
     if (strlen(cuda_perfworks) > 0) {                                       // If override given, it MUST work.
         dl4 = dlopen(cuda_perfworks, RTLD_NOW | RTLD_GLOBAL);               // Try to open that path.
         if (dl4 == NULL) {
-            int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "PAPI_CUDA_PERFWORKS override '%s' given in Rules.cuda not found.", cuda_perfworks);
+            int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "PAPI_CUDA_PERFWORKS override '%s' given in Rules.cuda: %s", cuda_perfworks,
+                                dlerror());
             _cuda_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
             if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
             return(PAPI_ENOSUPP);   // Override given but not found.
@@ -1333,7 +1342,8 @@ static int _cuda_linkCudaLibraries(void)
 
     // Step 3: Try the explicit install default.
     if (dl4 == NULL && cuda_root != NULL) {                                         // If ROOT given, it doesn't HAVE to work.
-        int strErr=snprintf(path_lib, sizeof(path_lib)-2, "%s/extras/CUPTI/lib64/libnvperf_host.so", cuda_root);   // PAPI Root check.
+        int strErr=snprintf(path_lib, sizeof(path_lib)-2, "%s/extras/CUPTI/lib64/libnvperf_host.so %s", cuda_root,
+                            dlerror());   // PAPI Root check.
         path_lib[sizeof(path_lib)-1]=0;
         if (strErr > (int) sizeof(path_lib)-2) HANDLE_STRING_ERROR;
         dl4 = dlopen(path_lib, RTLD_NOW | RTLD_GLOBAL);                             // Try to open that path.
@@ -1341,7 +1351,8 @@ static int _cuda_linkCudaLibraries(void)
 
     // Check for failure.
     if (dl4 == NULL) {
-        int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "libnvperf_host.so not found.");
+        int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "libnvperf_host.so: %s",
+                            dlerror());
         _cuda_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
         if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
         return(PAPI_ENOSUPP);   // Not found on default paths.
