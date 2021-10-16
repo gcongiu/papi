@@ -267,7 +267,8 @@ static int _rocm_linkRocmLibraries(void)
     if (strlen(rocm_hsa) > 0) {                             // If override given, it has to work.
         dl1 = dlopen(rocm_hsa, RTLD_NOW | RTLD_GLOBAL);     // Try to open that path.
         if (dl1 == NULL) {
-            strErr=snprintf(_rocm_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "PAPI_ROCM_HSA override '%s' given in Rules.rocm not found.", rocm_hsa);
+            strErr=snprintf(_rocm_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "PAPI_ROCM_HSA override '%s' given in Rules.rocm: %s", rocm_hsa,
+                            dlerror());
             _rocm_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
             if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
             return(PAPI_ENOSUPP);   // Override given but not found.
@@ -282,7 +283,8 @@ static int _rocm_linkRocmLibraries(void)
     // Step 3: Try  the explicit env vars.
     for (i=0; i<rocm_roots; i++) {
         if (dl1 == NULL && rocm_root[i] != NULL) {                       // if env. var. given, try it.
-            strErr=snprintf(path_name, PATH_MAX, "%s/lib/libhsa-runtime64.so", rocm_root[i]);  // PAPI Root check.
+            strErr=snprintf(path_name, PATH_MAX, "%s/lib/libhsa-runtime64.so: %s", rocm_root[i],
+                            dlerror());  // PAPI Root check.
             if (strErr > PATH_MAX) HANDLE_STRING_ERROR;
             dl1 = dlopen(path_name, RTLD_NOW | RTLD_GLOBAL);             // Try to open that path.
         }
@@ -291,8 +293,8 @@ static int _rocm_linkRocmLibraries(void)
     // Check for failure.
     if (dl1 == NULL) {
         strErr=snprintf(_rocm_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, 
-        "libhsa-runtime64.so not found. Need LD_LIBRARY_PATH set, or "
-        "Env Var PAPI_ROCM_ROOT set, or module load rocm.");
+        "libhsa-runtime64.so: %s. Need LD_LIBRARY_PATH set, or "
+        "Env Var PAPI_ROCM_ROOT set, or module load rocm.", dlerror());
         _rocm_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
         if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
         return(PAPI_ENOSUPP);
@@ -324,7 +326,8 @@ static int _rocm_linkRocmLibraries(void)
     if (strlen(rocm_prof) > 0) {                             // If override given, it has to work.
         dl2 = dlopen(rocm_prof, RTLD_NOW | RTLD_GLOBAL);     // Try to open that path.
         if (dl1 == NULL) {
-            strErr=snprintf(_rocm_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "PAPI_ROCM_PROF override '%s' given in Rules.rocm not found.", rocm_prof);
+            strErr=snprintf(_rocm_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN, "PAPI_ROCM_PROF override '%s' given in Rules.rocm: %s", rocm_prof,
+                            dlerror());
             _rocm_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
             if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
             return(PAPI_ENOSUPP);   // Override given but not found.
@@ -339,7 +342,8 @@ static int _rocm_linkRocmLibraries(void)
     // Step 3: Try the explicit install default.
     for (i=0; i<rocm_roots; i++) {
         if (dl2 == NULL && rocm_root[i] != NULL) {                          // if root given, try it.
-            strErr=snprintf(path_name, PATH_MAX, "%s/lib/librocprofiler64.so", rocm_root[i]);  // PAPI Root check.
+            strErr=snprintf(path_name, PATH_MAX, "%s/lib/librocprofiler64.so: %s", rocm_root[i],
+                            dlerror());  // PAPI Root check.
             path_name[PATH_MAX-1]=0;
             if (strErr > PATH_MAX) HANDLE_STRING_ERROR;
             dl2 = dlopen(path_name, RTLD_NOW | RTLD_GLOBAL);             // Try to open that path.
@@ -348,7 +352,8 @@ static int _rocm_linkRocmLibraries(void)
 
     // Step 4: Try the derived hsa_root.
     if (dl2 == NULL && hsa_root[0] != 0) {                           // if plausible root discovered, try it.
-        strErr=snprintf(path_name, PATH_MAX, "%s/lib/librocprofiler64.so", hsa_root);
+        strErr=snprintf(path_name, PATH_MAX, "%s/lib/librocprofiler64.so: %s", hsa_root,
+                        dlerror());
         path_name[PATH_MAX-1]=0;
         if (strErr > PATH_MAX) HANDLE_STRING_ERROR;
         dl2 = dlopen(path_name, RTLD_NOW | RTLD_GLOBAL);             // Try to open that path.
@@ -357,8 +362,8 @@ static int _rocm_linkRocmLibraries(void)
     // Check for failure.
     if (dl2 == NULL) {
         strErr=snprintf(_rocm_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN,
-        "librocprofiler64.so not found. Need LD_LIBRARY_PATH set, or "
-        "Env Var PAPI_ROCM_ROOT set, or module load rocm.");
+        "librocprofiler64.so: %s. Need LD_LIBRARY_PATH set, or "
+        "Env Var PAPI_ROCM_ROOT set, or module load rocm.", dlerror());
         _rocm_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
         if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
         return(PAPI_ENOSUPP);
