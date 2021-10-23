@@ -131,9 +131,6 @@ typedef struct _rocm_active_context_s {
     int conEventIndex[PAPIROCM_MAX_COUNTERS];
 } _rocm_active_context_t;
 
-/* Function prototypes */
-static int _rocm_cleanup_eventset(hwd_control_state_t *ctrl);
-
 /* ******  CHANGE PROTOTYPES TO DECLARE ROCM LIBRARY SYMBOLS AS WEAK  **********
  *  This is done so that a version of PAPI built with the rocm component can   *
  *  be installed on a system which does not have the rocm libraries installed. *
@@ -200,7 +197,7 @@ static rocprofiler_properties_t global__ctx_properties = {
 
 static _rocm_control_t *global__rocm_control = NULL;
 
-/* component init utility functions */
+/* component init utility functions prototypes */
 static int check_n_initialize( void );
 static int libc_statically_linked( void );
 static int link_rocm_libraries( void );
@@ -237,11 +234,11 @@ static hsa_status_t add_native_events_cb( const rocprofiler_info_data_t info,
 static hsa_status_t get_gpu_count_cb( hsa_agent_t agent, void *arg );
 static int check_rocm_num_native_events( void );
 
-/* component update utility functions */
+/* component update utility functions prototypes */
 static int foreach_event_do_update( hwd_control_state_t *ctrl,
                                     NativeInfo_t *nativeInfo,
                                     int nativeCount );
-static int find_or_create_context( int eventDeviceNum );
+static int find_or_create_context( const char *eventName, int eventDeviceNum );
 static int get_users_ntv_event( int usr_idx, int ntv_range,
                                 NativeInfo_t *ntv_info,
                                 const char **eventName, int *eventDeviceNum );
@@ -251,7 +248,7 @@ static int open_rocm_event( int eventDeviceNum,
                             _rocm_active_context_t *eventctrl,
                             hwd_control_state_t *ctrl );
 
-/* component control utility functions */
+/* component control utility functions prototypes */
 static int get_event_interval_length( uint64_t *durationNs );
 static int foreach_context_do_read( uint64_t durationNs, long long **values );
 static void foreach_event_do_read( int eventDeviceNum, int ctx_idx,
@@ -267,6 +264,9 @@ static char rocm_prof[] = PAPI_ROCM_PROF;
     if (PAPI_OK != err) return err;   \
 } while(0)
 
+/*
+ * papi_vector functions start here
+ */
 static int
 _rocm_init_component( int cidx )
 {
@@ -360,6 +360,7 @@ _rocm_init_control_state( hwd_control_state_t *ctrl __attribute__((unused)) )
     ROCM_CHECK_N_INIT();
 
     _rocm_context_t *gctxt = global__rocm_context;
+    _rocm_control_t *gctrl = global__rocm_control;
 
     CHECK_PRINT_EVAL((gctxt == NULL), "Error: The PAPI ROCM component needs to "
                                       "be initialized first",
@@ -372,10 +373,10 @@ _rocm_init_control_state( hwd_control_state_t *ctrl __attribute__((unused)) )
         return PAPI_EMISC;
     }
 
-    if (global__rocm_control == NULL) {
-        global__rocm_control = papi_calloc(1, sizeof(_rocm_control_t));
-        global__rocm_control->countOfActiveContexts = 0;
-        global__rocm_control->activeEventCount = 0;
+    if (gctrl == NULL) {
+        gctrl = papi_calloc(1, sizeof(_rocm_control_t));
+        gctrl->countOfActiveContexts = 0;
+        gctrl->activeEventCount = 0;
     }
 
     return PAPI_OK;
@@ -395,7 +396,6 @@ _rocm_shutdown_component( void )
 
     _rocm_control_t *gctrl = global__rocm_control;
     _rocm_context_t *gctxt = global__rocm_context;
-    uint32_t cc;
 
     if(gctxt != NULL) {
         papi_free(gctxt->availEventIDArray);
@@ -407,6 +407,7 @@ _rocm_shutdown_component( void )
     }
 
     if(gctrl != NULL) {
+        uint32_t cc;
         for(cc = 0; cc < gctrl->countOfActiveContexts; cc++) {
             if(gctrl->arrayOfActiveContexts[cc] != NULL) {
                 papi_free(gctrl->arrayOfActiveContexts[cc]);
@@ -476,11 +477,10 @@ _rocm_start( hwd_context_t *ctx __attribute__((unused)),
 
     uint32_t cc;
     for (cc = 0; cc < gctrl->countOfActiveContexts; cc++) {
-        int eventDeviceNum = gctrl->arrayOfActiveContexts[cc]->deviceNum;
-        (void) eventDeviceNum; /* suppress "not used" error when not debug. */
         Context eventCtx = gctrl->arrayOfActiveContexts[cc]->ctx;
 
-        ROCMDBG("Start device %d ctx %p ts %lu\n", eventDeviceNum, eventCtx,
+        ROCMDBG("Start device %d ctx %p ts %lu\n",
+                gctrl->arrayOfActiveContexts[cc]->deviceNum, eventCtx,
                 gctrl->startTimestampNs);
 
         if (eventCtx == NULL) {
@@ -492,7 +492,6 @@ _rocm_start( hwd_context_t *ctx __attribute__((unused)),
 
     return PAPI_OK;
 }
-
 
 /* Triggered by PAPI_read(). For ROCM component, switch to each
  * context, read all the eventgroups, and put the values in the
@@ -525,10 +524,9 @@ _rocm_stop( hwd_context_t *ctx __attribute__((unused)),
 
     uint32_t cc;
     for (cc = 0; cc < gctrl->countOfActiveContexts; cc++) {
-        int eventDeviceNum = gctrl->arrayOfActiveContexts[cc]->deviceNum;
         Context eventCtx = gctrl->arrayOfActiveContexts[cc]->ctx;
-        (void) eventDeviceNum; /* Suppress 'not used' warning when not debug. */
-        ROCMDBG("Stop device %d ctx %p \n", eventDeviceNum, eventCtx);
+        ROCMDBG("Stop device %d ctx %p \n",
+                gctrl->arrayOfActiveContexts[cc]->deviceNum, eventCtx);
 
         ROCP_CALL_CK(rocprofiler_stop, (eventCtx, 0), return PAPI_EMISC);
     }
@@ -548,10 +546,9 @@ _rocm_cleanup_eventset( hwd_control_state_t *ctrl __attribute__((unused)) )
 
     uint32_t cc;
     for(cc = 0; cc < gctrl->countOfActiveContexts; cc++) {
-        int eventDeviceNum = gctrl->arrayOfActiveContexts[cc]->deviceNum;
-        (void) eventDeviceNum; /* Suppress 'not used' warning when not debug. */
         Context eventCtx = gctrl->arrayOfActiveContexts[cc]->ctx;
-        ROCMDBG("Destroy device %d ctx %p \n", eventDeviceNum, eventCtx);
+        ROCMDBG("Destroy device %d ctx %p \n",
+                gctrl->arrayOfActiveContexts[cc]->deviceNum, eventCtx);
         ROCP_CALL_CK(rocprofiler_close, (eventCtx), return PAPI_EMISC);
         papi_free( gctrl->arrayOfActiveContexts[cc] );
     }
@@ -577,7 +574,6 @@ _rocm_cleanup_eventset( hwd_control_state_t *ctrl __attribute__((unused)) )
     return PAPI_OK;
 }
 
-
 /* Triggered by PAPI_reset() but only if the EventSet is currently
  *  running. If the eventset is not currently running, then the saved
  *  value in the EventSet is set to zero without calling this
@@ -596,16 +592,14 @@ _rocm_reset( hwd_context_t *ctx __attribute__((unused)),
         gctrl->activeEventValues[ii] = 0;
 
     for(cc = 0; cc < gctrl->countOfActiveContexts; cc++) {
-        int eventDeviceNum = gctrl->arrayOfActiveContexts[cc]->deviceNum;
-        (void) eventDeviceNum; /* Suppress 'not used' error when not debug. */
         Context eventCtx = gctrl->arrayOfActiveContexts[cc]->ctx;
-        ROCMDBG("Reset device %d ctx %p \n", eventDeviceNum, eventCtx);
+        ROCMDBG("Reset device %d ctx %p \n",
+                gctrl->arrayOfActiveContexts[cc]->deviceNum, eventCtx);
         ROCP_CALL_CK(rocprofiler_reset, (eventCtx, 0), return PAPI_EMISC);
     }
 
     return PAPI_OK;
 }
-
 
 /* This function sets various options in the component - Does nothing in the ROCM component.
     @param[in] ctx -- hardware context
@@ -647,7 +641,6 @@ _rocm_set_domain( hwd_control_state_t *ctrl __attribute__((unused)),
     return status;
 }
 
-
 /* Enumerate Native Events.
  * @param EventCode is the event of interest
  * @param modifier is one of PAPI_ENUM_FIRST, PAPI_ENUM_EVENTS
@@ -679,7 +672,6 @@ _rocm_ntv_enum_events( unsigned int *EventCode, int modifier )
     return status;
 }
 
-
 /* Takes a native event code and passes back the name, but the PAPI version
  * of the name in availEventDesc[], not the ROCM internal name (in
  * availEventIDArray[].name).
@@ -704,7 +696,6 @@ _rocm_ntv_code_to_name( unsigned int EventCode, char *name, int len )
 
     return PAPI_OK;
 }
-
 
 /* Takes a native event code and passes back the event description
  * @param EventCode is the native event code
@@ -750,45 +741,46 @@ papi_vector_t _rocm_vector = {
     ,
     /* sizes of framework-opaque component-private structures... these are all unused in this component */
     .size = {
-        .context            = 1,    /* sizeof( _rocm_context_t ), */
-        .control_state      = 1,    /* sizeof( _rocm_control_t ), */
-        .reg_value          = 1,    /* sizeof( _rocm_register_t ), */
-        .reg_alloc          = 1,    /* sizeof( _rocm_reg_alloc_t ), */
+        .context       = 1,    /* sizeof( _rocm_context_t ), */
+        .control_state = 1,    /* sizeof( _rocm_control_t ), */
+        .reg_value     = 1,    /* sizeof( _rocm_register_t ), */
+        .reg_alloc     = 1,    /* sizeof( _rocm_reg_alloc_t ), */
     }
     ,
     /* function pointers in this component */
-    .start                  = _rocm_start,             /* ( hwd_context_t * ctx, hwd_control_state_t * ctrl ) */
-    .stop                   = _rocm_stop,              /* ( hwd_context_t * ctx, hwd_control_state_t * ctrl ) */
-    .read                   = _rocm_read,              /* ( hwd_context_t * ctx, hwd_control_state_t * ctrl, long_long ** events, int flags ) */
-    .reset                  = _rocm_reset,             /* ( hwd_context_t * ctx, hwd_control_state_t * ctrl ) */
-    .cleanup_eventset       = _rocm_cleanup_eventset,  /* ( hwd_control_state_t * ctrl ) */
+    .start                = _rocm_start,             /* ( hwd_context_t * ctx, hwd_control_state_t * ctrl ) */
+    .stop                 = _rocm_stop,              /* ( hwd_context_t * ctx, hwd_control_state_t * ctrl ) */
+    .read                 = _rocm_read,              /* ( hwd_context_t * ctx, hwd_control_state_t * ctrl, long_long ** events, int flags ) */
+    .reset                = _rocm_reset,             /* ( hwd_context_t * ctx, hwd_control_state_t * ctrl ) */
+    .cleanup_eventset     = _rocm_cleanup_eventset,  /* ( hwd_control_state_t * ctrl ) */
 
-    .init_component         = _rocm_init_component,        /* ( int cidx ) */
-    .init_thread            = _rocm_init_thread,           /* ( hwd_context_t * ctx ) */
-    .init_private           = _rocm_init_private,          /* (void) */
-    .init_control_state     = _rocm_init_control_state,    /* ( hwd_control_state_t * ctrl ) */
-    .update_control_state   = _rocm_update_control_state,  /* ( hwd_control_state_t * ptr, NativeInfo_t * native, int count, hwd_context_t * ctx ) */
+    .init_component       = _rocm_init_component,        /* ( int cidx ) */
+    .init_thread          = _rocm_init_thread,           /* ( hwd_context_t * ctx ) */
+    .init_private         = _rocm_init_private,          /* (void) */
+    .init_control_state   = _rocm_init_control_state,    /* ( hwd_control_state_t * ctrl ) */
+    .update_control_state = _rocm_update_control_state,  /* ( hwd_control_state_t * ptr, NativeInfo_t * native, int count, hwd_context_t * ctx ) */
 
-    .ctl                    = _rocm_ctrl,               /* ( hwd_context_t * ctx, int code, _papi_int_option_t * option ) */
-    .set_domain             = _rocm_set_domain,         /* ( hwd_control_state_t * cntrl, int domain ) */
-    .ntv_enum_events        = _rocm_ntv_enum_events,    /* ( unsigned int *EventCode, int modifier ) */
-    .ntv_code_to_name       = _rocm_ntv_code_to_name,   /* ( unsigned int EventCode, char *name, int len ) */
-    .ntv_code_to_descr      = _rocm_ntv_code_to_descr,  /* ( unsigned int EventCode, char *name, int len ) */
-    .shutdown_thread        = _rocm_shutdown_thread,    /* ( hwd_context_t * ctx ) */
-    .shutdown_component     = _rocm_shutdown_component, /* ( void ) */
+    .ctl                  = _rocm_ctrl,               /* ( hwd_context_t * ctx, int code, _papi_int_option_t * option ) */
+    .set_domain           = _rocm_set_domain,         /* ( hwd_control_state_t * cntrl, int domain ) */
+    .ntv_enum_events      = _rocm_ntv_enum_events,    /* ( unsigned int *EventCode, int modifier ) */
+    .ntv_code_to_name     = _rocm_ntv_code_to_name,   /* ( unsigned int EventCode, char *name, int len ) */
+    .ntv_code_to_descr    = _rocm_ntv_code_to_descr,  /* ( unsigned int EventCode, char *name, int len ) */
+    .shutdown_thread      = _rocm_shutdown_thread,    /* ( hwd_context_t * ctx ) */
+    .shutdown_component   = _rocm_shutdown_component, /* ( void ) */
 };
 
+/*
+ * Component utility functions implementation starts here
+ */
 int
 check_n_initialize( void )
 {
-    if (!_rocm_vector.cmp_info.initialized && _rocm_vector.init_private)
+    if (!_rocm_vector.cmp_info.initialized && _rocm_vector.init_private) {
         return _rocm_vector.init_private();
+    }
     return PAPI_OK;
 }
 
-/*
- * Static functions implementations start here
- */
 void (*_dl_non_dynamic_init)( void ) __attribute__((weak));
 
 int
@@ -1118,7 +1110,6 @@ open_rocm_prof_hsa_path( char *hsa_root )
             return PAPI_ENOSUPP;
         }
     }
-
 
     return PAPI_OK;
 }
@@ -1540,7 +1531,6 @@ get_gpu_count_cb( hsa_agent_t agent, void *arg )
     return HSA_STATUS_SUCCESS;
 }
 
-
 int
 add_rocm_native_events( void )
 {
@@ -1704,6 +1694,8 @@ int
 foreach_event_do_update( hwd_control_state_t *ctrl, NativeInfo_t *nativeInfo,
                          int nativeCount )
 {
+    int status;
+
     int ii;
     for (ii = 0; ii < nativeCount; ii++) {
 
@@ -1715,14 +1707,16 @@ foreach_event_do_update( hwd_control_state_t *ctrl, NativeInfo_t *nativeInfo,
             continue;
         }
 
-        int eventContextIdx = find_or_create_context(eventDeviceNum);
+        int eventContextIdx = find_or_create_context(eventName, eventDeviceNum);
 
         _rocm_active_context_t *eventctrl;
-        if (get_event_control(ntv_event_idx, eventContextIdx, &eventctrl)) {
-            return PAPI_EINVAL;
+        status = get_event_control(ntv_event_idx, eventContextIdx,
+                                   &eventctrl);
+        if (status != PAPI_OK)
+            return status;
         }
 
-        int status = open_rocm_event(eventDeviceNum, eventctrl, ctrl);
+        status = open_rocm_event(eventDeviceNum, eventctrl, ctrl);
         if (status != PAPI_OK) {
             return status;
         }
@@ -1732,8 +1726,10 @@ foreach_event_do_update( hwd_control_state_t *ctrl, NativeInfo_t *nativeInfo,
 }
 
 int
-get_users_ntv_event( int usr_idx, int ntv_range, NativeInfo_t *ntv_info,
-                     const char **eventName, int *eventDeviceNum )
+get_users_ntv_event( int usr_idx, int ntv_range __attribute__((unused)),
+                     NativeInfo_t *ntv_info,
+                     const char **eventName __attribute__((unused)),
+                     int *eventDeviceNum )
 {
     _rocm_context_t *gctxt = global__rocm_context;
 
@@ -1743,21 +1739,20 @@ get_users_ntv_event( int usr_idx, int ntv_range, NativeInfo_t *ntv_info,
     *eventDeviceNum = gctxt->availEventDeviceNum[index];
 
     if (gctxt->availEventIsBeingMeasuredInEventset[index] == 1) {
-        (void) ntv_range;
-        (void) eventName;
         ROCMDBG("Skipping event %s (%i of %i) which is already added\n",
-                eventName, user_idx, ntv_range);
+                *eventName, user_idx, ntv_range);
         return -1;
     }
 
     gctxt->availEventIsBeingMeasuredInEventset[index] = 1;
-    ROCMDBG("Need to add event %d %s to the context\n", index, eventName);
+    ROCMDBG("Need to add event %d %s to the context\n", index, *eventName);
 
     return index;
 }
 
 int
-find_or_create_context( int eventDeviceNum )
+find_or_create_context( const char *eventName __attribute__((unused)),
+                        int eventDeviceNum )
 {
     _rocm_control_t *gctrl = global__rocm_control;
 
@@ -1824,12 +1819,10 @@ open_rocm_event( int eventDeviceNum, _rocm_active_context_t *eventctrl,
                  hwd_control_state_t *ctrl )
 {
     _rocm_context_t *gctxt = global__rocm_context;
-    _rocm_control_t *gctrl = global__rocm_control;
 
-    (void) gctrl;
     ROCMDBG("Create eventGroupPasses for context (destroy pre-existing) "
             "(nativeCount %d, conEventsCount %d) \n",
-            gctrl->activeEventCount, eventctrl->conEventsCount);
+            global__rocm_control->activeEventCount, eventctrl->conEventsCount);
 
     if (eventctrl->conEventsCount > 0) {
         if (eventctrl->ctx != NULL) {
@@ -1849,7 +1842,6 @@ open_rocm_event( int eventDeviceNum, _rocm_active_context_t *eventctrl,
                      openFailed = 1);
 
         if (openFailed) {
-            (void) ctrl;
             ROCMDBG("Error occurred: The ROCM event was not accepted by the "
                     "ROCPROFILER.\n");
             _rocm_cleanup_eventset(ctrl);
@@ -1868,7 +1860,8 @@ open_rocm_event( int eventDeviceNum, _rocm_active_context_t *eventctrl,
         } else  {
             ROCMDBG("Created eventGroupPasses for context total-events %d "
                     "in-this-context %d passes-required %d) \n",
-                    gctrl->activeEventCount, eventctrl->conEventsCount,
+                    global__rocm_control->activeEventCount,
+                    eventctrl->conEventsCount,
                     numPasses);
         }
     }
@@ -1921,7 +1914,8 @@ foreach_context_do_read( uint64_t durationNs, long long **values )
 }
 
 void
-foreach_event_do_read( int eventDeviceNum, int ctx_idx, uint64_t durationNs )
+foreach_event_do_read( int eventDeviceNum, int ctx_idx,
+                       uint64_t durationNs __attribute__((unused)) )
 {
     _rocm_context_t *gctxt = global__rocm_context;
     _rocm_control_t *gctrl = global__rocm_control;
@@ -1929,7 +1923,6 @@ foreach_event_do_read( int eventDeviceNum, int ctx_idx, uint64_t durationNs )
     uint32_t jj;
     for (jj = 0; jj < gctrl->activeEventCount; jj++) {
         int index = gctrl->activeEventIndex[jj];
-        EventID eventId = gctxt->availEventIDArray[index];
 
         ROCMDBG("jj=%i of %i, index=%i, device#=%i.\n", jj,
                 gctrl->activeEventCount, index,
@@ -1941,11 +1934,9 @@ foreach_event_do_read( int eventDeviceNum, int ctx_idx, uint64_t durationNs )
 
         uint32_t ee;
         for (ee = 0; ee < gctrl->arrayOfActiveContexts[ctx_idx]->conEventsCount; ee++) {
-            (void) durationNs; /* Suppress 'not used' warning when not debug. */
-            (void) eventId; /* Suppress 'not used' warning when not debug. */
             ROCMDBG("Searching for activeEvent %s in Activecontext %u "
-                    "eventIndex %d duration %lu\n", eventId.name, ee,
-                    index, durationNs);
+                    "eventIndex %d duration %lu\n", gctxt->availEventIDArray[index].name,
+                    ee, index, durationNs);
 
             if (gctrl->arrayOfActiveContexts[ctx_idx]->conEventIndex[ee] == index) {
                 gctrl->activeEventValues[jj] =
@@ -1953,7 +1944,8 @@ foreach_event_do_read( int eventDeviceNum, int ctx_idx, uint64_t durationNs )
                         result_int64;
 
                 ROCMDBG("Matched event %d:%d eventName %s value %lld\n", jj,
-                        index, eventId.name, gctrl->activeEventValues[jj]);
+                        index, gctxt->availEventIDArray[index].name,
+                        gctrl->activeEventValues[jj]);
 
                 break;
             }
