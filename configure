@@ -673,16 +673,6 @@ BUILD_POWERCAP_PPC_FALSE
 BUILD_POWERCAP_PPC_TRUE
 BUILD_POWERCAP_FALSE
 BUILD_POWERCAP_TRUE
-BUILD_PERFNEC_FALSE
-BUILD_PERFNEC_TRUE
-BUILD_PERFMON_IA64_FALSE
-BUILD_PERFMON_IA64_TRUE
-BUILD_PERFMON2_FALSE
-BUILD_PERFMON2_TRUE
-BUILD_PERFCTR_PPC_FALSE
-BUILD_PERFCTR_PPC_TRUE
-BUILD_PERFCTR_FALSE
-BUILD_PERFCTR_TRUE
 BUILD_PERF_EVENT_UNCORE_FALSE
 BUILD_PERF_EVENT_UNCORE_TRUE
 BUILD_PERF_EVENT_FALSE
@@ -728,7 +718,6 @@ BUILD_APPIO_TRUE
 components_vector_pointer_list
 components_vector_list
 with_freebsd_pmc_counters
-CONFIG_PFMLIB_OLD_PFMV2
 TOOLS_LINK_MODE
 MPICC
 ac_ct_F77
@@ -1593,8 +1582,6 @@ Optional Packages:
 
    --with-perf-api=interface Specify the performance interface to use.
         perf_events     - Linux Performance Events interface
-        perfmon         - Linux Performance Monitoring interface
-        perfctr         - Linux legacy Performance Counters interface
         bgpm            - Blue Gene Performance Monitoring interface
         cpc             - Solaris CPU Performance Counters interface
         pmc             - FreeBSD Performance Monitoring Counters interface
@@ -1605,7 +1592,6 @@ Optional Packages:
 
    --with-perf-lib=library Specify the CPU performance library to use.
         pfm             - Linux Performance Monitoring library
-        perfctr         - Linux legacy Performance Counters library
         bgpm            - Blue Gene Performance Monitoring library
         cpc             - Solaris CPU Performance Counters library
         pmc             - FreeBSD Performance Monitoring Counters library
@@ -12707,8 +12693,6 @@ fi
 #        longer exist.
 ac_config_links="$ac_config_links external/libpfm4:$srcdir/external/libpfm4"
 
-ac_config_links="$ac_config_links external/libpfm-3.y:$srcdir/external/libpfm-3.y"
-
 
 # FIXME: is this really used anywhere?
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for perf_event workaround level" >&5
@@ -12892,16 +12876,6 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS in
         with_perf_lib_ver=4
         with_perf_lib_emb=y
         ;;
-    power5,linux*    \
-    | power5+,linux* \
-    | power6,linux*  \
-    | power7,linux*  \
-    | ppc970,linux*)
-        with_perf_api=perfctr
-        with_perf_lib=perfctr
-        with_perf_lib_ver=7
-        with_perf_lib_emb=y
-        ;;
     bgp,cnk)
         with_perf_api=bgpm
         with_perf_lib=bgpm
@@ -12911,13 +12885,6 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS in
         with_perf_api=bgpm
         with_perf_lib=bgpm
         with_perf_lib_emb=n
-        ;;
-    itanium2,linux* \
-    | montecito,linux)
-        with_perf_api=perfmon
-        with_perf_lib=pfm
-        with_perf_lib_ver=3
-        with_perf_lib_emb=y
         ;;
     ultra,solaris* \
     | niagara2,solaris*)
@@ -18927,7 +18894,7 @@ $as_echo_n "checking for performance inteface... " >&6; }
 if test "${with_perf_api+set}" = set; then :
   withval=$with_perf_api;
              case "$with_perf_api" in
-                 perf_events|perfmon|perfctr|bgpm|cpc|pmc|pmapi)
+                 perf_events|bgpm|cpc|pmc|pmapi)
                     ;;
                  *)
                     { $as_echo "$as_me:${as_lineno-$LINENO}: result: none" >&5
@@ -18955,7 +18922,7 @@ $as_echo_n "checking for performance library... " >&6; }
 if test "${with_perf_lib+set}" = set; then :
   withval=$with_perf_lib;
              case "$with_perf_lib" in
-                 pfm|perfctr|bgpm|cpc|pmc)
+                 pfm|bgpm|cpc|pmc)
                     ;;
                  *)
                     as_fn_error $? "lib$with_perf_lib is not a valid library." "$LINENO" 5
@@ -19083,18 +19050,6 @@ fi
 
 # configure compiler flags for picked performance library
 case "$with_perf_lib-$with_perf_lib_ver" in
-    pfm-3)
-        if test "$with_perf_lib_emb" = "y" ; then
-            with_perf_lib_prefix=$srcdir/external/libpfm-3.y
-            with_perf_lib_incdir=$with_perf_lib_prefix/include
-            with_perf_lib_libdir=$with_perf_lib_prefix/lib
-            with_perf_lib_subdir=external/libpfm-3.y
-        else
-            with_perf_lib_incdir=$with_perf_lib_prefix/include
-            with_perf_lib_libdir=$with_perf_lib_prefix/lib
-            with_perf_lib_subdir=
-        fi
-        ;;
     pfm-4)
         if test "$with_perf_lib_emb" = "y" ; then
             with_perf_lib_prefix=$srcdir/external/libpfm4
@@ -19105,159 +19060,6 @@ case "$with_perf_lib-$with_perf_lib_ver" in
             with_perf_lib_incdir=$with_perf_lib_prefix/include
             with_perf_lib_libdir=$with_perf_lib_prefix/lib
             with_perf_lib_subdir=
-        fi
-        ;;
-    perfctr-6)
-        if test "$with_perf_lib_emb" = "y" ; then
-            with_perf_lib_prefix=$srcdir/external/perfctr-2.6.x
-            with_perf_lib_incdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_libdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_libdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_subdir=external/perfctr-2.6.x
-
-if ${CPPFLAGS+:} false; then :
-
-    case " $CPPFLAGS " in #(
-  *" -I$with_perf_lib_prefix/linux/include "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -I\$with_perf_lib_prefix/linux/include"; } >&5
-  (: CPPFLAGS already contains -I$with_perf_lib_prefix/linux/include) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append CPPFLAGS " -I$with_perf_lib_prefix/linux/include"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        CPPFLAGS=-I$with_perf_lib_prefix/linux/include
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
-        else
-            with_perf_lib_incdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_libdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_subdir=
-
-if ${CPPFLAGS+:} false; then :
-
-    case " $CPPFLAGS " in #(
-  *" -I$with_perf_lib_prefix/linux/include "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -I\$with_perf_lib_prefix/linux/include"; } >&5
-  (: CPPFLAGS already contains -I$with_perf_lib_prefix/linux/include) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append CPPFLAGS " -I$with_perf_lib_prefix/linux/include"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        CPPFLAGS=-I$with_perf_lib_prefix/linux/include
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
-        fi
-        ;;
-    perfctr-7)
-        if test "$with_perf_lib_emb" = "y" ; then
-            with_perf_lib_prefix=$srcdir/external/perfctr-2.7.x
-            with_perf_lib_incdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_libdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_subdir=external/perfctr-2.7.x
-
-if ${CPPFLAGS+:} false; then :
-
-    case " $CPPFLAGS " in #(
-  *" -I$with_perf_lib_prefix/linux/include "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -I\$with_perf_lib_prefix/linux/include"; } >&5
-  (: CPPFLAGS already contains -I$with_perf_lib_prefix/linux/include) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append CPPFLAGS " -I$with_perf_lib_prefix/linux/include"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        CPPFLAGS=-I$with_perf_lib_prefix/linux/include
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
-        else
-            with_perf_lib_incdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_libdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_subdir=
-
-if ${CPPFLAGS+:} false; then :
-
-    case " $CPPFLAGS " in #(
-  *" -I$with_perf_lib_prefix/linux/include "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -I\$with_perf_lib_prefix/linux/include"; } >&5
-  (: CPPFLAGS already contains -I$with_perf_lib_prefix/linux/include) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append CPPFLAGS " -I$with_perf_lib_prefix/linux/include"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        CPPFLAGS=-I$with_perf_lib_prefix/linux/include
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
         fi
         ;;
     bgpm-*)
@@ -19585,430 +19387,6 @@ fi
 
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: found" >&5
 $as_echo "found" >&6; }
-        ;;
-    linux*,perfctr,perfctr-6 \
-    | linux*,perfctr,perfctr-7)
-        if test "$with_cross_compile" = "no" -a "$with_perf_lib_emb" = "no" ; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libperfctr.h" >&5
-$as_echo_n "checking for libperfctr.h... " >&6; }
-            for ac_header in libperfctr.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "libperfctr.h" "ac_cv_header_libperfctr_h" "$ac_includes_default"
-if test "x$ac_cv_header_libperfctr_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPERFCTR_H 1
-_ACEOF
-
-fi
-
-done
-
-            if test "$ac_cv_header_libperfctr_h" = "no" ; then
-                as_fn_error $? "libperfctr.h not found, rerun configure with different flags" "$LINENO" 5
-            fi
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: found" >&5
-$as_echo "found" >&6; }
-
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for libperfctr" >&5
-$as_echo_n "checking for libperfctr... " >&6; }
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for vperfctr_open in -lperfctr" >&5
-$as_echo_n "checking for vperfctr_open in -lperfctr... " >&6; }
-if ${ac_cv_lib_perfctr_vperfctr_open+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lperfctr  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char vperfctr_open ();
-int
-main ()
-{
-return vperfctr_open ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_perfctr_vperfctr_open=yes
-else
-  ac_cv_lib_perfctr_vperfctr_open=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_perfctr_vperfctr_open" >&5
-$as_echo "$ac_cv_lib_perfctr_vperfctr_open" >&6; }
-if test "x$ac_cv_lib_perfctr_vperfctr_open" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPERFCTR 1
-_ACEOF
-
-  LIBS="-lperfctr $LIBS"
-
-fi
-
-            if test "$ac_cv_lib_perfctr_vperfctr_open" = "yes" ; then
-
-
-
-
-    save_CFLAGS_1=$CFLAGS     CFLAGS="-static"
-
-                if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-                            #include <stdlib.h>
-                            #include "libperfctr.h"
-                            int main() {
-                                if ((PERFCTR_ABI_VERSION >> 24) != 5)
-                                    exit(1);
-                                exit(0);
-                            }
-
-_ACEOF
-if ac_fn_c_try_run "$LINENO"; then :
-  with_perfctr=6
-else
-  with_perfctr=7
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
-
-
-
-    CFLAGS=$save_CFLAGS_1
-
-
-                if test "$with_perfctr" != "$with_perf_lib_ver" ; then
-                    # AC_MSG_WARN([$with_perf_lib: detected and user defined versions do not match])
-                    with_perf_lib_ver=$with_perfctr
-                fi
-            else
-                as_fn_error $? "libperfctr not found, rerun configure with different flags" "$LINENO" 5
-            fi
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: found" >&5
-$as_echo "found" >&6; }
-        else
-
-$as_echo "#define HAVE_LIBPERFCTR_H 1" >>confdefs.h
-
-        fi
-        ;;
-    linux*,perfmon,pfm-3)
-        # first check performance interface version if provided
-        if test "x$with_perf_api_ver" != "x" ; then
-            with_perfmon_ver=`echo $with_perf_api_ver | sed 's/^ \t*//;s/ \t*$//'`
-            with_perfmon_ver=`echo $with_perfmon_ver | grep -e '[1-9]\.[0-9]0-9]*'`
-            if test "x$with_perfmon_ver" = "x" ; then
-                as_fn_error $? "Badly formed perfmon version string." "$LINENO" 5
-            fi
-        fi
-
-        # or, if not, try detecting if automatically
-        if test "$with_cross_compile" = "no" -a "$with_perf_lib_emb" = "no" ; then
-            if test "x$with_perf_api_ver" = "x" ; then
-                { $as_echo "$as_me:${as_lineno-$LINENO}: checking for /proc/perfmon" >&5
-$as_echo_n "checking for /proc/perfmon... " >&6; }
-if ${ac_cv_file__proc_perfmon+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  test "$cross_compiling" = yes &&
-  as_fn_error $? "cannot check for file existence when cross compiling" "$LINENO" 5
-if test -r "/proc/perfmon"; then
-  ac_cv_file__proc_perfmon=yes
-else
-  ac_cv_file__proc_perfmon=no
-fi
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_file__proc_perfmon" >&5
-$as_echo "$ac_cv_file__proc_perfmon" >&6; }
-if test "x$ac_cv_file__proc_perfmon" = xyes; then :
-  with_perfmon_ver=`cat /proc/perfmon | grep version | cut -d: -f2`
-else
-  with_perfmon_ver=0
-fi
-
-            fi
-        fi
-
-        # configure flags for matching performance library and api version
-        if test "x$with_perfmon_ver" != "x" ; then
-            with_perfmon_ver=`echo $with_perfmon_ver | sed 's/\.//'`
-            if test "$with_perfmon_ver" -gt 20 -a "$with_perfmon_ver" -lt 25 ; then
-                CONFIG_PFMLIB_OLD_PFMV2=y
-
-            fi
-        fi
-
-        # check performance library
-        if test "$with_cross_compile" = "no" -a "$with_perf_lib_emb" = "no" ; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pfm_initialize in -lpfm" >&5
-$as_echo_n "checking for pfm_initialize in -lpfm... " >&6; }
-if ${ac_cv_lib_pfm_pfm_initialize+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpfm  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char pfm_initialize ();
-int
-main ()
-{
-return pfm_initialize ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_pfm_pfm_initialize=yes
-else
-  ac_cv_lib_pfm_pfm_initialize=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pfm_pfm_initialize" >&5
-$as_echo "$ac_cv_lib_pfm_pfm_initialize" >&6; }
-if test "x$ac_cv_lib_pfm_pfm_initialize" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPFM 1
-_ACEOF
-
-  LIBS="-lpfm $LIBS"
-
-fi
-
-            if test "$ac_cv_lib_pfm_pfm_initialize" = "yes" ; then
-                for ac_header in perfmon/pfmlib.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "perfmon/pfmlib.h" "ac_cv_header_perfmon_pfmlib_h" "$ac_includes_default"
-if test "x$ac_cv_header_perfmon_pfmlib_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_PERFMON_PFMLIB_H 1
-_ACEOF
-
-                                  if test "$host_cpu" = "ia64"; then
-                                      for ac_header in perfmon/pfmlib_montecito.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "perfmon/pfmlib_montecito.h" "ac_cv_header_perfmon_pfmlib_montecito_h" "$ac_includes_default"
-if test "x$ac_cv_header_perfmon_pfmlib_montecito_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_PERFMON_PFMLIB_MONTECITO_H 1
-_ACEOF
-
-else
-  as_fn_error $? "pfmlib_montecito.h not found" "$LINENO" 5
-fi
-
-done
-
-                                  fi
-                                  ac_fn_c_check_func "$LINENO" "pfm_get_event_description" "ac_cv_func_pfm_get_event_description"
-if test "x$ac_cv_func_pfm_get_event_description" = xyes; then :
-
-$as_echo "#define HAVE_PFM_GET_EVENT_DESCRIPTION 1" >>confdefs.h
-
-fi
-
-                                  ac_fn_c_check_member "$LINENO" "pfmlib_reg_t" "reg_evt_idx" "ac_cv_member_pfmlib_reg_t_reg_evt_idx" "#include \"perfmon/pfmlib.h\"
-"
-if test "x$ac_cv_member_pfmlib_reg_t_reg_evt_idx" = xyes; then :
-
-$as_echo "#define HAVE_PFM_REG_EVT_IDX 1" >>confdefs.h
-
-
-fi
-
-                                  ac_fn_c_check_member "$LINENO" "pfmlib_output_param_t" "pfp_pmd_count" "ac_cv_member_pfmlib_output_param_t_pfp_pmd_count" "#include \"perfmon/pfmlib.h\"
-"
-if test "x$ac_cv_member_pfmlib_output_param_t_pfp_pmd_count" = xyes; then :
-
-$as_echo "#define HAVE_PFMLIB_OUTPUT_PFP_PMD_COUNT 1" >>confdefs.h
-
-
-fi
-
-                                  ac_fn_c_check_member "$LINENO" "pfm_msg_t" "type" "ac_cv_member_pfm_msg_t_type" "#include \"perfmon/perfmon.h\"
-"
-if test "x$ac_cv_member_pfm_msg_t_type" = xyes; then :
-
-$as_echo "#define HAVE_PFM_MSG_TYPE 1" >>confdefs.h
-
-
-fi
-
-
-else
-
-                                  as_fn_error $? "perfmon/pfmlib.h not found, rerun configure with different flags" "$LINENO" 5
-
-fi
-
-done
-
-            else
-                as_fn_error $? "libpfm not found, rerun configure with different flags" "$LINENO" 5
-            fi
-        else
-
-$as_echo "#define HAVE_PERFMON_PFMLIB_MONTECITO_H 1" >>confdefs.h
-
-
-$as_echo "#define HAVE_PFM_GET_EVENT_DESCRIPTION 1" >>confdefs.h
-
-
-$as_echo "#define HAVE_PFMLIB_OUTPUT_PFP_PMD_COUNT 1" >>confdefs.h
-
-        fi
-        ;;
-    linux*,perfctr,pfm-3)
-        if test "$with_cross_compile" = "no" -a "$with_perf_lib_emb" = "no" ; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for pfm_initialize in -lpfm" >&5
-$as_echo_n "checking for pfm_initialize in -lpfm... " >&6; }
-if ${ac_cv_lib_pfm_pfm_initialize+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lpfm  $LIBS"
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char pfm_initialize ();
-int
-main ()
-{
-return pfm_initialize ();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_lib_pfm_pfm_initialize=yes
-else
-  ac_cv_lib_pfm_pfm_initialize=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_pfm_pfm_initialize" >&5
-$as_echo "$ac_cv_lib_pfm_pfm_initialize" >&6; }
-if test "x$ac_cv_lib_pfm_pfm_initialize" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBPFM 1
-_ACEOF
-
-  LIBS="-lpfm $LIBS"
-
-fi
-
-            if test "$ac_cv_lib_pfm_pfm_initialize" = "yes" ; then
-                for ac_header in perfmon/pfmlib.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "perfmon/pfmlib.h" "ac_cv_header_perfmon_pfmlib_h" "$ac_includes_default"
-if test "x$ac_cv_header_perfmon_pfmlib_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_PERFMON_PFMLIB_H 1
-_ACEOF
-
-                                  if test "$host_cpu" = "ia64"; then
-                                      ac_fn_c_check_header_mongrel "$LINENO" "perfmon/pfmlib_montecito.h" "ac_cv_header_perfmon_pfmlib_montecito_h" "$ac_includes_default"
-if test "x$ac_cv_header_perfmon_pfmlib_montecito_h" = xyes; then :
-
-else
-  as_fn_error $? "pfmlib_montecito.h not found" "$LINENO" 5
-fi
-
-
-                                  fi
-                                  ac_fn_c_check_func "$LINENO" "pfm_get_event_description" "ac_cv_func_pfm_get_event_description"
-if test "x$ac_cv_func_pfm_get_event_description" = xyes; then :
-
-$as_echo "#define HAVE_PFM_GET_EVENT_DESCRIPTION 1" >>confdefs.h
-
-fi
-
-                                  ac_fn_c_check_member "$LINENO" "pfmlib_reg_t" "reg_evt_idx" "ac_cv_member_pfmlib_reg_t_reg_evt_idx" "#include \"perfmon/pfmlib.h\"
-"
-if test "x$ac_cv_member_pfmlib_reg_t_reg_evt_idx" = xyes; then :
-
-$as_echo "#define HAVE_PFM_REG_EVT_IDX 1" >>confdefs.h
-
-
-fi
-
-                                  ac_fn_c_check_member "$LINENO" "pfmlib_output_param_t" "pfp_pmd_count" "ac_cv_member_pfmlib_output_param_t_pfp_pmd_count" "#include \"perfmon/pfmlib.h\"
-"
-if test "x$ac_cv_member_pfmlib_output_param_t_pfp_pmd_count" = xyes; then :
-
-$as_echo "#define HAVE_PFMLIB_OUTPUT_PFP_PMD_COUNT 1" >>confdefs.h
-
-
-fi
-
-                                  ac_fn_c_check_member "$LINENO" "pfm_msg_t" "type" "ac_cv_member_pfm_msg_t_type" "#include \"perfmon/perfmon.h\"
-"
-if test "x$ac_cv_member_pfm_msg_t_type" = xyes; then :
-
-$as_echo "#define HAVE_PFM_MSG_TYPE 1" >>confdefs.h
-
-
-fi
-
-
-else
-
-                                  as_fn_error $? "perfmon/pfmlib.h not found, rerun configure with different flags" "$LINENO" 5
-
-fi
-
-done
-
-            else
-                as_fn_error $? "libpfm not found, rerun configure with different flags" "$LINENO" 5
-            fi
-        else
-
-$as_echo "#define HAVE_PERFMON_PFMLIB_MONTECITO_H 1" >>confdefs.h
-
-
-$as_echo "#define HAVE_PFM_GET_EVENT_DESCRIPTION 1" >>confdefs.h
-
-
-$as_echo "#define HAVE_PFMLIB_OUTPUT_PFP_PMD_COUNT 1" >>confdefs.h
-
-        fi
         ;;
     linux*,perf_events,pfm-4)
         # check performance library
@@ -21209,258 +20587,6 @@ done
         with_cpu_vector=_papi_freebsd_vector
         with_papi_events_csv="$srcdir/src/freebsd/freebsd_events.csv"
         ;;
-    ia64,linux*,perfmon,pfm     \
-    | itanium2,linux*,perfmon,pfm \
-    | montecito,linux*,perfmon,pfm)
-        oslock="$srcdir/src/linux/linux-lock.h"
-        oscontext="$srcdir/src/linux/linux-context.h"
-        with_cpu_component=$srcdir/src/dummy_cpu_component.c
-        with_papi_events_csv="$srcdir/src/papi_events.csv"
-
-        with_cpu_model=3
-        if test "$PAPI_HOST_SYSTEM" = "itanium2" ; then
-            with_cpu_model=2
-        fi
-
-
-if ${CPPFLAGS+:} false; then :
-
-    case " $CPPFLAGS " in #(
-  *" -DITANIUM$with_cpu_model "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -DITANIUM\$with_cpu_model"; } >&5
-  (: CPPFLAGS already contains -DITANIUM$with_cpu_model) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append CPPFLAGS " -DITANIUM$with_cpu_model"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        CPPFLAGS=-DITANIUM$with_cpu_model
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
-
-if ${FFLAGS+:} false; then :
-
-    case " $FFLAGS " in #(
-  *" -DITANIUM$with_cpu_model "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS already contains -DITANIUM\$with_cpu_model"; } >&5
-  (: FFLAGS already contains -DITANIUM$with_cpu_model) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append FFLAGS " -DITANIUM$with_cpu_model"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
-  (: FFLAGS="$FFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        FFLAGS=-DITANIUM$with_cpu_model
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
-  (: FFLAGS="$FFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
-
-
-if ${components+:} false; then :
-
-    case " $components " in #(
-  *" perfmon_ia64 "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : components already contains perfmon_ia64"; } >&5
-  (: components already contains perfmon_ia64) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append components " perfmon_ia64"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : components=\"\$components\""; } >&5
-  (: components="$components") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        components=perfmon_ia64
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : components=\"\$components\""; } >&5
-  (: components="$components") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
-        ;;
-    x86*,linux*,perfctr,pfm)
-        oslock="$srcdir/src/linux/linux-lock.h"
-        oscontext="$srcdir/src/linux/linux-context.h"
-        with_cpu_component=$srcdir/src/dummy_cpu_component.c
-        with_papi_events_csv="$srcdir/src/papi_events.csv"
-
-
-if ${components+:} false; then :
-
-    case " $components " in #(
-  *" perfctr "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : components already contains perfctr"; } >&5
-  (: components already contains perfctr) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append components " perfctr"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : components=\"\$components\""; } >&5
-  (: components="$components") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        components=perfctr
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : components=\"\$components\""; } >&5
-  (: components="$components") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
-        ;;
-    power5,linux*,perfctr,pfm    \
-    | power5+,linux*,perfctr,pfm \
-    | power6,linux*,perfctr,pfm  \
-    | power7,linux*,perfctr,pfm  \
-    | ppc970,linux*,perfctr,pfm)
-        oslock="$srcdir/src/linux/linux-lock.h"
-        oscontext="$srcdir/src/linux/linux-context.h"
-        with_cpu_component=$srcdir/src/dummy_cpu_component.c
-        with_papi_events_csv="$srcdir/src/papi_events.csv"
-
-        if test "$PAPI_HOST_SYSTEM" = "power5" ; then
-            with_cpu_model=POWER5
-            with_arch_events_h=$srcdir/src/components/perfctr_ppc/power5_events.h
-            with_arch_events_c=$srcdir/src/components/perfctr_ppc/power5_events_map.c
-        elif test "$PAPI_HOST_SYSTEM" = "power5+" ; then
-            with_cpu_model=POWER5+
-            with_arch_events_h=$srcdir/src/components/perfctr_ppc/power5+_events.h
-            with_arch_events_c=$srcdir/src/components/perfctr_ppc/power5+_events_map.c
-        elif test "$PAPI_HOST_SYSTEM" = "power6" ; then
-            with_cpu_model=POWER6
-            with_arch_events_h=$srcdir/src/components/perfctr_ppc/power6_events.h
-            with_arch_events_c=$srcdir/src/components/perfctr_ppc/power6_events_map.c
-        elif test "$PAPI_HOST_SYSTEM" = "power7" ; then
-            with_cpu_model=POWER7
-            with_arch_events_h=$srcdir/src/components/perfctr_ppc/power7_events.h
-            with_arch_events_c=$srcdir/src/components/perfctr_ppc/power7_events_map.c
-        elif test "$PAPI_HOST_SYSTEM" = "ppc970" ; then
-            with_cpu_model=PPC970
-            with_arch_events_h=$srcdir/src/components/perfctr_ppc/ppc970_events.h
-            with_arch_events_c=$srcdir/src/components/perfctr_ppc/ppc970_events_map.c
-        fi
-
-
-if ${CPPFLAGS+:} false; then :
-
-    case " $CPPFLAGS " in #(
-  *" -DPPC64 -D_$with_cpu_model -D__perfctr__ "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -DPPC64 -D_\$with_cpu_model -D__perfctr__"; } >&5
-  (: CPPFLAGS already contains -DPPC64 -D_$with_cpu_model -D__perfctr__) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append CPPFLAGS " -DPPC64 -D_$with_cpu_model -D__perfctr__"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        CPPFLAGS=-DPPC64 -D_$with_cpu_model -D__perfctr__
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
-
-if ${components+:} false; then :
-
-    case " $components " in #(
-  *" perfctr_ppc "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : components already contains perfctr_ppc"; } >&5
-  (: components already contains perfctr_ppc) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append components " perfctr_ppc"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : components=\"\$components\""; } >&5
-  (: components="$components") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        components=perfctr_ppc
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : components=\"\$components\""; } >&5
-  (: components="$components") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
-
-        ac_config_links="$ac_config_links src/components/perfctr_ppc/powerpc_events.h:$with_arch_events_h"
-
-        ac_config_links="$ac_config_links src/components/perfctr_ppc/powerpc_events.c:$with_arch_events_c"
-
-        ;;
     *,linux*,perf_events,pfm)
         oslock="$srcdir/src/linux/linux-lock.h"
         oscontext="$srcdir/src/linux/linux-context.h"
@@ -21533,125 +20659,6 @@ else
 fi
 
         fi
-        ;;
-    *,linux*,perfmon,pfm)
-        oslock="$srcdir/src/linux/linux-lock.h"
-        oscontext="$srcdir/src/linux/linux-context.h"
-        with_cpu_component="$srcdir/src/components/perfmon2/perfmon.c"
-        with_cpu_vector=_papi_pfm_vector
-        with_papi_events_csv="$srcdir/src/papi_events.csv"
-
-
-if ${components+:} false; then :
-
-    case " $components " in #(
-  *" perfmon2 "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : components already contains perfmon2"; } >&5
-  (: components already contains perfmon2) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append components " perfmon2"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : components=\"\$components\""; } >&5
-  (: components="$components") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        components=perfmon2
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : components=\"\$components\""; } >&5
-  (: components="$components") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
-        ;;
-    *,cle,perfmon,pfm)
-        oslock="$srcdir/src/linux/linux-lock.h"
-        oscontext="$srcdir/src/linux/linux-context.h"
-        with_cpu_component="$srcdir/src/components/perfmon2/perfmon.c"
-        with_cpu_vector=_papi_pfm_vector
-        with_papi_events_csv="$srcdir/src/papi_events.csv"
-
-
-if ${CPPFLAGS+:} false; then :
-
-    case " $CPPFLAGS " in #(
-  *" -D__crayxt "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -D__crayxt"; } >&5
-  (: CPPFLAGS already contains -D__crayxt) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append CPPFLAGS " -D__crayxt"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        CPPFLAGS=-D__crayxt
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
-        ;;
-    *,linux*,perfctr,perfctr)
-        oslock="$srcdir/src/linux/linux-lock.h"
-        oscontext="$srcdir/src/linux/linux-context.h"
-        with_cpu_component=$srcdir/src/dummy_cpu_component.c
-        with_papi_events_csv="$srcdir/src/papi_events.csv"
-
-
-if ${components+:} false; then :
-
-    case " $components " in #(
-  *" perfctr "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : components already contains perfctr"; } >&5
-  (: components already contains perfctr) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append components " perfctr"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : components=\"\$components\""; } >&5
-  (: components="$components") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        components=perfctr
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : components=\"\$components\""; } >&5
-  (: components="$components") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
         ;;
     *,linux*,*,*) # linux generic
         oslock="$srcdir/src/linux/linux-lock.h"
@@ -22379,46 +21386,6 @@ else
   BUILD_PERF_EVENT_UNCORE_FALSE=
 fi
 
- if test "x`echo $components | grep 'perfctr'`" != "x"; then
-  BUILD_PERFCTR_TRUE=
-  BUILD_PERFCTR_FALSE='#'
-else
-  BUILD_PERFCTR_TRUE='#'
-  BUILD_PERFCTR_FALSE=
-fi
-
- if test "x`echo $components | grep 'perfctr_ppc'`" != "x"; then
-  BUILD_PERFCTR_PPC_TRUE=
-  BUILD_PERFCTR_PPC_FALSE='#'
-else
-  BUILD_PERFCTR_PPC_TRUE='#'
-  BUILD_PERFCTR_PPC_FALSE=
-fi
-
- if test "x`echo $components | grep 'perfmon2'`" != "x"; then
-  BUILD_PERFMON2_TRUE=
-  BUILD_PERFMON2_FALSE='#'
-else
-  BUILD_PERFMON2_TRUE='#'
-  BUILD_PERFMON2_FALSE=
-fi
-
- if test "x`echo $components | grep 'perfmon_ia64'`" != "x"; then
-  BUILD_PERFMON_IA64_TRUE=
-  BUILD_PERFMON_IA64_FALSE='#'
-else
-  BUILD_PERFMON_IA64_TRUE='#'
-  BUILD_PERFMON_IA64_FALSE=
-fi
-
- if test "x`echo $components | grep 'perfnec'`" != "x"; then
-  BUILD_PERFNEC_TRUE=
-  BUILD_PERFNEC_FALSE='#'
-else
-  BUILD_PERFNEC_TRUE='#'
-  BUILD_PERFNEC_FALSE=
-fi
-
  if test "x`echo $components | grep 'powercap'`" != "x"; then
   BUILD_POWERCAP_TRUE=
   BUILD_POWERCAP_FALSE='#'
@@ -22890,26 +21857,6 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BUILD_PERF_EVENT_UNCORE_TRUE}" && test -z "${BUILD_PERF_EVENT_UNCORE_FALSE}"; then
   as_fn_error $? "conditional \"BUILD_PERF_EVENT_UNCORE\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${BUILD_PERFCTR_TRUE}" && test -z "${BUILD_PERFCTR_FALSE}"; then
-  as_fn_error $? "conditional \"BUILD_PERFCTR\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${BUILD_PERFCTR_PPC_TRUE}" && test -z "${BUILD_PERFCTR_PPC_FALSE}"; then
-  as_fn_error $? "conditional \"BUILD_PERFCTR_PPC\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${BUILD_PERFMON2_TRUE}" && test -z "${BUILD_PERFMON2_FALSE}"; then
-  as_fn_error $? "conditional \"BUILD_PERFMON2\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${BUILD_PERFMON_IA64_TRUE}" && test -z "${BUILD_PERFMON_IA64_FALSE}"; then
-  as_fn_error $? "conditional \"BUILD_PERFMON_IA64\" was never defined.
-Usually this means the macro was only invoked conditionally." "$LINENO" 5
-fi
-if test -z "${BUILD_PERFNEC_TRUE}" && test -z "${BUILD_PERFNEC_FALSE}"; then
-  as_fn_error $? "conditional \"BUILD_PERFNEC\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BUILD_POWERCAP_TRUE}" && test -z "${BUILD_POWERCAP_FALSE}"; then
@@ -23939,11 +22886,8 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "libtool") CONFIG_COMMANDS="$CONFIG_COMMANDS libtool" ;;
     "external/libpfm4") CONFIG_LINKS="$CONFIG_LINKS external/libpfm4:$srcdir/external/libpfm4" ;;
-    "external/libpfm-3.y") CONFIG_LINKS="$CONFIG_LINKS external/libpfm-3.y:$srcdir/external/libpfm-3.y" ;;
     "src/freebsd/freebsd-config.h") CONFIG_FILES="$CONFIG_FILES src/freebsd/freebsd-config.h" ;;
     "src/powerpc_events.h") CONFIG_LINKS="$CONFIG_LINKS src/powerpc_events.h:$with_arch_events_h" ;;
-    "src/components/perfctr_ppc/powerpc_events.h") CONFIG_LINKS="$CONFIG_LINKS src/components/perfctr_ppc/powerpc_events.h:$with_arch_events_h" ;;
-    "src/components/perfctr_ppc/powerpc_events.c") CONFIG_LINKS="$CONFIG_LINKS src/components/perfctr_ppc/powerpc_events.c:$with_arch_events_c" ;;
     "src/os-lock.h") CONFIG_LINKS="$CONFIG_LINKS src/os-lock.h:$oslock" ;;
     "src/os-context.h") CONFIG_LINKS="$CONFIG_LINKS src/os-context.h:$oscontext" ;;
     "src/cpu_component.c") CONFIG_LINKS="$CONFIG_LINKS src/cpu_component.c:$with_cpu_component" ;;

@@ -38,11 +38,7 @@ export ARCH
 export OPTIM
 
 SUBDIRS = $(with_perf_lib_subdir)
-DIST_SUBDIRS = external/libpfm4       \
-               external/libpfm-3.y    \
-               external/libperfnec    \
-               external/perfctr-2.6.x \
-               external/perfctr-2.7.x
+DIST_SUBDIRS = external/libpfm4
 
 lib_LTLIBRARIES = lib/lib@PAPILIBNAME@.la
 lib_lib@PAPILIBNAME@_la_SOURCES      = $(papi_sources)

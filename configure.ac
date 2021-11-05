@@ -65,7 +65,6 @@ AM_CONDITIONAL([BUILD_SHARED_LIBS],[test "x$enable_shared" = xyes])
 #        these should be removed because support ancient systems that no
 #        longer exist.
 AC_CONFIG_LINKS([external/libpfm4:$srcdir/external/libpfm4])
-AC_CONFIG_LINKS([external/libpfm-3.y:$srcdir/external/libpfm-3.y])
 
 # FIXME: is this really used anywhere?
 AC_MSG_CHECKING([for perf_event workaround level])
@@ -198,16 +197,6 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS in
         with_perf_lib_ver=4
         with_perf_lib_emb=y
         ;;
-    power5,linux*    \
-    | power5+,linux* \
-    | power6,linux*  \
-    | power7,linux*  \
-    | ppc970,linux*)
-        with_perf_api=perfctr
-        with_perf_lib=perfctr
-        with_perf_lib_ver=7
-        with_perf_lib_emb=y
-        ;;
     bgp,cnk)
         with_perf_api=bgpm
         with_perf_lib=bgpm
@@ -217,13 +206,6 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS in
         with_perf_api=bgpm
         with_perf_lib=bgpm
         with_perf_lib_emb=n
-        ;;
-    itanium2,linux* \
-    | montecito,linux)
-        with_perf_api=perfmon
-        with_perf_lib=pfm
-        with_perf_lib_ver=3
-        with_perf_lib_emb=y
         ;;
     ultra,solaris* \
     | niagara2,solaris*)
@@ -1042,8 +1024,6 @@ AC_ARG_WITH([perf-api],
             [
    --with-perf-api=interface Specify the performance interface to use.
         perf_events     - Linux Performance Events interface
-        perfmon         - Linux Performance Monitoring interface
-        perfctr         - Linux legacy Performance Counters interface
         bgpm            - Blue Gene Performance Monitoring interface
         cpc             - Solaris CPU Performance Counters interface
         pmc             - FreeBSD Performance Monitoring Counters interface
@@ -1051,7 +1031,7 @@ AC_ARG_WITH([perf-api],
             ],
             [
              case "$with_perf_api" in
-                 perf_events|perfmon|perfctr|bgpm|cpc|pmc|pmapi)
+                 perf_events|bgpm|cpc|pmc|pmapi)
                     ;;
                  *)
                     AC_MSG_RESULT([none])
@@ -1070,7 +1050,6 @@ AC_ARG_WITH([perf-lib],
             [
    --with-perf-lib=library Specify the CPU performance library to use.
         pfm             - Linux Performance Monitoring library
-        perfctr         - Linux legacy Performance Counters library
         bgpm            - Blue Gene Performance Monitoring library
         cpc             - Solaris CPU Performance Counters library
         pmc             - FreeBSD Performance Monitoring Counters library
@@ -1078,7 +1057,7 @@ AC_ARG_WITH([perf-lib],
             ],
             [
              case "$with_perf_lib" in
-                 pfm|perfctr|bgpm|cpc|pmc)
+                 pfm|bgpm|cpc|pmc)
                     ;;
                  *)
                     AC_MSG_ERROR([lib$with_perf_lib is not a valid library.])
@@ -1127,18 +1106,6 @@ AC_ARG_WITH([perf-lib-libdir],
 
 # configure compiler flags for picked performance library
 case "$with_perf_lib-$with_perf_lib_ver" in
-    pfm-3)
-        if test "$with_perf_lib_emb" = "y" ; then
-            with_perf_lib_prefix=$srcdir/external/libpfm-3.y
-            with_perf_lib_incdir=$with_perf_lib_prefix/include
-            with_perf_lib_libdir=$with_perf_lib_prefix/lib
-            with_perf_lib_subdir=external/libpfm-3.y
-        else
-            with_perf_lib_incdir=$with_perf_lib_prefix/include
-            with_perf_lib_libdir=$with_perf_lib_prefix/lib
-            with_perf_lib_subdir=
-        fi
-        ;;
     pfm-4)
         if test "$with_perf_lib_emb" = "y" ; then
             with_perf_lib_prefix=$srcdir/external/libpfm4
@@ -1149,35 +1116,6 @@ case "$with_perf_lib-$with_perf_lib_ver" in
             with_perf_lib_incdir=$with_perf_lib_prefix/include
             with_perf_lib_libdir=$with_perf_lib_prefix/lib
             with_perf_lib_subdir=
-        fi
-        ;;
-    perfctr-6)
-        if test "$with_perf_lib_emb" = "y" ; then
-            with_perf_lib_prefix=$srcdir/external/perfctr-2.6.x
-            with_perf_lib_incdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_libdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_libdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_subdir=external/perfctr-2.6.x
-            AX_APPEND_FLAG([-I$with_perf_lib_prefix/linux/include],[CPPFLAGS])
-        else
-            with_perf_lib_incdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_libdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_subdir=
-            AX_APPEND_FLAG([-I$with_perf_lib_prefix/linux/include],[CPPFLAGS])
-        fi
-        ;;
-    perfctr-7)
-        if test "$with_perf_lib_emb" = "y" ; then
-            with_perf_lib_prefix=$srcdir/external/perfctr-2.7.x
-            with_perf_lib_incdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_libdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_subdir=external/perfctr-2.7.x
-            AX_APPEND_FLAG([-I$with_perf_lib_prefix/linux/include],[CPPFLAGS])
-        else
-            with_perf_lib_incdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_libdir=$with_perf_lib_prefix/usr.lib
-            with_perf_lib_subdir=
-            AX_APPEND_FLAG([-I$with_perf_lib_prefix/linux/include],[CPPFLAGS])
         fi
         ;;
     bgpm-*)
@@ -1239,162 +1177,6 @@ case "$PAPI_HOST_OS,$with_perf_api,$with_perf_lib-$with_perf_lib_ver" in
                                    [AC_MSG_ERROR([libpmapi.a not found, rerun configure with different flags])])
                      ])
         AC_MSG_RESULT([found])
-        ;;
-    linux*,perfctr,perfctr-6 \
-    | linux*,perfctr,perfctr-7)
-        if test "$with_cross_compile" = "no" -a "$with_perf_lib_emb" = "no" ; then
-            AC_MSG_CHECKING([for libperfctr.h])
-            AC_CHECK_HEADERS([libperfctr.h])
-            if test "$ac_cv_header_libperfctr_h" = "no" ; then
-                AC_MSG_ERROR([libperfctr.h not found, rerun configure with different flags])
-            fi
-            AC_MSG_RESULT([found])
-
-            AC_MSG_CHECKING([for libperfctr])
-            AC_CHECK_LIB([perfctr],[vperfctr_open])
-            if test "$ac_cv_lib_perfctr_vperfctr_open" = "yes" ; then
-                AX_VAR_PUSHVALUE([CFLAGS],[-static])
-                AC_TRY_RUN([
-                            #include <stdlib.h>
-                            #include "libperfctr.h"
-                            int main() {
-                                if ((PERFCTR_ABI_VERSION >> 24) != 5)
-                                    exit(1);
-                                exit(0);
-                            }
-                           ],
-                           [with_perfctr=6],
-                           [with_perfctr=7])
-                AX_VAR_POPVALUE([CFLAGS])
-                if test "$with_perfctr" != "$with_perf_lib_ver" ; then
-                    # AC_MSG_WARN([$with_perf_lib: detected and user defined versions do not match])
-                    with_perf_lib_ver=$with_perfctr
-                fi
-            else
-                AC_MSG_ERROR([libperfctr not found, rerun configure with different flags])
-            fi
-            AC_MSG_RESULT([found])
-        else
-            AC_DEFINE([HAVE_LIBPERFCTR_H],[1],[Define to 1 if have perfctr header file])
-        fi
-        ;;
-    linux*,perfmon,pfm-3)
-        # first check performance interface version if provided
-        if test "x$with_perf_api_ver" != "x" ; then
-            with_perfmon_ver=`echo $with_perf_api_ver | sed 's/^[ \t]*//;s/[ \t]*$//'`
-            with_perfmon_ver=`echo $with_perfmon_ver | grep -e '[[1-9]]\.[[0-9]][0-9]]*'`
-            if test "x$with_perfmon_ver" = "x" ; then
-                AC_MSG_ERROR([Badly formed perfmon version string.])
-            fi
-        fi
-
-        # or, if not, try detecting if automatically
-        if test "$with_cross_compile" = "no" -a "$with_perf_lib_emb" = "no" ; then
-            if test "x$with_perf_api_ver" = "x" ; then
-                AC_CHECK_FILE([/proc/perfmon],
-                              [with_perfmon_ver=`cat /proc/perfmon | grep version | cut -d: -f2`],
-                              [with_perfmon_ver=0])
-            fi
-        fi
-
-        # configure flags for matching performance library and api version
-        if test "x$with_perfmon_ver" != "x" ; then
-            with_perfmon_ver=`echo $with_perfmon_ver | sed 's/\.//'`
-            if test "$with_perfmon_ver" -gt 20 -a "$with_perfmon_ver" -lt 25 ; then
-                CONFIG_PFMLIB_OLD_PFMV2=y
-                AC_SUBST(CONFIG_PFMLIB_OLD_PFMV2)
-            fi
-        fi
-
-        # check performance library
-        if test "$with_cross_compile" = "no" -a "$with_perf_lib_emb" = "no" ; then
-            AC_CHECK_LIB([pfm],[pfm_initialize])
-            if test "$ac_cv_lib_pfm_pfm_initialize" = "yes" ; then
-                AC_CHECK_HEADERS([perfmon/pfmlib.h],
-                                 [
-                                  if test "$host_cpu" = "ia64"; then
-                                      AC_CHECK_HEADERS([perfmon/pfmlib_montecito.h],,
-                                                       [AC_MSG_ERROR([pfmlib_montecito.h not found])])
-                                  fi
-                                  AC_CHECK_FUNC([pfm_get_event_description],
-                                                [AC_DEFINE([HAVE_PFM_GET_EVENT_DESCRIPTION],
-                                                           [1],
-                                                           [event description function])])
-                                  AC_CHECK_MEMBER([pfmlib_reg_t.reg_evt_idx],
-                                                  [AC_DEFINE([HAVE_PFM_REG_EVT_IDX],
-                                                             [1],
-                                                             [old reg_evt_idx])
-                                                  ],,
-                                                  [#include "perfmon/pfmlib.h"])
-                                  AC_CHECK_MEMBER([pfmlib_output_param_t.pfp_pmd_count],
-                                                  [AC_DEFINE([HAVE_PFMLIB_OUTPUT_PFP_PMD_COUNT],
-                                                             [1],
-                                                             [new pfmlib_output_param_t])
-                                                  ],,
-                                                  [#include "perfmon/pfmlib.h"])
-                                  AC_CHECK_MEMBER([pfm_msg_t.type],
-                                                  [AC_DEFINE([HAVE_PFM_MSG_TYPE],
-                                                             [1],
-                                                             [new pfm_msg_t])
-                                                  ],,
-                                                  [#include "perfmon/perfmon.h"])
-                                 ],
-                                 [
-                                  AC_MSG_ERROR([perfmon/pfmlib.h not found, rerun configure with different flags])
-                                 ])
-            else
-                AC_MSG_ERROR([libpfm not found, rerun configure with different flags])
-            fi
-        else
-            AC_DEFINE([HAVE_PERFMON_PFMLIB_MONTECITO_H],[1],[Montecito headers])
-            AC_DEFINE([HAVE_PFM_GET_EVENT_DESCRIPTION],[1],[event description function])
-            AC_DEFINE([HAVE_PFMLIB_OUTPUT_PFP_PMD_COUNT],[1],[new pfmlib_output_param_t])
-        fi
-        ;;
-    linux*,perfctr,pfm-3)
-        if test "$with_cross_compile" = "no" -a "$with_perf_lib_emb" = "no" ; then
-            AC_CHECK_LIB([pfm], [pfm_initialize])
-            if test "$ac_cv_lib_pfm_pfm_initialize" = "yes" ; then
-                AC_CHECK_HEADERS([perfmon/pfmlib.h],
-                                 [
-                                  if test "$host_cpu" = "ia64"; then
-                                      AC_CHECK_HEADER([perfmon/pfmlib_montecito.h],,
-                                                      [AC_MSG_ERROR([pfmlib_montecito.h not found])])
-                                  fi
-                                  AC_CHECK_FUNC([pfm_get_event_description],
-                                                [AC_DEFINE([HAVE_PFM_GET_EVENT_DESCRIPTION],
-                                                           [1],
-                                                           [event description function])])
-                                  AC_CHECK_MEMBER([pfmlib_reg_t.reg_evt_idx],
-                                                  [AC_DEFINE([HAVE_PFM_REG_EVT_IDX],
-                                                             [1],
-                                                             [old reg_evt_idx])
-                                                  ],,
-                                                  [#include "perfmon/pfmlib.h"])
-                                  AC_CHECK_MEMBER([pfmlib_output_param_t.pfp_pmd_count],
-                                                  [AC_DEFINE([HAVE_PFMLIB_OUTPUT_PFP_PMD_COUNT],
-                                                             [1],
-                                                             [new pfmlib_output_param_t])
-                                                  ],,
-                                                  [#include "perfmon/pfmlib.h"])
-                                  AC_CHECK_MEMBER([pfm_msg_t.type],
-                                                  [AC_DEFINE([HAVE_PFM_MSG_TYPE],
-                                                             [1],
-                                                             [new pfm_msg_t])
-                                                  ],,
-                                                  [#include "perfmon/perfmon.h"])
-                                 ],
-                                 [
-                                  AC_MSG_ERROR([perfmon/pfmlib.h not found, rerun configure with different flags])
-                                 ])
-            else
-                AC_MSG_ERROR([libpfm not found, rerun configure with different flags])
-            fi
-        else
-            AC_DEFINE([HAVE_PERFMON_PFMLIB_MONTECITO_H],[1],[Montecito headers])
-            AC_DEFINE([HAVE_PFM_GET_EVENT_DESCRIPTION],[1],[event description function])
-            AC_DEFINE([HAVE_PFMLIB_OUTPUT_PFP_PMD_COUNT],[1],[new pfmlib_output_param_t])
-        fi
         ;;
     linux*,perf_events,pfm-4)
         # check performance library
@@ -1653,70 +1435,6 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
         with_cpu_vector=_papi_freebsd_vector
         with_papi_events_csv="$srcdir/src/freebsd/freebsd_events.csv"
         ;;
-    ia64,linux*,perfmon,pfm     \
-    | itanium2,linux*,perfmon,pfm \
-    | montecito,linux*,perfmon,pfm)
-        oslock="$srcdir/src/linux/linux-lock.h"
-        oscontext="$srcdir/src/linux/linux-context.h"
-        with_cpu_component=$srcdir/src/dummy_cpu_component.c
-        with_papi_events_csv="$srcdir/src/papi_events.csv"
-
-        with_cpu_model=3
-        if test "$PAPI_HOST_SYSTEM" = "itanium2" ; then
-            with_cpu_model=2
-        fi
-
-        AX_APPEND_FLAG([-DITANIUM$with_cpu_model],[CPPFLAGS])
-        AX_APPEND_FLAG([-DITANIUM$with_cpu_model],[FFLAGS])
-
-        AX_APPEND_FLAG([perfmon_ia64],[components])
-        ;;
-    x86*,linux*,perfctr,pfm)
-        oslock="$srcdir/src/linux/linux-lock.h"
-        oscontext="$srcdir/src/linux/linux-context.h"
-        with_cpu_component=$srcdir/src/dummy_cpu_component.c
-        with_papi_events_csv="$srcdir/src/papi_events.csv"
-
-        AX_APPEND_FLAG([perfctr],[components])
-        ;;
-    power5,linux*,perfctr,pfm    \
-    | power5+,linux*,perfctr,pfm \
-    | power6,linux*,perfctr,pfm  \
-    | power7,linux*,perfctr,pfm  \
-    | ppc970,linux*,perfctr,pfm)
-        oslock="$srcdir/src/linux/linux-lock.h"
-        oscontext="$srcdir/src/linux/linux-context.h"
-        with_cpu_component=$srcdir/src/dummy_cpu_component.c
-        with_papi_events_csv="$srcdir/src/papi_events.csv"
-
-        if test "$PAPI_HOST_SYSTEM" = "power5" ; then
-            with_cpu_model=POWER5
-            with_arch_events_h=$srcdir/src/components/perfctr_ppc/power5_events.h
-            with_arch_events_c=$srcdir/src/components/perfctr_ppc/power5_events_map.c
-        elif test "$PAPI_HOST_SYSTEM" = "power5+" ; then
-            with_cpu_model=POWER5+
-            with_arch_events_h=$srcdir/src/components/perfctr_ppc/power5+_events.h
-            with_arch_events_c=$srcdir/src/components/perfctr_ppc/power5+_events_map.c
-        elif test "$PAPI_HOST_SYSTEM" = "power6" ; then
-            with_cpu_model=POWER6
-            with_arch_events_h=$srcdir/src/components/perfctr_ppc/power6_events.h
-            with_arch_events_c=$srcdir/src/components/perfctr_ppc/power6_events_map.c
-        elif test "$PAPI_HOST_SYSTEM" = "power7" ; then
-            with_cpu_model=POWER7
-            with_arch_events_h=$srcdir/src/components/perfctr_ppc/power7_events.h
-            with_arch_events_c=$srcdir/src/components/perfctr_ppc/power7_events_map.c
-        elif test "$PAPI_HOST_SYSTEM" = "ppc970" ; then
-            with_cpu_model=PPC970
-            with_arch_events_h=$srcdir/src/components/perfctr_ppc/ppc970_events.h
-            with_arch_events_c=$srcdir/src/components/perfctr_ppc/ppc970_events_map.c
-        fi
-
-        AX_APPEND_FLAG([-DPPC64 -D_$with_cpu_model -D__perfctr__],[CPPFLAGS])
-        AX_APPEND_FLAG([perfctr_ppc],[components])
-
-        AC_CONFIG_LINKS([src/components/perfctr_ppc/powerpc_events.h:$with_arch_events_h])
-        AC_CONFIG_LINKS([src/components/perfctr_ppc/powerpc_events.c:$with_arch_events_c])
-        ;;
     *,linux*,perf_events,pfm)
         oslock="$srcdir/src/linux/linux-lock.h"
         oscontext="$srcdir/src/linux/linux-context.h"
@@ -1727,32 +1445,6 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
         if test "$enable_perf_event_uncore" = "yes" ; then
             AX_APPEND_FLAG([perf_event_uncore],[components])
         fi
-        ;;
-    *,linux*,perfmon,pfm)
-        oslock="$srcdir/src/linux/linux-lock.h"
-        oscontext="$srcdir/src/linux/linux-context.h"
-        with_cpu_component="$srcdir/src/components/perfmon2/perfmon.c"
-        with_cpu_vector=_papi_pfm_vector
-        with_papi_events_csv="$srcdir/src/papi_events.csv"
-
-        AX_APPEND_FLAG([perfmon2],[components])
-        ;;
-    *,cle,perfmon,pfm)
-        oslock="$srcdir/src/linux/linux-lock.h"
-        oscontext="$srcdir/src/linux/linux-context.h"
-        with_cpu_component="$srcdir/src/components/perfmon2/perfmon.c"
-        with_cpu_vector=_papi_pfm_vector
-        with_papi_events_csv="$srcdir/src/papi_events.csv"
-
-        AX_APPEND_FLAG([-D__crayxt],[CPPFLAGS])
-        ;;
-    *,linux*,perfctr,perfctr)
-        oslock="$srcdir/src/linux/linux-lock.h"
-        oscontext="$srcdir/src/linux/linux-context.h"
-        with_cpu_component=$srcdir/src/dummy_cpu_component.c
-        with_papi_events_csv="$srcdir/src/papi_events.csv"
-
-        AX_APPEND_FLAG([perfctr],[components])
         ;;
     *,linux*,*,*) # linux generic
         oslock="$srcdir/src/linux/linux-lock.h"
@@ -1913,16 +1605,6 @@ AM_CONDITIONAL([BUILD_PERF_EVENT],
                [test "x`echo $components | grep 'perf_event'`" != "x"])
 AM_CONDITIONAL([BUILD_PERF_EVENT_UNCORE],
                [test "x`echo $components | grep 'perf_event_uncore'`" != "x"])
-AM_CONDITIONAL([BUILD_PERFCTR],
-               [test "x`echo $components | grep 'perfctr'`" != "x"])
-AM_CONDITIONAL([BUILD_PERFCTR_PPC],
-               [test "x`echo $components | grep 'perfctr_ppc'`" != "x"])
-AM_CONDITIONAL([BUILD_PERFMON2],
-               [test "x`echo $components | grep 'perfmon2'`" != "x"])
-AM_CONDITIONAL([BUILD_PERFMON_IA64],
-               [test "x`echo $components | grep 'perfmon_ia64'`" != "x"])
-AM_CONDITIONAL([BUILD_PERFNEC],
-               [test "x`echo $components | grep 'perfnec'`" != "x"])
 AM_CONDITIONAL([BUILD_POWERCAP],
                [test "x`echo $components | grep 'powercap'`" != "x"])
 AM_CONDITIONAL([BUILD_POWERCAP_PPC],

@@ -48,12 +48,6 @@
 /* Define to 1 if you have the `cpc' library (-lcpc). */
 #undef HAVE_LIBCPC
 
-/* Define to 1 if you have the `perfctr' library (-lperfctr). */
-#undef HAVE_LIBPERFCTR
-
-/* Define to 1 if have perfctr header file */
-#undef HAVE_LIBPERFCTR_H
-
 /* Define to 1 if you have the `pfm' library (-lpfm). */
 #undef HAVE_LIBPFM
 
