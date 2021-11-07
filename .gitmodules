@@ -1,0 +1,3 @@
+[submodule "external/libpfm4"]
+	path = external/libpfm4
+	url = https://bitbucket.org/congiu/libpfm4.git

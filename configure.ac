@@ -59,13 +59,6 @@ AC_SUBST(PAPI_VERSION)
 LT_INIT()
 AM_CONDITIONAL([BUILD_SHARED_LIBS],[test "x$enable_shared" = xyes])
 
-# Add links to external libraries in build directory
-# FIXME: move libpfm4 to autotools and make libperfnec part of the
-#        NEC component. As far as the rest of the libraries is concerned
-#        these should be removed because support ancient systems that no
-#        longer exist.
-AC_CONFIG_LINKS([external/libpfm4:$srcdir/external/libpfm4])
-
 # FIXME: is this really used anywhere?
 AC_MSG_CHECKING([for perf_event workaround level])
 AC_ARG_WITH([assumed-kernel],
@@ -1112,6 +1105,9 @@ case "$with_perf_lib-$with_perf_lib_ver" in
             with_perf_lib_incdir=$with_perf_lib_prefix/include
             with_perf_lib_libdir=$with_perf_lib_prefix/lib
             with_perf_lib_subdir=external/libpfm4
+            AC_CONFIG_SUBDIRS([external/libpfm4])
+            libpfm4_la="libpfm4.la"
+            AC_SUBST([libpfm4_la])
         else
             with_perf_lib_incdir=$with_perf_lib_prefix/include
             with_perf_lib_libdir=$with_perf_lib_prefix/lib
