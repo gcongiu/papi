@@ -458,28 +458,6 @@ static int _rocm_linkRocmLibraries(void)
 
     // ROCP_METRICS passed.
 
-    env_value = getenv("ROCP_HSA_INTERCEPT");
-    if (env_value == NULL) {
-        int err = setenv("ROCP_HSA_INTERCEPT", "1", 0);
-        if (err != 0) {
-            strErr=snprintf(_rocm_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN,
-            "Cannot set Env. Var. ROCP_HSA_INTERCEPT=1; required for rocprofiler operation. Must be set manually.");
-            _rocm_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
-            if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
-            return(PAPI_ENOSUPP);   // Wouldn't have any events.
-        }
-    } else {
-        if (strcmp(env_value, "1") != 0) {
-            strErr=snprintf(_rocm_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN,
-            "Env. Var. ROCP_HSA_INTERCEPT='%s' is not a supported value; must be '1'.", env_value);
-            _rocm_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
-            if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
-            return(PAPI_ENOSUPP);   // Wouldn't have any events.
-        }
-    }
-
-    // ROCP_HSA_INTERCEPT passed.
-
     env_value = getenv("ROCPROFILER_LOG");
     if (env_value == NULL) {
         int err = setenv("ROCPROFILER_LOG", "1", 0);
