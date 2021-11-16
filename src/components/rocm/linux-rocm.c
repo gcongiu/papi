@@ -332,33 +332,16 @@ static int _rocm_linkRocmLibraries(void)
     }
 
     // Step 2: Try system paths, will work with Spack, LD_LIBRARY_PATH, default paths.
-    if (dl2 == NULL) {                                                  // No override,
-        dl2 = dlopen("librocprofiler64.so", RTLD_NOW | RTLD_GLOBAL);    // Try system paths.
-    }
-
-    // Step 3: Try the explicit install default.
-    for (i=0; i<rocm_roots; i++) {
-        if (dl2 == NULL && rocm_root[i] != NULL) {                          // if root given, try it.
-            strErr=snprintf(path_name, PATH_MAX, "%s/lib/librocprofiler64.so", rocm_root[i]);  // PAPI Root check.
-            path_name[PATH_MAX-1]=0;
-            if (strErr > PATH_MAX) HANDLE_STRING_ERROR;
-            dl2 = dlopen(path_name, RTLD_NOW | RTLD_GLOBAL);             // Try to open that path.
-        }
-    }
-
-    // Step 4: Try the derived hsa_root.
-    if (dl2 == NULL && hsa_root[0] != 0) {                           // if plausible root discovered, try it.
-        strErr=snprintf(path_name, PATH_MAX, "%s/lib/librocprofiler64.so", hsa_root);
-        path_name[PATH_MAX-1]=0;
-        if (strErr > PATH_MAX) HANDLE_STRING_ERROR;
-        dl2 = dlopen(path_name, RTLD_NOW | RTLD_GLOBAL);             // Try to open that path.
+    env_value = getenv("HSA_TOOLS_LIB");
+    if (dl2 == NULL && env_value) {                                                  // No override,
+        dl2 = dlopen(env_value, RTLD_NOW | RTLD_GLOBAL);    // Try system paths.
     }
 
     // Check for failure.
     if (dl2 == NULL) {
         strErr=snprintf(_rocm_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN,
-        "librocprofiler64.so not found. Need LD_LIBRARY_PATH set, or "
-        "Env Var PAPI_ROCM_ROOT set, or module load rocm.");
+        "librocprofiler64.so not found. Need HSA_TOOLS_LIB set, or "
+        "Env Var PAPI_ROCM_PROF set.");
         _rocm_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
         if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
         return(PAPI_ENOSUPP);
@@ -545,27 +528,6 @@ static int _rocm_linkRocmLibraries(void)
     }
 
     // AQLPROFILE_READ_API is set.
-
-    // Note we still have a valid rocprofiler_info. dli_fname, we need to strip away path info to set HSA_TOOLS_LIB.
-    // Actual example:  rocprofiler_info dli_fname='/opt/rocm/rocprofiler/lib/librocprofiler64.so'
-    env_value = getenv("HSA_TOOLS_LIB");
-    if (env_value == NULL) {
-        int i=strlen(rocprofiler_info.dli_fname);
-        while (i>1 && rocprofiler_info.dli_fname[i-1] != '/') i--;
-        // fprintf(stderr, "for HSA_TOOLS_LIB discovered name is '%s'.\n", rocprofiler_info.dli_fname+i);
-        int err = setenv("HSA_TOOLS_LIB", rocprofiler_info.dli_fname+i, 0);
-        if (err != 0) {
-            strErr=snprintf(_rocm_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN,
-            "Cannot set Env. Var. HSA_TOOLS_LIB='%s' required for rocprofiler operation. Must be set manually.", rocprofiler_info.dli_fname+i);
-            _rocm_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;
-            if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
-            return(PAPI_ENOSUPP);   // Wouldn't have any events.
-        }
-    } else {
-        // We don't analyze the name used; the environment variable was found.
-    }
-
-    // HSA_TOOLS_LIB passed.
 
     return (PAPI_OK);
 }
