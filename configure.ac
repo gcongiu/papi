@@ -1100,6 +1100,7 @@ AC_ARG_WITH([perf-lib-libdir],
             ])
 
 # configure compiler flags for picked performance library
+with_perf_lib_name=
 case "$with_perf_lib-$with_perf_lib_ver" in
     pfm-4)
         if test "$with_perf_lib_emb" = "y" ; then
@@ -1114,6 +1115,7 @@ case "$with_perf_lib-$with_perf_lib_ver" in
             with_perf_lib_incdir=$with_perf_lib_prefix/include
             with_perf_lib_libdir=$with_perf_lib_prefix/lib
             with_perf_lib_subdir=
+            with_perf_lib_name=$with_perf_lib
         fi
         ;;
     bgpm-*)
@@ -1130,9 +1132,9 @@ case "$with_perf_lib-$with_perf_lib_ver" in
         if test "x$with_perf_lib_prefix" != "x" ; then
             with_perf_lib_incdir=$with_perf_lib_prefix/include
             with_perf_lib_libdir=$with_perf_lib_prefix/lib
-            # the following is needed as libcpc and libcpc2 are distinguished
-            with_perf_lib=$with_perf_lib$with_perf_lib_ver
             with_perf_lib_subdir=
+            # the following is needed as libcpc and libcpc2 are distinguished
+            with_perf_lib_name=$with_perf_lib$with_perf_lib_ver
         fi
         ;;
     pmc-*)
@@ -1162,7 +1164,10 @@ esac
 # Add performance library to compile flags
 AX_APPEND_FLAG([-I$with_perf_lib_incdir],[CPPFLAGS])
 AX_APPEND_FLAG([-L$with_perf_lib_libdir],[LDFLAGS])
-AX_APPEND_FLAG([-l$with_perf_lib],[LIBS])
+
+if test "x$with_perf_lib_name" != "x" ; then
+    AX_APPEND_FLAG([-l$with_perf_lib_name],[LIBS])
+fi
 
 # check combinations of OS, performance API and library
 case "$PAPI_HOST_OS,$with_perf_api,$with_perf_lib-$with_perf_lib_ver" in
@@ -1345,6 +1350,7 @@ AC_ARG_ENABLE(perf_event_uncore,
 ##################################################
 #       Final configuration for the build
 ##################################################
+AC_MSG_NOTICE([Building PAPI for $PAPI_HOST_SYSTEM+$PAPI_HOST_OS with $with_perf_api+$with_perf_lib.])
 case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
     bgp,cnk,bgpm,bgpm)
         oslock=$srcdir/src/bgp/linux-bgp-lock.h
