@@ -340,7 +340,8 @@ else
         AX_VAR_POPVALUE([LIBS])
         if test "${has_lrt_lpthd}" = "yes" ; then
             AC_MSG_RESULT([found])
-            AX_APPEND_FLAG([-lrt -lpthread],[LIBS])
+            AX_APPEND_FLAG([-lrt],[LIBS])
+            AX_APPEND_FLAG([-lpthread],[LIBS])
         else
             AC_MSG_ERROR([cannot find timer_create and timer_*ettime symbols neither in the base system libraries nor in -lrt, nor in -lrt -lpthread])
         fi
@@ -482,7 +483,8 @@ case "$with_debug" in
             AX_APPEND_FLAG([-g3],[CFLAGS])
         fi
         AX_APPEND_FLAG([-O0],[CFLAGS])
-        AX_APPEND_FLAG([-DDEBUG -DPAPI_NO_MEMORY_MANAGEMENT],[CPPFLAGS])
+        AX_APPEND_FLAG([-DDEBUG],[CPPFLAGS])
+        AX_APPEND_FLAG([-DPAPI_NO_MEMORY_MANAGEMENT],[CPPFLAGS])
         ;;
     memory)
         if test "$CC_NAME" = "gcc" ; then
@@ -1106,8 +1108,8 @@ case "$with_perf_lib-$with_perf_lib_ver" in
             with_perf_lib_libdir=$with_perf_lib_prefix/lib
             with_perf_lib_subdir=external/libpfm4
             AC_CONFIG_SUBDIRS([external/libpfm4])
-            libpfm4_la="libpfm4.la"
-            AC_SUBST([libpfm4_la])
+            libpfm_la=external/libpfm4/libpfm.la
+            AC_SUBST([libpfm_la])
         else
             with_perf_lib_incdir=$with_perf_lib_prefix/include
             with_perf_lib_libdir=$with_perf_lib_prefix/lib
@@ -1351,11 +1353,15 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
         with_cpu_vector=_bgp_vectors
         with_papi_events_csv="$srcdir/src/papi_events.csv"
 
-        AX_APPEND_FLAG([-gdwarf-2 -Wall],[CFLAGS])
+        AX_APPEND_FLAG([-gdwarf-2],[CFLAGS])
+        AX_APPEND_FLAG([-Wall],[CFLAGS])
         AX_APPEND_FLAG([bgp_tests],[with_tests])
         AX_APPEND_FLAG([-L/bgsys/drivers/ppcfloor/runtime/SPI],[LDFLAGS])
         AX_APPEND_FLAG([-lSPI.cna],[LIBS])
-        AX_APPEND_FLAG([-g -gdwarf-2 -O2 -Wall],[FFLAGS])
+        AX_APPEND_FLAG([-g],[FFLAGS])
+        AX_APPEND_FLAG([-gdwarf-2],[FFLAGS])
+        AX_APPEND_FLAG([-O2],[FFLAGS])
+        AX_APPEND_FLAG([-Wall],[FFLAGS])
 
         AX_APPEND_FLAG([bgpm],[components])
         ;;
@@ -1381,7 +1387,8 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
             # By default AIX enforces a limit on heap space
             #( limiting the heap to share the same 256MB memory segment as stack )
             # changing the max data paramater moves the heap off the stack's memory segment
-            AX_APPEND_FLAG([-q64 -bmaxdata:0x07000000000000],[CC])
+            AX_APPEND_FLAG([-q64],[CC])
+            AX_APPEND_FLAG([-bmaxdata:0x07000000000000],[CC])
         else
             # If the issue ever comes up, /dsa requires AIX v5.1 or higher
             # and the Large address-space model (-bmaxdata) requires v4.3 or later
@@ -1411,13 +1418,22 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
         # FIXME: not sure where -q flags should go: CC or CFLAGS
         AX_APPEND_FLAG([-qenum=4],[CFLAGS])
         AX_APPEND_FLAG([-DNO_VARARG_MACRO],[CPPFLAGS])
-        AX_APPEND_FLAG([-D_AIX -D_$(with_cpu_model) -DNEED_FFSLL],[CPPFLAGS])
-        AX_APPEND_FLAG([-DARCH_EVTS -DCOMP_VECTOR=_ppc64_vectors],[CPPFLAGS])
+        AX_APPEND_FLAG([-D_AIX],[CPPFLAGS])
+        AX_APPEND_FLAG([-D_$(with_cpu_model)],[CPPFLAGS])
+        AX_APPEND_FLAG([-DNEED_FFSLL],[CPPFLAGS])
+        AX_APPEND_FLAG([-DARCH_EVTS],[CPPFLAGS])
+        AX_APPEND_FLAG([-DCOMP_VECTOR=_ppc64_vectors],[CPPFLAGS])
         AX_APPEND_FLAG([-DSTATIC_PAPI_EVENTS_TABLE],[CPPFLAGS])
-        AX_APPEND_FLAG([-qmaxmem=-1 -qarch=$(with_cpu_option) -qtune=$(with_cpu_option) -qlanglvl=extended],[CFLAGS])
-        AX_APPEND_FLAG([-WF,-D_$(with_cpu_model) -WF,-DARCH_EVTS],[FFLAGS])
-        AX_APPEND_FLAG([-qsmp -qsmp=omp],[CFLAGS])
-        AX_APPEND_FLAG([-G -bnoentry],[LDFLAGS]) # this might not be necessary with libtool
+        AX_APPEND_FLAG([-qmaxmem=-1],[CFLAGS])
+        AX_APPEND_FLAG([-qarch=$(with_cpu_option)],[CFLAGS])
+        AX_APPEND_FLAG([-qtune=$(with_cpu_option)],[CFLAGS])
+        AX_APPEND_FLAG([-qlanglvl=extended],[CFLAGS])
+        AX_APPEND_FLAG([-WF,-D_$(with_cpu_model)],[FFLAGS])
+        AX_APPEND_FLAG([-WF,-DARCH_EVTS],[FFLAGS])
+        AX_APPEND_FLAG([-qsmp],[CFLAGS])
+        AX_APPEND_FLAG([-qsmp=omp],[CFLAGS])
+        AX_APPEND_FLAG([-G],[LDFLAGS]) # this might not be necessary with libtool
+        AX_APPEND_FLAG([-bnoentry],[LDFLAGS]) # this might not be necessary with libtool
 
         AC_CHECK_PROGS([MPICC],[mpicc mpcc],[])
         F77=xlf
@@ -1501,14 +1517,16 @@ AC_CONFIG_COMMANDS([gen_papi_events_table],
 
 AC_CONFIG_COMMANDS_PRE([sh $srcdir/maint/gen_comp_makefile.sh $srcdir/src/components])
 
-AX_APPEND_FLAG([-D_REENTRANT -D_GNU_SOURCE],[CPPFLAGS])
+AX_APPEND_FLAG([-D_REENTRANT],[CPPFLAGS])
+AX_APPEND_FLAG([-D_GNU_SOURCE],[CPPFLAGS])
 if test "$CC_NAME" = "gcc"; then
     AX_APPEND_FLAG([-Wall],[CFLAGS])
 fi
 AX_APPEND_FLAG([-Dlinux],[FFLAGS])
 
 if test "$F77" = "pgf77"; then
-    AX_APPEND_FLAG([-Wall -Mextend],[FFLAGS])
+    AX_APPEND_FLAG([-Wall],[FFLAGS])
+    AX_APPEND_FLAG([-Mextend],[FFLAGS])
 elif test "$F77" = "ifort"; then
     AX_APPEND_FLAG([-warn all],[FFLAGS])
 elif test "$F77" != "xlf"; then

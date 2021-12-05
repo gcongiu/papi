@@ -17,7 +17,7 @@ dist_noinst_SCRIPTS = autogen.sh
 noinst_HEADERS =
 bin_PROGRAMS =
 include_HEADERS =
-external_libs = @libpfm4_la@
+perflib = @libpfm_la@
 
 include $(top_srcdir)/src/Makefile.mk
 
@@ -29,7 +29,7 @@ lib_lib@PAPILIBNAME@_la_SOURCES      = $(papi_sources)
 lib_lib@PAPILIBNAME@_la_CPPFLAGS     = $(AM_CPPFLAGS)
 lib_lib@PAPILIBNAME@_la_CFLAGS       = $(AM_CFLAGS)
 lib_lib@PAPILIBNAME@_la_LDFLAGS      = $(AM_LDFLAGS) $(AM_FFLAGS) $(PAPI_VERSION)
-lib_lib@PAPILIBNAME@_la_LIBADD       = $(LIBS) $(external_libs)
+lib_lib@PAPILIBNAME@_la_LIBADD       = $(LIBS) $(perflib)
 lib_lib@PAPILIBNAME@_la_DEPENDENCIES =
 
 EXTRA_DIST = README.md COPYRIGHT

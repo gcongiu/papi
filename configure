@@ -719,7 +719,7 @@ BUILD_APPIO_TRUE
 components_vector_pointer_list
 components_vector_list
 with_freebsd_pmc_counters
-libpfm4_la
+libpfm_la
 subdirs
 TOOLS_LINK_MODE
 MPICC
@@ -17359,15 +17359,15 @@ $as_echo "found" >&6; }
 if ${LIBS+:} false; then :
 
     case " $LIBS " in #(
-  *" -lrt -lpthread "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : LIBS already contains -lrt -lpthread"; } >&5
-  (: LIBS already contains -lrt -lpthread) 2>&5
+  *" -lrt "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : LIBS already contains -lrt"; } >&5
+  (: LIBS already contains -lrt) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append LIBS " -lrt -lpthread"
+            as_fn_append LIBS " -lrt"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : LIBS=\"\$LIBS\""; } >&5
   (: LIBS="$LIBS") 2>&5
   ac_status=$?
@@ -17378,7 +17378,39 @@ esac
 
 else
 
-        LIBS=-lrt -lpthread
+        LIBS=-lrt
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : LIBS=\"\$LIBS\""; } >&5
+  (: LIBS="$LIBS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${LIBS+:} false; then :
+
+    case " $LIBS " in #(
+  *" -lpthread "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : LIBS already contains -lpthread"; } >&5
+  (: LIBS already contains -lpthread) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append LIBS " -lpthread"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : LIBS=\"\$LIBS\""; } >&5
+  (: LIBS="$LIBS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        LIBS=-lpthread
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : LIBS=\"\$LIBS\""; } >&5
   (: LIBS="$LIBS") 2>&5
   ac_status=$?
@@ -17674,15 +17706,15 @@ fi
 if ${CPPFLAGS+:} false; then :
 
     case " $CPPFLAGS " in #(
-  *" -DDEBUG -DPAPI_NO_MEMORY_MANAGEMENT "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -DDEBUG -DPAPI_NO_MEMORY_MANAGEMENT"; } >&5
-  (: CPPFLAGS already contains -DDEBUG -DPAPI_NO_MEMORY_MANAGEMENT) 2>&5
+  *" -DDEBUG "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -DDEBUG"; } >&5
+  (: CPPFLAGS already contains -DDEBUG) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append CPPFLAGS " -DDEBUG -DPAPI_NO_MEMORY_MANAGEMENT"
+            as_fn_append CPPFLAGS " -DDEBUG"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
   (: CPPFLAGS="$CPPFLAGS") 2>&5
   ac_status=$?
@@ -17693,7 +17725,39 @@ esac
 
 else
 
-        CPPFLAGS=-DDEBUG -DPAPI_NO_MEMORY_MANAGEMENT
+        CPPFLAGS=-DDEBUG
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
+  (: CPPFLAGS="$CPPFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${CPPFLAGS+:} false; then :
+
+    case " $CPPFLAGS " in #(
+  *" -DPAPI_NO_MEMORY_MANAGEMENT "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -DPAPI_NO_MEMORY_MANAGEMENT"; } >&5
+  (: CPPFLAGS already contains -DPAPI_NO_MEMORY_MANAGEMENT) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CPPFLAGS " -DPAPI_NO_MEMORY_MANAGEMENT"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
+  (: CPPFLAGS="$CPPFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CPPFLAGS=-DPAPI_NO_MEMORY_MANAGEMENT
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
   (: CPPFLAGS="$CPPFLAGS") 2>&5
   ac_status=$?
@@ -19055,7 +19119,7 @@ case "$with_perf_lib-$with_perf_lib_ver" in
 
 subdirs="$subdirs external/libpfm4"
 
-            libpfm4_la="libpfm4.la"
+            libpfm_la=external/libpfm4/libpfm.la
 
         else
             with_perf_lib_incdir=$with_perf_lib_prefix/include
@@ -19850,15 +19914,15 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
 if ${CFLAGS+:} false; then :
 
     case " $CFLAGS " in #(
-  *" -gdwarf-2 -Wall "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -gdwarf-2 -Wall"; } >&5
-  (: CFLAGS already contains -gdwarf-2 -Wall) 2>&5
+  *" -gdwarf-2 "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -gdwarf-2"; } >&5
+  (: CFLAGS already contains -gdwarf-2) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append CFLAGS " -gdwarf-2 -Wall"
+            as_fn_append CFLAGS " -gdwarf-2"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
   (: CFLAGS="$CFLAGS") 2>&5
   ac_status=$?
@@ -19869,7 +19933,39 @@ esac
 
 else
 
-        CFLAGS=-gdwarf-2 -Wall
+        CFLAGS=-gdwarf-2
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${CFLAGS+:} false; then :
+
+    case " $CFLAGS " in #(
+  *" -Wall "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -Wall"; } >&5
+  (: CFLAGS already contains -Wall) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CFLAGS " -Wall"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CFLAGS=-Wall
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
   (: CFLAGS="$CFLAGS") 2>&5
   ac_status=$?
@@ -19978,15 +20074,15 @@ fi
 if ${FFLAGS+:} false; then :
 
     case " $FFLAGS " in #(
-  *" -g -gdwarf-2 -O2 -Wall "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS already contains -g -gdwarf-2 -O2 -Wall"; } >&5
-  (: FFLAGS already contains -g -gdwarf-2 -O2 -Wall) 2>&5
+  *" -g "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS already contains -g"; } >&5
+  (: FFLAGS already contains -g) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append FFLAGS " -g -gdwarf-2 -O2 -Wall"
+            as_fn_append FFLAGS " -g"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
   (: FFLAGS="$FFLAGS") 2>&5
   ac_status=$?
@@ -19997,7 +20093,103 @@ esac
 
 else
 
-        FFLAGS=-g -gdwarf-2 -O2 -Wall
+        FFLAGS=-g
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
+  (: FFLAGS="$FFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${FFLAGS+:} false; then :
+
+    case " $FFLAGS " in #(
+  *" -gdwarf-2 "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS already contains -gdwarf-2"; } >&5
+  (: FFLAGS already contains -gdwarf-2) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append FFLAGS " -gdwarf-2"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
+  (: FFLAGS="$FFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        FFLAGS=-gdwarf-2
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
+  (: FFLAGS="$FFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${FFLAGS+:} false; then :
+
+    case " $FFLAGS " in #(
+  *" -O2 "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS already contains -O2"; } >&5
+  (: FFLAGS already contains -O2) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append FFLAGS " -O2"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
+  (: FFLAGS="$FFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        FFLAGS=-O2
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
+  (: FFLAGS="$FFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${FFLAGS+:} false; then :
+
+    case " $FFLAGS " in #(
+  *" -Wall "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS already contains -Wall"; } >&5
+  (: FFLAGS already contains -Wall) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append FFLAGS " -Wall"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
+  (: FFLAGS="$FFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        FFLAGS=-Wall
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
   (: FFLAGS="$FFLAGS") 2>&5
   ac_status=$?
@@ -20097,15 +20289,15 @@ fi
 if ${CC+:} false; then :
 
     case " $CC " in #(
-  *" -q64 -bmaxdata:0x07000000000000 "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CC already contains -q64 -bmaxdata:0x07000000000000"; } >&5
-  (: CC already contains -q64 -bmaxdata:0x07000000000000) 2>&5
+  *" -q64 "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CC already contains -q64"; } >&5
+  (: CC already contains -q64) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append CC " -q64 -bmaxdata:0x07000000000000"
+            as_fn_append CC " -q64"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : CC=\"\$CC\""; } >&5
   (: CC="$CC") 2>&5
   ac_status=$?
@@ -20116,7 +20308,39 @@ esac
 
 else
 
-        CC=-q64 -bmaxdata:0x07000000000000
+        CC=-q64
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CC=\"\$CC\""; } >&5
+  (: CC="$CC") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${CC+:} false; then :
+
+    case " $CC " in #(
+  *" -bmaxdata:0x07000000000000 "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CC already contains -bmaxdata:0x07000000000000"; } >&5
+  (: CC already contains -bmaxdata:0x07000000000000) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CC " -bmaxdata:0x07000000000000"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CC=\"\$CC\""; } >&5
+  (: CC="$CC") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CC=-bmaxdata:0x07000000000000
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : CC=\"\$CC\""; } >&5
   (: CC="$CC") 2>&5
   ac_status=$?
@@ -20313,15 +20537,15 @@ fi
 if ${CPPFLAGS+:} false; then :
 
     case " $CPPFLAGS " in #(
-  *" -D_AIX -D_$(with_cpu_model) -DNEED_FFSLL "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -D_AIX -D_\$(with_cpu_model) -DNEED_FFSLL"; } >&5
-  (: CPPFLAGS already contains -D_AIX -D_$(with_cpu_model) -DNEED_FFSLL) 2>&5
+  *" -D_AIX "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -D_AIX"; } >&5
+  (: CPPFLAGS already contains -D_AIX) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append CPPFLAGS " -D_AIX -D_$(with_cpu_model) -DNEED_FFSLL"
+            as_fn_append CPPFLAGS " -D_AIX"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
   (: CPPFLAGS="$CPPFLAGS") 2>&5
   ac_status=$?
@@ -20332,7 +20556,7 @@ esac
 
 else
 
-        CPPFLAGS=-D_AIX -D_$(with_cpu_model) -DNEED_FFSLL
+        CPPFLAGS=-D_AIX
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
   (: CPPFLAGS="$CPPFLAGS") 2>&5
   ac_status=$?
@@ -20345,15 +20569,15 @@ fi
 if ${CPPFLAGS+:} false; then :
 
     case " $CPPFLAGS " in #(
-  *" -DARCH_EVTS -DCOMP_VECTOR=_ppc64_vectors "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -DARCH_EVTS -DCOMP_VECTOR=_ppc64_vectors"; } >&5
-  (: CPPFLAGS already contains -DARCH_EVTS -DCOMP_VECTOR=_ppc64_vectors) 2>&5
+  *" -D_$(with_cpu_model) "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -D_\$(with_cpu_model)"; } >&5
+  (: CPPFLAGS already contains -D_$(with_cpu_model)) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append CPPFLAGS " -DARCH_EVTS -DCOMP_VECTOR=_ppc64_vectors"
+            as_fn_append CPPFLAGS " -D_$(with_cpu_model)"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
   (: CPPFLAGS="$CPPFLAGS") 2>&5
   ac_status=$?
@@ -20364,7 +20588,103 @@ esac
 
 else
 
-        CPPFLAGS=-DARCH_EVTS -DCOMP_VECTOR=_ppc64_vectors
+        CPPFLAGS=-D_$(with_cpu_model)
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
+  (: CPPFLAGS="$CPPFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${CPPFLAGS+:} false; then :
+
+    case " $CPPFLAGS " in #(
+  *" -DNEED_FFSLL "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -DNEED_FFSLL"; } >&5
+  (: CPPFLAGS already contains -DNEED_FFSLL) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CPPFLAGS " -DNEED_FFSLL"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
+  (: CPPFLAGS="$CPPFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CPPFLAGS=-DNEED_FFSLL
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
+  (: CPPFLAGS="$CPPFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${CPPFLAGS+:} false; then :
+
+    case " $CPPFLAGS " in #(
+  *" -DARCH_EVTS "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -DARCH_EVTS"; } >&5
+  (: CPPFLAGS already contains -DARCH_EVTS) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CPPFLAGS " -DARCH_EVTS"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
+  (: CPPFLAGS="$CPPFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CPPFLAGS=-DARCH_EVTS
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
+  (: CPPFLAGS="$CPPFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${CPPFLAGS+:} false; then :
+
+    case " $CPPFLAGS " in #(
+  *" -DCOMP_VECTOR=_ppc64_vectors "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -DCOMP_VECTOR=_ppc64_vectors"; } >&5
+  (: CPPFLAGS already contains -DCOMP_VECTOR=_ppc64_vectors) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CPPFLAGS " -DCOMP_VECTOR=_ppc64_vectors"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
+  (: CPPFLAGS="$CPPFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CPPFLAGS=-DCOMP_VECTOR=_ppc64_vectors
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
   (: CPPFLAGS="$CPPFLAGS") 2>&5
   ac_status=$?
@@ -20409,15 +20729,15 @@ fi
 if ${CFLAGS+:} false; then :
 
     case " $CFLAGS " in #(
-  *" -qmaxmem=-1 -qarch=$(with_cpu_option) -qtune=$(with_cpu_option) -qlanglvl=extended "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -qmaxmem=-1 -qarch=\$(with_cpu_option) -qtune=\$(with_cpu_option) -qlanglvl=extended"; } >&5
-  (: CFLAGS already contains -qmaxmem=-1 -qarch=$(with_cpu_option) -qtune=$(with_cpu_option) -qlanglvl=extended) 2>&5
+  *" -qmaxmem=-1 "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -qmaxmem=-1"; } >&5
+  (: CFLAGS already contains -qmaxmem=-1) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append CFLAGS " -qmaxmem=-1 -qarch=$(with_cpu_option) -qtune=$(with_cpu_option) -qlanglvl=extended"
+            as_fn_append CFLAGS " -qmaxmem=-1"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
   (: CFLAGS="$CFLAGS") 2>&5
   ac_status=$?
@@ -20428,7 +20748,103 @@ esac
 
 else
 
-        CFLAGS=-qmaxmem=-1 -qarch=$(with_cpu_option) -qtune=$(with_cpu_option) -qlanglvl=extended
+        CFLAGS=-qmaxmem=-1
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${CFLAGS+:} false; then :
+
+    case " $CFLAGS " in #(
+  *" -qarch=$(with_cpu_option) "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -qarch=\$(with_cpu_option)"; } >&5
+  (: CFLAGS already contains -qarch=$(with_cpu_option)) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CFLAGS " -qarch=$(with_cpu_option)"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CFLAGS=-qarch=$(with_cpu_option)
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${CFLAGS+:} false; then :
+
+    case " $CFLAGS " in #(
+  *" -qtune=$(with_cpu_option) "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -qtune=\$(with_cpu_option)"; } >&5
+  (: CFLAGS already contains -qtune=$(with_cpu_option)) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CFLAGS " -qtune=$(with_cpu_option)"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CFLAGS=-qtune=$(with_cpu_option)
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${CFLAGS+:} false; then :
+
+    case " $CFLAGS " in #(
+  *" -qlanglvl=extended "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -qlanglvl=extended"; } >&5
+  (: CFLAGS already contains -qlanglvl=extended) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CFLAGS " -qlanglvl=extended"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CFLAGS=-qlanglvl=extended
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
   (: CFLAGS="$CFLAGS") 2>&5
   ac_status=$?
@@ -20441,15 +20857,15 @@ fi
 if ${FFLAGS+:} false; then :
 
     case " $FFLAGS " in #(
-  *" -WF,-D_$(with_cpu_model) -WF,-DARCH_EVTS "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS already contains -WF,-D_\$(with_cpu_model) -WF,-DARCH_EVTS"; } >&5
-  (: FFLAGS already contains -WF,-D_$(with_cpu_model) -WF,-DARCH_EVTS) 2>&5
+  *" -WF,-D_$(with_cpu_model) "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS already contains -WF,-D_\$(with_cpu_model)"; } >&5
+  (: FFLAGS already contains -WF,-D_$(with_cpu_model)) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append FFLAGS " -WF,-D_$(with_cpu_model) -WF,-DARCH_EVTS"
+            as_fn_append FFLAGS " -WF,-D_$(with_cpu_model)"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
   (: FFLAGS="$FFLAGS") 2>&5
   ac_status=$?
@@ -20460,7 +20876,39 @@ esac
 
 else
 
-        FFLAGS=-WF,-D_$(with_cpu_model) -WF,-DARCH_EVTS
+        FFLAGS=-WF,-D_$(with_cpu_model)
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
+  (: FFLAGS="$FFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${FFLAGS+:} false; then :
+
+    case " $FFLAGS " in #(
+  *" -WF,-DARCH_EVTS "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS already contains -WF,-DARCH_EVTS"; } >&5
+  (: FFLAGS already contains -WF,-DARCH_EVTS) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append FFLAGS " -WF,-DARCH_EVTS"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
+  (: FFLAGS="$FFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        FFLAGS=-WF,-DARCH_EVTS
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
   (: FFLAGS="$FFLAGS") 2>&5
   ac_status=$?
@@ -20473,15 +20921,15 @@ fi
 if ${CFLAGS+:} false; then :
 
     case " $CFLAGS " in #(
-  *" -qsmp -qsmp=omp "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -qsmp -qsmp=omp"; } >&5
-  (: CFLAGS already contains -qsmp -qsmp=omp) 2>&5
+  *" -qsmp "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -qsmp"; } >&5
+  (: CFLAGS already contains -qsmp) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append CFLAGS " -qsmp -qsmp=omp"
+            as_fn_append CFLAGS " -qsmp"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
   (: CFLAGS="$CFLAGS") 2>&5
   ac_status=$?
@@ -20492,7 +20940,39 @@ esac
 
 else
 
-        CFLAGS=-qsmp -qsmp=omp
+        CFLAGS=-qsmp
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${CFLAGS+:} false; then :
+
+    case " $CFLAGS " in #(
+  *" -qsmp=omp "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -qsmp=omp"; } >&5
+  (: CFLAGS already contains -qsmp=omp) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CFLAGS " -qsmp=omp"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CFLAGS=-qsmp=omp
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
   (: CFLAGS="$CFLAGS") 2>&5
   ac_status=$?
@@ -20505,15 +20985,15 @@ fi
 if ${LDFLAGS+:} false; then :
 
     case " $LDFLAGS " in #(
-  *" -G -bnoentry "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : LDFLAGS already contains -G -bnoentry"; } >&5
-  (: LDFLAGS already contains -G -bnoentry) 2>&5
+  *" -G "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : LDFLAGS already contains -G"; } >&5
+  (: LDFLAGS already contains -G) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append LDFLAGS " -G -bnoentry"
+            as_fn_append LDFLAGS " -G"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : LDFLAGS=\"\$LDFLAGS\""; } >&5
   (: LDFLAGS="$LDFLAGS") 2>&5
   ac_status=$?
@@ -20524,7 +21004,39 @@ esac
 
 else
 
-        LDFLAGS=-G -bnoentry
+        LDFLAGS=-G
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : LDFLAGS=\"\$LDFLAGS\""; } >&5
+  (: LDFLAGS="$LDFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+ # this might not be necessary with libtool
+
+if ${LDFLAGS+:} false; then :
+
+    case " $LDFLAGS " in #(
+  *" -bnoentry "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : LDFLAGS already contains -bnoentry"; } >&5
+  (: LDFLAGS already contains -bnoentry) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append LDFLAGS " -bnoentry"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : LDFLAGS=\"\$LDFLAGS\""; } >&5
+  (: LDFLAGS="$LDFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        LDFLAGS=-bnoentry
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : LDFLAGS=\"\$LDFLAGS\""; } >&5
   (: LDFLAGS="$LDFLAGS") 2>&5
   ac_status=$?
@@ -20944,15 +21456,15 @@ ac_config_commands="$ac_config_commands gen_papi_events_table"
 if ${CPPFLAGS+:} false; then :
 
     case " $CPPFLAGS " in #(
-  *" -D_REENTRANT -D_GNU_SOURCE "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -D_REENTRANT -D_GNU_SOURCE"; } >&5
-  (: CPPFLAGS already contains -D_REENTRANT -D_GNU_SOURCE) 2>&5
+  *" -D_REENTRANT "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -D_REENTRANT"; } >&5
+  (: CPPFLAGS already contains -D_REENTRANT) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append CPPFLAGS " -D_REENTRANT -D_GNU_SOURCE"
+            as_fn_append CPPFLAGS " -D_REENTRANT"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
   (: CPPFLAGS="$CPPFLAGS") 2>&5
   ac_status=$?
@@ -20963,7 +21475,39 @@ esac
 
 else
 
-        CPPFLAGS=-D_REENTRANT -D_GNU_SOURCE
+        CPPFLAGS=-D_REENTRANT
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
+  (: CPPFLAGS="$CPPFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${CPPFLAGS+:} false; then :
+
+    case " $CPPFLAGS " in #(
+  *" -D_GNU_SOURCE "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -D_GNU_SOURCE"; } >&5
+  (: CPPFLAGS already contains -D_GNU_SOURCE) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CPPFLAGS " -D_GNU_SOURCE"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
+  (: CPPFLAGS="$CPPFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CPPFLAGS=-D_GNU_SOURCE
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
   (: CPPFLAGS="$CPPFLAGS") 2>&5
   ac_status=$?
@@ -21044,15 +21588,15 @@ if test "$F77" = "pgf77"; then
 if ${FFLAGS+:} false; then :
 
     case " $FFLAGS " in #(
-  *" -Wall -Mextend "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS already contains -Wall -Mextend"; } >&5
-  (: FFLAGS already contains -Wall -Mextend) 2>&5
+  *" -Wall "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS already contains -Wall"; } >&5
+  (: FFLAGS already contains -Wall) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append FFLAGS " -Wall -Mextend"
+            as_fn_append FFLAGS " -Wall"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
   (: FFLAGS="$FFLAGS") 2>&5
   ac_status=$?
@@ -21063,7 +21607,39 @@ esac
 
 else
 
-        FFLAGS=-Wall -Mextend
+        FFLAGS=-Wall
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
+  (: FFLAGS="$FFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+
+if ${FFLAGS+:} false; then :
+
+    case " $FFLAGS " in #(
+  *" -Mextend "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS already contains -Mextend"; } >&5
+  (: FFLAGS already contains -Mextend) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append FFLAGS " -Mextend"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
+  (: FFLAGS="$FFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        FFLAGS=-Mextend
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : FFLAGS=\"\$FFLAGS\""; } >&5
   (: FFLAGS="$FFLAGS") 2>&5
   ac_status=$?
