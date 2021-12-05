@@ -185,7 +185,7 @@ with_perf_lib_emb= # CPU performance Library is embedded [y/n]
 case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS in
     x86_64,linux* \
     | k1om,linux*)
-        with_perf_api=perf_events
+        with_perf_api=perf_event
         with_perf_lib=pfm
         with_perf_lib_ver=4
         with_perf_lib_emb=y
@@ -1018,7 +1018,7 @@ AC_MSG_CHECKING([for performance inteface])
 AC_ARG_WITH([perf-api],
             [
    --with-perf-api=interface Specify the performance interface to use.
-        perf_events     - Linux Performance Events interface
+        perf_event      - Linux Performance Events interface
         bgpm            - Blue Gene Performance Monitoring interface
         cpc             - Solaris CPU Performance Counters interface
         pmc             - FreeBSD Performance Monitoring Counters interface
@@ -1026,7 +1026,7 @@ AC_ARG_WITH([perf-api],
             ],
             [
              case "$with_perf_api" in
-                 perf_events|bgpm|cpc|pmc|pmapi)
+                 perf_event|bgpm|cpc|pmc|pmapi)
                     ;;
                  *)
                     AC_MSG_RESULT([none])
@@ -1176,7 +1176,7 @@ case "$PAPI_HOST_OS,$with_perf_api,$with_perf_lib-$with_perf_lib_ver" in
                      ])
         AC_MSG_RESULT([found])
         ;;
-    linux*,perf_events,pfm-4)
+    linux*,perf_event,pfm-4)
         # check performance library
         if test "$with_cross_compile" = "no" -a "$with_perf_lib_emb" = "no" ; then
             AC_CHECK_LIB([pfm], [pfm_initialize])
@@ -1447,7 +1447,7 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
         with_cpu_vector=_papi_freebsd_vector
         with_papi_events_csv="$srcdir/src/freebsd/freebsd_events.csv"
         ;;
-    *,linux*,perf_events,pfm)
+    *,linux*,perf_event,pfm)
         oslock="$srcdir/src/linux/linux-lock.h"
         oscontext="$srcdir/src/linux/linux-context.h"
         with_cpu_component=$srcdir/src/dummy_cpu_component.c
