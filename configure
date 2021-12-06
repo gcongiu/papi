@@ -19108,6 +19108,7 @@ fi
 
 
 # configure compiler flags for picked performance library
+with_perf_lib_name=
 case "$with_perf_lib-$with_perf_lib_ver" in
     pfm-4)
         if test "$with_perf_lib_emb" = "y" ; then
@@ -19125,6 +19126,7 @@ subdirs="$subdirs external/libpfm4"
             with_perf_lib_incdir=$with_perf_lib_prefix/include
             with_perf_lib_libdir=$with_perf_lib_prefix/lib
             with_perf_lib_subdir=
+            with_perf_lib_name=$with_perf_lib
         fi
         ;;
     bgpm-*)
@@ -19172,9 +19174,9 @@ fi
         if test "x$with_perf_lib_prefix" != "x" ; then
             with_perf_lib_incdir=$with_perf_lib_prefix/include
             with_perf_lib_libdir=$with_perf_lib_prefix/lib
-            # the following is needed as libcpc and libcpc2 are distinguished
-            with_perf_lib=$with_perf_lib$with_perf_lib_ver
             with_perf_lib_subdir=
+            # the following is needed as libcpc and libcpc2 are distinguished
+            with_perf_lib_name=$with_perf_lib$with_perf_lib_ver
         fi
         ;;
     pmc-*)
@@ -19267,18 +19269,20 @@ else
 fi
 
 
+if test "x$with_perf_lib_name" != "x" ; then
+
 if ${LIBS+:} false; then :
 
     case " $LIBS " in #(
-  *" -l$with_perf_lib "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : LIBS already contains -l\$with_perf_lib"; } >&5
-  (: LIBS already contains -l$with_perf_lib) 2>&5
+  *" -l$with_perf_lib_name "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : LIBS already contains -l\$with_perf_lib_name"; } >&5
+  (: LIBS already contains -l$with_perf_lib_name) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append LIBS " -l$with_perf_lib"
+            as_fn_append LIBS " -l$with_perf_lib_name"
             { { $as_echo "$as_me:${as_lineno-$LINENO}: : LIBS=\"\$LIBS\""; } >&5
   (: LIBS="$LIBS") 2>&5
   ac_status=$?
@@ -19289,7 +19293,7 @@ esac
 
 else
 
-        LIBS=-l$with_perf_lib
+        LIBS=-l$with_perf_lib_name
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : LIBS=\"\$LIBS\""; } >&5
   (: LIBS="$LIBS") 2>&5
   ac_status=$?
@@ -19298,6 +19302,7 @@ else
 
 fi
 
+fi
 
 # check combinations of OS, performance API and library
 case "$PAPI_HOST_OS,$with_perf_api,$with_perf_lib-$with_perf_lib_ver" in
@@ -19902,6 +19907,9 @@ fi
 ##################################################
 #       Final configuration for the build
 ##################################################
+{ $as_echo "$as_me:${as_lineno-$LINENO}: Building PAPI for $PAPI_HOST_SYSTEM+$PAPI_HOST_OS with $with_perf_api+$with_perf_lib." >&5
+$as_echo "$as_me: Building PAPI for $PAPI_HOST_SYSTEM+$PAPI_HOST_OS with $with_perf_api+$with_perf_lib." >&6;}
+with_cpu_vector=
 case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
     bgp,cnk,bgpm,bgpm)
         oslock=$srcdir/src/bgp/linux-bgp-lock.h
@@ -21777,6 +21785,7 @@ done
 # Remove trailing ',' from components_vector_list and components_vector_pointer_list
 components_vector_list=`echo $components_vector_list | sed -E 's/,$//'`
 components_vector_pointer_list=`echo $components_vector_pointer_list | sed -E 's/,$//'`
+components_vector_pointer_list="$components_vector_pointer_list, NULL"
 
 
 

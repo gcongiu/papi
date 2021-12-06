@@ -1351,6 +1351,7 @@ AC_ARG_ENABLE(perf_event_uncore,
 #       Final configuration for the build
 ##################################################
 AC_MSG_NOTICE([Building PAPI for $PAPI_HOST_SYSTEM+$PAPI_HOST_OS with $with_perf_api+$with_perf_lib.])
+with_cpu_vector=
 case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
     bgp,cnk,bgpm,bgpm)
         oslock=$srcdir/src/bgp/linux-bgp-lock.h
@@ -1566,6 +1567,7 @@ done
 # Remove trailing ',' from components_vector_list and components_vector_pointer_list
 components_vector_list=`echo $components_vector_list | sed -E 's/,$//'`
 components_vector_pointer_list=`echo $components_vector_pointer_list | sed -E 's/,$//'`
+components_vector_pointer_list="$components_vector_pointer_list, NULL"
 
 AC_SUBST(components_vector_list)
 AC_SUBST(components_vector_pointer_list)

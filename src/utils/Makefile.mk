@@ -7,7 +7,7 @@ LDADD = src/utils/cost_utils.o                     \
         src/utils/print_header.o                   \
         $(top_builddir)/lib/lib@PAPILIBNAME@.la    \
         $(top_builddir)/src/testlib/libtestlib.la  \
-        $(perflib) -lm
+        -lm
 
 bin_PROGRAMS += src/utils/papi_avail               \
                 src/utils/papi_clockres            \
