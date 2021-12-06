@@ -1110,7 +1110,7 @@ case "$with_perf_lib-$with_perf_lib_ver" in
             with_perf_lib_incdir=$with_perf_lib_prefix/include
             with_perf_lib_libdir=$with_perf_lib_prefix/lib
             with_perf_lib_subdir=external/libpfm4
-            AC_CONFIG_SUBDIRS([external/libpfm4])
+            AX_SUBDIRS_CONFIGURE([external/libpfm4],[--enable-embedded])
             libpfm_la=external/libpfm4/libpfm.la
             AC_SUBST([libpfm_la])
         else
