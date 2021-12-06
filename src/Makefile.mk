@@ -48,13 +48,16 @@ papi_sources   += src/cpus.c                 \
                   src/papi_fwrappers__.c     \
                   src/upper_PAPI_FWRAPPERS.c \
                   src/papi_internal.c        \
-                  src/papi_libpfm4_events.c  \
                   src/papi_memory.c          \
                   src/papi_vector.c          \
                   src/sw_multiplex.c         \
                   src/cpu_component.c        \
                   src/papi_preset.c          \
                   src/threads.c
+
+if BUILD_PFMLIB_VER_4
+papi_sources += src/papi_libpfm4_events.c
+endif
 
 # This is silly but whatever ...
 src/papi_fwrappers_.c: src/papi_fwrappers.c

@@ -721,6 +721,8 @@ components_vector_list
 with_freebsd_pmc_counters
 libpfm_la
 subdirs
+BUILD_PFMLIB_VER_4_FALSE
+BUILD_PFMLIB_VER_4_TRUE
 TOOLS_LINK_MODE
 MPICC
 ac_ct_F77
@@ -18993,6 +18995,15 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $with_perf_lib" >&5
 $as_echo "$with_perf_lib" >&6; }
 
+ if if test "x$with_perf_lib-$with_perf_lib_ver" = "pfm-4"; then
+  BUILD_PFMLIB_VER_4_TRUE=
+  BUILD_PFMLIB_VER_4_FALSE='#'
+else
+  BUILD_PFMLIB_VER_4_TRUE='#'
+  BUILD_PFMLIB_VER_4_FALSE=
+fi
+
+
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for performance library version" >&5
 $as_echo_n "checking for performance library version... " >&6; }
 
@@ -22358,6 +22369,10 @@ fi
 
 if test -z "${BUILD_SHARED_LIBS_TRUE}" && test -z "${BUILD_SHARED_LIBS_FALSE}"; then
   as_fn_error $? "conditional \"BUILD_SHARED_LIBS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${BUILD_PFMLIB_VER_4_TRUE}" && test -z "${BUILD_PFMLIB_VER_4_FALSE}"; then
+  as_fn_error $? "conditional \"BUILD_PFMLIB_VER_4\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 sh $srcdir/maint/gen_comp_makefile.sh $srcdir/src/components

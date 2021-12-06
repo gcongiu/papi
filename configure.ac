@@ -1061,6 +1061,8 @@ AC_ARG_WITH([perf-lib],
             ])
 AC_MSG_RESULT([$with_perf_lib])
 
+AM_CONDITIONAL([BUILD_PFMLIB_VER_4],[test "x$with_perf_lib-$with_perf_lib_ver" = "xpfm-4"])
+
 AC_MSG_CHECKING([for performance library version])
 AC_ARG_WITH([perf-lib-ver],
             [AS_HELP_STRING([--with-perf-lib-ver=version],
