@@ -272,7 +272,7 @@ fi
 # prevent icc warnings about overriding optimization settings set by AC_PROG_CC
 # remark #869: parameter was never referenced
 # remark #271: trailing comma is nonstandard
-if test "$CC_NAME" = "icc" ; then
+if test "$CC" = "icc" ; then
     AX_APPEND_FLAG([-diag-disable 188,869,271],[CFLAGS])
     if test "$host_cpu" = "k1om"; then
         AX_APPEND_FLAG([-mmic],[CC])
@@ -479,7 +479,7 @@ AC_ARG_WITH([debug],
 
 case "$with_debug" in
     yes)
-        if test "CC_NAME" = "gcc" ; then
+        if test "CC" = "gcc" ; then
             AX_APPEND_FLAG([-g3],[CFLAGS])
         fi
         AX_APPEND_FLAG([-O0],[CFLAGS])
@@ -487,7 +487,7 @@ case "$with_debug" in
         AX_APPEND_FLAG([-DPAPI_NO_MEMORY_MANAGEMENT],[CPPFLAGS])
         ;;
     memory)
-        if test "$CC_NAME" = "gcc" ; then
+        if test "$CC" = "gcc" ; then
             AX_APPEND_FLAG([-g3],[CFLAGS])
         fi
         AX_APPEND_FLAG([-DDEBUG],[CPPFLAGS])
@@ -499,7 +499,7 @@ esac
 AC_MSG_RESULT([$with_debug])
 
 
-if test "$CC_NAME" = "gcc" ; then
+if test "$CC" = "gcc" ; then
     gcc_version=`gcc -v 2>&1 | tail -n 1 | awk '{printf $3}'`
     major=`echo $gcc_version | sed 's/\([[^.]][[^.]]*\).*/\1/'`
     minor=`echo $gcc_version | sed 's/[[^.]][[^.]]*.\([[^.]][[^.]]*\).*/\1/'`
@@ -1481,7 +1481,7 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
         with_cpu_vector=_solaris_vector
         with_papi_events_csv="$srcdir/src/papi_events.csv"
 
-        if test "$CC_NAME" = "gcc" ; then
+        if test "$CC" = "gcc" ; then
             AX_APPEND_FLAG([-DNEED_FFSLL],[CPPFLAGS])
             AX_APPEND_FLAG([-O3],[CFLAGS])
             F77=g77
@@ -1528,7 +1528,7 @@ AC_CONFIG_COMMANDS_PRE([sh $srcdir/maint/gen_comp_makefile.sh $srcdir/src/compon
 
 AX_APPEND_FLAG([-D_REENTRANT],[CPPFLAGS])
 AX_APPEND_FLAG([-D_GNU_SOURCE],[CPPFLAGS])
-if test "$CC_NAME" = "gcc"; then
+if test "$CC" = "gcc"; then
     AX_APPEND_FLAG([-Wall],[CFLAGS])
 fi
 AX_APPEND_FLAG([-Dlinux],[FFLAGS])
@@ -1542,7 +1542,7 @@ elif test "$F77" != "xlf"; then
     AX_APPEND_FLAG([-ffixed-line-length-132],[FFLAGS])
 fi
 
-if test "$CC_NAME" = "icc"; then
+if test "$CC" = "icc"; then
     OMPCFLGS=-qopenmp
 fi
 
