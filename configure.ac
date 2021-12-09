@@ -279,7 +279,7 @@ if test "$CC_NAME" = "icc" ; then
     fi
 fi
 
-if test "$CC_NAME" = "ifort" -a "$host_cpu" = "k1om" ; then
+if test "$F77" = "ifort" -a "$host_cpu" = "k1om" ; then
     AX_APPEND_FLAG([-mmic],[F77])
 fi
 
