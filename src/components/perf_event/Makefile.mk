@@ -12,4 +12,6 @@ noinst_HEADERS += src/components/perf_event/pe_libpfm4_events.h \
 papi_sources   += src/components/perf_event/pe_libpfm4_events.c \
                   src/components/perf_event/perf_event.c
 
+include $(top_srcdir)/src/components/perf_event/tests/Makefile.mk
+
 endif

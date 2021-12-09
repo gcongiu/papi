@@ -8,4 +8,6 @@ if BUILD_MICPOWER
 noinst_HEADERS += linux-micpower.h
 papi_sources   += linux-micpower.c
 
+include $(top_srcdir)/src/components/micpower/tests/Makefile.mk
+
 endif

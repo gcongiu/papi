@@ -7,4 +7,6 @@ if BUILD_PCP
 
 papi_sources += linux-pcp.c
 
+include $(top_srcdir)/src/components/pcp/tests/Makefile.mk
+
 endif

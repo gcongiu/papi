@@ -7,4 +7,6 @@ if BUILD_IO
 
 papi_sources += linux-io.c
 
+include $(top_srcdir)/src/components/io/tests/Makefile.mk
+
 endif
