@@ -239,8 +239,7 @@ AC_CHECK_PROG([MPICC], [mpicc], [mpicc], [])
 
 # Lets figure out what CC actually is...
 # Used in later checks to set compiler specific options
-if `$CC -V 2>&1 | grep '^Intel(R) C' >/dev/null 2>&1` ; then
-    CC_NAME="icc"
+if test "$CC" = "icc" ; then
     if test "$MPICC" = "mpicc"; then
         # Check if mpiicc is available
         MPI_COMPILER_CHECK=`$MPICC -V 2>&1 | grep '^Intel(R) C'`
@@ -249,8 +248,7 @@ if `$CC -V 2>&1 | grep '^Intel(R) C' >/dev/null 2>&1` ; then
             with_mpi_tests=yes
         fi
     fi
-elif `$CC -v 2>&1 | grep 'gcc version' >/dev/null 2>&1` ; then
-    CC_NAME="gcc"
+elif "$CC" = "gcc" ; then
     if test "$MPICC" = "mpicc"; then
         MPI_COMPILER_CHECK=`$MPICC -v 2>&1 | grep 'gcc version'`
         if test "x$MPI_COMPILER_CHECK" = "x"; then
@@ -258,8 +256,7 @@ elif `$CC -v 2>&1 | grep 'gcc version' >/dev/null 2>&1` ; then
             with_mpi_tests=yes
         fi
     fi
-elif `$CC -qversion 2>&1 | grep 'IBM XL C' >/dev/null 2>&1`; then
-    CC_NAME="xlc"
+elfi "$CC" = "xlc" ; then
     if test "$MPICC" = "mpicc"; then
         MPI_COMPILER_CHECK=`$MPICC -qversion 2>&1 | grep 'IBM XL C'`
         if test "x$MPI_COMPILER_CHECK" = "x"; then
