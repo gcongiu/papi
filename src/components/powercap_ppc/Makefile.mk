@@ -5,8 +5,8 @@
 
 if BUILD_POWERCAP_PPC
 
-noinst_HEADERS += linux-powercap-ppc.h
-papi_sources   += linux-powercap-ppc.c
+noinst_HEADERS += src/components/powercap_ppc/linux-powercap-ppc.h
+papi_sources   += src/components/powercap_ppc/linux-powercap-ppc.c
 
 include $(top_srcdir)/src/components/powercap_ppc/tests/Makefile.mk
 

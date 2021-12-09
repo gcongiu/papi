@@ -3,5 +3,5 @@
 ##     See copyright in top-level directory
 ##
 
-noinst_HEADERS += linux-CNKunit.h
-papi_sources   += linux-CNKunit.c
+noinst_HEADERS += src/components/bgpm/CNKunit/linux-CNKunit.h
+papi_sources   += src/components/bgpm/CNKunit/linux-CNKunit.c

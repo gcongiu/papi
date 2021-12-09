@@ -6,8 +6,8 @@
 
 if BUILD_APPIO
 
-noinst_HEADERS += appio.h
-papi_sources   += appio.c
+noinst_HEADERS += src/components/appio/appio.h
+papi_sources   += src/components/appio/appio.c
 
 include $(top_srcdir)/src/components/appio/tests/Makefile.mk
 

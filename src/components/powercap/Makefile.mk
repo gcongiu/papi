@@ -5,7 +5,7 @@
 
 if BUILD_POWERCAP
 
-papi_sources += linux-powercap.c
+papi_sources += src/components/powercap/linux-powercap.c
 
 include $(top_srcdir)/src/components/powercap/tests/Makefile.mk
 

@@ -5,8 +5,8 @@
 
 if BUILD_INFINIBAND
 
-noinst_HEADERS += pscanf.h
-papi_sources   += linux-infiniband.c
+noinst_HEADERS += src/components/infiniband/pscanf.h
+papi_sources   += src/components/infiniband/linux-infiniband.c
 
 include $(top_srcdir)/src/components/infiniband/tests/Makefile.mk
 

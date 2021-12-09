@@ -5,6 +5,6 @@
 
 if BUILD_EMON
 
-papi_sources += linux-emon.c
+papi_sources += src/components/emon/linux-emon.c
 
 endif

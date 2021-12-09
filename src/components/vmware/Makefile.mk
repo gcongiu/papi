@@ -5,7 +5,7 @@
 
 if BUILD_VMWARE
 
-papi_sources += vmware.c
+papi_sources += src/components/vmware/vmware.c
 
 include $(top_srcdir)/src/components/vmware/tests/Makefile.mk
 

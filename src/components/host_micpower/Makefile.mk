@@ -5,7 +5,7 @@
 
 if BUILD_HOST_MICPOWER
 
-papi_sources += linux-host_micpower.c
+papi_sources += src/components/host_micpower/linux-host_micpower.c
 
 include $(top_srcdir)/src/components/host_micpower/tests/Makefile.mk
 

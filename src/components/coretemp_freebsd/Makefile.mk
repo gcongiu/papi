@@ -5,7 +5,7 @@
 
 if BUILD_CORETEMP_FREEBSD
 
-noinst_HEADERS += coretemp_freebsd.h
-papi_sources   += coretemp_freebsd.c
+noinst_HEADERS += src/components/coretemp_freebsd/coretemp_freebsd.h
+papi_sources   += src/components/coretemp_freebsd/coretemp_freebsd.c
 
 endif

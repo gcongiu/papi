@@ -5,7 +5,7 @@
 
 if BUILD_PCP
 
-papi_sources += linux-pcp.c
+papi_sources += src/components/pcp/linux-pcp.c
 
 include $(top_srcdir)/src/components/pcp/tests/Makefile.mk
 

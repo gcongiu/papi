@@ -3,5 +3,5 @@
 ##     See copyright in top-level directory
 ##
 
-noinst_HEADERS += linux-NWunit.h
-papi_sources   += linux-NWunit.c
+noinst_HEADERS += src/components/bgpm/NWunit/linux-NWunit.h
+papi_sources   += src/components/bgpm/NWunit/linux-NWunit.c

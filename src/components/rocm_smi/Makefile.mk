@@ -5,7 +5,7 @@
 
 if BUILD_ROCM_SMI
 
-papi_sources += linux-rocm-smi.c
+papi_sources += src/components/rocm_smi/linux-rocm-smi.c
 
 include $(top_srcdir)/src/components/rocm_smi/tests/Makefile.mk
 

@@ -5,7 +5,7 @@
 
 if BUILD_LIBMSR
 
-papi_sources += linux-libmsr.c
+papi_sources += src/components/libmsr/linux-libmsr.c
 
 include $(top_srcdir)/src/components/libmsr/tests/Makefile.mk
 

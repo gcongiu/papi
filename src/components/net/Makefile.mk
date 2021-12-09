@@ -5,8 +5,8 @@
 
 if BUILD_NET
 
-noinst_HEADERS += linux-net.h
-papi_sources   += linux-net.c
+noinst_HEADERS += src/components/net/linux-net.h
+papi_sources   += src/components/net/linux-net.c
 
 include $(top_srcdir)/src/components/net/tests/Makefile.mk
 

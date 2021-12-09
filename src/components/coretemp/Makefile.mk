@@ -5,8 +5,8 @@
 
 if BUILD_CORETEMP
 
-noinst_HEADERS += linux-coretemp.h
-papi_sources   += linux-coretemp.c
+noinst_HEADERS += src/components/coretemp/linux-coretemp.h
+papi_sources   += src/components/coretemp/linux-coretemp.c
 
 include $(top_srcdir)/src/components/coretemp/tests/Makefile.mk
 

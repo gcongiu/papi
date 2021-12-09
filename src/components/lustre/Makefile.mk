@@ -5,7 +5,7 @@
 
 if BUILD_LUSTRE
 
-papi_sources += linux-lustre.c
+papi_sources += src/components/lustre/linux-lustre.c
 
 include $(top_srcdir)/src/components/lustre/tests/Makefile.mk
 

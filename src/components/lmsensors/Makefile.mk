@@ -5,6 +5,6 @@
 
 if BUILD_LMSENSORS
 
-papi_sources += linux-lmsensors.c
+papi_sources += src/components/lmsensors/linux-lmsensors.c
 
 endif

@@ -5,8 +5,8 @@
 
 if BUILD_MICPOWER
 
-noinst_HEADERS += linux-micpower.h
-papi_sources   += linux-micpower.c
+noinst_HEADERS += src/components/micpower/linux-micpower.h
+papi_sources   += src/components/micpower/linux-micpower.c
 
 include $(top_srcdir)/src/components/micpower/tests/Makefile.mk
 
