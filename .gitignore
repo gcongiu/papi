@@ -1,0 +1,4 @@
+# Ignore anything created inside the repo that is not added
+# explicitly using git add. To add a new file to the repo
+# use git add -f -- myFile
+*
