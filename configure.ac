@@ -972,6 +972,8 @@ if test "$enable_shared" = "no" ; then
     with_mpi_tests="no"
 fi
 
+AM_CONDITIONAL([BUILD_MPI_PROGRAMS],[test "$with_mpi_tests" = "yes"])
+
 AC_MSG_CHECKING([for static compile of tests and utilities])
 AC_ARG_ENABLE([static-tools],
               [AS_HELP_STRING([--enable-static-tools],
