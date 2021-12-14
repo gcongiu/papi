@@ -10,6 +10,7 @@ include $(top_srcdir)/src/components/Makefile.mk
 include $(top_srcdir)/src/counter_analysis_toolkit/Makefile.mk
 include $(top_srcdir)/src/ctests/Makefile.mk
 include $(top_srcdir)/src/ftests/Makefile.mk
+include $(top_srcdir)/src/validation_tests/Makefile.mk
 include $(top_srcdir)/src/utils/Makefile.mk
 include $(top_srcdir)/src/testlib/Makefile.mk
 include $(top_srcdir)/src/x86/Makefile.mk
