@@ -21,6 +21,7 @@ include_HEADERS =
 perflib = @libpfm_la@
 
 include $(top_srcdir)/src/Makefile.mk
+include $(top_srcdir)/doc/Makefile.mk
 
 SUBDIRS = $(with_perf_lib_subdir)
 DIST_SUBDIRS = external/libpfm4
@@ -29,7 +30,7 @@ lib_LTLIBRARIES = lib/lib@PAPILIBNAME@.la
 lib_lib@PAPILIBNAME@_la_SOURCES      = $(papi_sources)
 lib_lib@PAPILIBNAME@_la_CPPFLAGS     = $(AM_CPPFLAGS)
 lib_lib@PAPILIBNAME@_la_CFLAGS       = $(AM_CFLAGS)
-lib_lib@PAPILIBNAME@_la_LDFLAGS      = $(AM_LDFLAGS) $(AM_FFLAGS) $(PAPI_VERSION)
+lib_lib@PAPILIBNAME@_la_LDFLAGS      = $(AM_LDFLAGS) $(AM_FFLAGS) -release $(PAPI_VERSION)
 lib_lib@PAPILIBNAME@_la_LIBADD       = $(LIBS) $(perflib)
 lib_lib@PAPILIBNAME@_la_DEPENDENCIES =
 

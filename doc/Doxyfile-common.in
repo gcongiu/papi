@@ -31,7 +31,7 @@ PROJECT_NAME           = PAPI
 # This could be handy for archiving the generated documentation or
 # if some version control system is used.
 
-PROJECT_NUMBER         = 6.0.0.1
+PROJECT_NUMBER         = @PAPI_VERSION@
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer
@@ -51,7 +51,7 @@ PROJECT_LOGO           =
 # If a relative path is entered, it will be relative to the location
 # where doxygen was started. If left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = ./
+OUTPUT_DIRECTORY       = @abs_builddir@/doxygen
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create
 # 4096 sub-directories (in 2 levels) under the output directory of each output
@@ -654,11 +654,10 @@ EXCLUDE_SYMLINKS       = NO
 # against the file with absolute path, so to exclude all test directories
 # for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       = */Matlab/* */CVS/* */libpfm-2.x/* */libpfm-3.x/* \
-						*/libpfm-3.y/* */libpfm4/* */perfctr-1.6.1/* */perfctr-2.3.12/* \
-						*/perfctr-2.4.1/* */perfctr-2.4.5/* */perfctr-2.4.x/* \
-						*/perfctr-2.6.x/* */perfctr-2.6.x.old/* */perfctr-2.7.x/* \
-						*/linux-bgp.c
+EXCLUDE_PATTERNS       = @abs_srcdir@/src/Matlab/*        \
+                         @abs_srcdir@/src/CVS/*           \
+                         @abs_srcdir@/external/libpfm4/*  \
+                         @abs_srcdir@/src/bgp/linux-bgp.c
 
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
@@ -1512,7 +1511,7 @@ EXTERNAL_GROUPS        = YES
 # The PERL_PATH should be the absolute path and name of the perl script
 # interpreter (i.e. the result of `which perl').
 
-PERL_PATH              = /usr/bin/perl
+PERL_PATH              = @PERL@
 
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool

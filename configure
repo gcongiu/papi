@@ -729,6 +729,7 @@ BUILD_FTESTS_FALSE
 BUILD_FTESTS_TRUE
 BUILD_CTESTS_FALSE
 BUILD_CTESTS_TRUE
+PERL
 MPICC
 ac_ct_F77
 FFLAGS
@@ -5174,7 +5175,7 @@ fi
 AM_BACKSLASH='\'
 
 
-PAPI_VERSION="-release 6.0.0.1"
+PAPI_VERSION="6.0.0.1"
 
 
 # Add libtool support
@@ -19970,6 +19971,47 @@ fi
 
 
 
+# Extract the first word of "perl", so it can be a program name with args.
+set dummy perl; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_PERL+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $PERL in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_PERL="$PERL" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_PERL="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+PERL=$ac_cv_path_PERL
+if test -n "$PERL"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PERL" >&5
+$as_echo "$PERL" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+
 # Lets figure out what CC actually is...
 # Used in later checks to set compiler specific options
 if test "$CC" = "icc" ; then
@@ -25684,6 +25726,8 @@ fi
 $as_echo "$as_me: $FILENAME will be included in the generated Makefile" >&6;}
 ac_config_files="$ac_config_files Makefile"
 
+ac_config_files="$ac_config_files doc/Doxyfile-common doc/Doxyfile-html doc/Doxyfile-man1 doc/Doxyfile-man3"
+
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -27154,6 +27198,10 @@ do
     "gen_papi_events_table") CONFIG_COMMANDS="$CONFIG_COMMANDS gen_papi_events_table" ;;
     "src/components_config.h") CONFIG_FILES="$CONFIG_FILES src/components_config.h" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
+    "doc/Doxyfile-common") CONFIG_FILES="$CONFIG_FILES doc/Doxyfile-common" ;;
+    "doc/Doxyfile-html") CONFIG_FILES="$CONFIG_FILES doc/Doxyfile-html" ;;
+    "doc/Doxyfile-man1") CONFIG_FILES="$CONFIG_FILES doc/Doxyfile-man1" ;;
+    "doc/Doxyfile-man3") CONFIG_FILES="$CONFIG_FILES doc/Doxyfile-man3" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac

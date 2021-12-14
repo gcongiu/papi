@@ -9,7 +9,7 @@
 # For lists items can also be appended using:
 #       TAG += value [value, ...]
 # Values that contain spaces should be placed between quotes (" ")
-@INCLUDE				= Doxyfile-common
+@INCLUDE               = @abs_builddir@/Doxyfile-common
 
 #---------------------------------------------------------------------------
 # Configuration options related to the preprocessor
@@ -150,7 +150,7 @@ SHOW_NAMESPACES        = YES
 # directories like "/usr/src/myproject". Separate the files or directories
 # with spaces.
 
-INPUT                  = ../src ../src/components/README
+INPUT                  = @abs_srcdir@/src @abs_srcdir@/src/components/README
 
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories
 # should be searched for input files as well. Possible values are YES and NO.

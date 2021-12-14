@@ -52,7 +52,7 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign subdir-objects])
 AM_PROG_AR
 AM_SILENT_RULES([yes])
 
-PAPI_VERSION="-release PAPI_VERSION_m4"
+PAPI_VERSION="PAPI_VERSION_m4"
 AC_SUBST(PAPI_VERSION)
 
 # Add libtool support
@@ -237,6 +237,8 @@ AC_PROG_CC([xlc icc gcc cc])
 AC_PROG_FC([xlf ifort gfortran f95 f90])
 AC_PROG_F77([xlf ifort gfortran f77])
 AC_CHECK_PROG([MPICC], [mpicc], [mpicc], [])
+
+AC_PATH_PROG([PERL],[perl])
 
 # Lets figure out what CC actually is...
 # Used in later checks to set compiler specific options
@@ -1640,6 +1642,10 @@ AC_SUBST(PAPI_HOST_SYSTEM)
 
 AC_MSG_NOTICE([$FILENAME will be included in the generated Makefile])
 AC_CONFIG_FILES([Makefile])
+AC_CONFIG_FILES([doc/Doxyfile-common \
+                 doc/Doxyfile-html   \
+                 doc/Doxyfile-man1   \
+                 doc/Doxyfile-man3])
 AC_OUTPUT
 
 if test "$with_paranoid" = "yes"; then
