@@ -597,37 +597,33 @@ AC_ARG_WITH([walltimer],
                             [Specify real timer: gettimeofday, mmtimer, clock_realtime_hr, clock_realtime,cycle])])
 
 if test "x$with_walltimer" = "x" ; then
-    # It does not matter if we are cross compiling. We should always
-    # check for the supported timer and pick the one that is available.
-    AC_MSG_CHECKING([for working MMTIMER])
+    AC_MSG_CHECKING([for working CLOCK_REALTIME_HR POSIX 1b timer])
     AC_TRY_RUN([
                 #include <unistd.h>
-                #include <fcntl.h>
-                #include <errno.h>
                 #include <stdlib.h>
-                #include <sys/ioctl.h>
-                #include <linux/mmtimer.h>
-                #ifndef MMTIMER_FULLNAME
-                #define MMTIMER_FULLNAME "/dev/mmtimer"
-                #endif
-                int main() {
-                    int offset;
-                    int fd;
-                    if((fd = open(MMTIMER_FULLNAME, O_RDONLY)) == -1)
+                #include <stdio.h>
+                #include <time.h>
+                #include <syscall.h>
+                main() {
+                    struct timespec t1, t2;
+                    double seconds;
+                    if (syscall(__NR_clock_gettime,CLOCK_REALTIME_HR,&t1) == -1) exit(1);
+                        sleep(1);
+                    if (syscall(__NR_clock_gettime,CLOCK_REALTIME_HR,&t2) == -1) exit(1);
+                        seconds = ((double)t2.tv_sec + (double)t2.tv_nsec/1000000000.0) - ((double)t1.tv_sec + (double)t1.tv_nsec/1000000000.0);
+                    if (seconds > 1.0)
+                        exit(0);
+                    else
                         exit(1);
-                    if ((offset = ioctl(fd, MMTIMER_GETOFFSET, 0)) < 0)
-                        exit(1);
-                    close(fd);
-                    exit(0);
                 }
                ],
-               [with_walltimer=mmtimer])
-
-    if test "x$with_walltimer" = "xmmtimer" ; then
+               [with_walltimer=clock_realtime_hr],
+               [])
+    if test "x$with_walltimer" = "xclock_realtime_hr" ; then
         AC_MSG_RESULT([yes])
     else
         AC_MSG_RESULT([no])
-        AC_MSG_CHECKING([for working CLOCK_REALTIME_HR POSIX 1b timer])
+        AC_MSG_CHECKING([for working CLOCK_REALTIME POSIX 1b timer])
         AC_TRY_RUN([
                     #include <unistd.h>
                     #include <stdlib.h>
@@ -637,9 +633,9 @@ if test "x$with_walltimer" = "x" ; then
                     main() {
                         struct timespec t1, t2;
                         double seconds;
-                        if (syscall(__NR_clock_gettime,CLOCK_REALTIME_HR,&t1) == -1) exit(1);
+                        if (syscall(__NR_clock_gettime,CLOCK_REALTIME,&t1) == -1) exit(1);
                             sleep(1);
-                        if (syscall(__NR_clock_gettime,CLOCK_REALTIME_HR,&t2) == -1) exit(1);
+                        if (syscall(__NR_clock_gettime,CLOCK_REALTIME,&t2) == -1) exit(1);
                             seconds = ((double)t2.tv_sec + (double)t2.tv_nsec/1000000000.0) - ((double)t1.tv_sec + (double)t1.tv_nsec/1000000000.0);
                         if (seconds > 1.0)
                             exit(0);
@@ -647,50 +643,20 @@ if test "x$with_walltimer" = "x" ; then
                             exit(1);
                     }
                    ],
-                   [with_walltimer=clock_realtime_hr],
-                   [])
-        if test "x$with_walltimer" = "xclock_realtime_hr" ; then
-            AC_MSG_RESULT([yes])
-        else
-            AC_MSG_RESULT([no])
-            AC_MSG_CHECKING([for working CLOCK_REALTIME POSIX 1b timer])
-            AC_TRY_RUN([
-                        #include <unistd.h>
-                        #include <stdlib.h>
-                        #include <stdio.h>
-                        #include <time.h>
-                        #include <syscall.h>
-                        main() {
-                            struct timespec t1, t2;
-                            double seconds;
-                            if (syscall(__NR_clock_gettime,CLOCK_REALTIME,&t1) == -1) exit(1);
-                                sleep(1);
-                            if (syscall(__NR_clock_gettime,CLOCK_REALTIME,&t2) == -1) exit(1);
-                                seconds = ((double)t2.tv_sec + (double)t2.tv_nsec/1000000000.0) - ((double)t1.tv_sec + (double)t1.tv_nsec/1000000000.0);
-                            if (seconds > 1.0)
-                                exit(0);
-                            else
-                                exit(1);
-                        }
-                       ],
-                       [
-                        with_walltimer="clock_realtime"
-                        AC_MSG_RESULT([yes])
-                       ],
-                       [
-                        with_walltimer="cycle"
-                        AC_MSG_RESULT([no])
-                       ])
-        fi
+                   [
+                    with_walltimer="clock_realtime"
+                    AC_MSG_RESULT([yes])
+                   ],
+                   [
+                    with_walltimer="cycle"
+                    AC_MSG_RESULT([no])
+                   ])
     fi
 fi
 
 AC_MSG_CHECKING([for which real time clock to use])
 if test "$with_walltimer" = "gettimeofday"; then
     AC_DEFINE(HAVE_GETTIMEOFDAY, 1, [Normal gettimeofday timer])
-elif test "$with_walltimer" = "mmtimer"; then
-    AC_DEFINE(HAVE_MMTIMER, 1, [Altix memory mapped global cycle counter])
-    altix="-DALTIX"
 elif test "$with_walltimer" = "clock_realtime_hr"; then
     AC_DEFINE(HAVE_CLOCK_GETTIME, 1, [POSIX 1b clock])
     AC_DEFINE(HAVE_CLOCK_GETTIME_REALTIME_HR, 1, [POSIX 1b realtime HR clock])
@@ -1686,7 +1652,6 @@ AM_CONDITIONAL([BUILD_X86],
                [test "x`echo $host_cpu | grep 'x86'`" != "x"])
 
 AC_SUBST(with_perf_lib_subdir)
-AC_SUBST(altix)
 AC_SUBST(tests)
 AC_SUBST(PAPI_HOST_SYSTEM)
 
