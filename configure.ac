@@ -234,7 +234,8 @@ if test "x$FFLAGS" = "x"; then
 fi
 
 AC_PROG_CC([xlc icc gcc cc])
-AC_PROG_F77([xlf ifort gfortran f95 f90 f77])
+AC_PROG_FC([xlf ifort gfortran f95 f90])
+AC_PROG_F77([xlf ifort gfortran f77])
 AC_CHECK_PROG([MPICC], [mpicc], [mpicc], [])
 
 # Lets figure out what CC actually is...
