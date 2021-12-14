@@ -60,9 +60,6 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
-/* Altix memory mapped global cycle counter */
-#undef HAVE_MMTIMER
-
 /* Define to 1 if you have the <perfmon/pfmlib.h> header file. */
 #undef HAVE_PERFMON_PFMLIB_H
 
