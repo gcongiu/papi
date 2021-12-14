@@ -639,7 +639,6 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 tests
-altix
 with_perf_lib_subdir
 BUILD_X86_FALSE
 BUILD_X86_TRUE
@@ -21608,10 +21607,8 @@ fi
 
 
 if test "x$with_walltimer" = "x" ; then
-    # It does not matter if we are cross compiling. We should always
-    # check for the supported timer and pick the one that is available.
-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working MMTIMER" >&5
-$as_echo_n "checking for working MMTIMER... " >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working CLOCK_REALTIME_HR POSIX 1b timer" >&5
+$as_echo_n "checking for working CLOCK_REALTIME_HR POSIX 1b timer... " >&6; }
     if test "$cross_compiling" = yes; then :
   { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -21622,42 +21619,39 @@ else
 /* end confdefs.h.  */
 
                 #include <unistd.h>
-                #include <fcntl.h>
-                #include <errno.h>
                 #include <stdlib.h>
-                #include <sys/ioctl.h>
-                #include <linux/mmtimer.h>
-                #ifndef MMTIMER_FULLNAME
-                #define MMTIMER_FULLNAME "/dev/mmtimer"
-                #endif
-                int main() {
-                    int offset;
-                    int fd;
-                    if((fd = open(MMTIMER_FULLNAME, O_RDONLY)) == -1)
+                #include <stdio.h>
+                #include <time.h>
+                #include <syscall.h>
+                main() {
+                    struct timespec t1, t2;
+                    double seconds;
+                    if (syscall(__NR_clock_gettime,CLOCK_REALTIME_HR,&t1) == -1) exit(1);
+                        sleep(1);
+                    if (syscall(__NR_clock_gettime,CLOCK_REALTIME_HR,&t2) == -1) exit(1);
+                        seconds = ((double)t2.tv_sec + (double)t2.tv_nsec/1000000000.0) - ((double)t1.tv_sec + (double)t1.tv_nsec/1000000000.0);
+                    if (seconds > 1.0)
+                        exit(0);
+                    else
                         exit(1);
-                    if ((offset = ioctl(fd, MMTIMER_GETOFFSET, 0)) < 0)
-                        exit(1);
-                    close(fd);
-                    exit(0);
                 }
 
 _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
-  with_walltimer=mmtimer
+  with_walltimer=clock_realtime_hr
 fi
 rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
-
-    if test "x$with_walltimer" = "xmmtimer" ; then
+    if test "x$with_walltimer" = "xclock_realtime_hr" ; then
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
     else
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
-        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working CLOCK_REALTIME_HR POSIX 1b timer" >&5
-$as_echo_n "checking for working CLOCK_REALTIME_HR POSIX 1b timer... " >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working CLOCK_REALTIME POSIX 1b timer" >&5
+$as_echo_n "checking for working CLOCK_REALTIME POSIX 1b timer... " >&6; }
         if test "$cross_compiling" = yes; then :
   { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
 $as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
@@ -21675,9 +21669,9 @@ else
                     main() {
                         struct timespec t1, t2;
                         double seconds;
-                        if (syscall(__NR_clock_gettime,CLOCK_REALTIME_HR,&t1) == -1) exit(1);
+                        if (syscall(__NR_clock_gettime,CLOCK_REALTIME,&t1) == -1) exit(1);
                             sleep(1);
-                        if (syscall(__NR_clock_gettime,CLOCK_REALTIME_HR,&t2) == -1) exit(1);
+                        if (syscall(__NR_clock_gettime,CLOCK_REALTIME,&t2) == -1) exit(1);
                             seconds = ((double)t2.tv_sec + (double)t2.tv_nsec/1000000000.0) - ((double)t1.tv_sec + (double)t1.tv_nsec/1000000000.0);
                         if (seconds > 1.0)
                             exit(0);
@@ -21687,58 +21681,15 @@ else
 
 _ACEOF
 if ac_fn_c_try_run "$LINENO"; then :
-  with_walltimer=clock_realtime_hr
-fi
-rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
-  conftest.$ac_objext conftest.beam conftest.$ac_ext
-fi
 
-        if test "x$with_walltimer" = "xclock_realtime_hr" ; then
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-$as_echo "yes" >&6; }
-        else
-            { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-            { $as_echo "$as_me:${as_lineno-$LINENO}: checking for working CLOCK_REALTIME POSIX 1b timer" >&5
-$as_echo_n "checking for working CLOCK_REALTIME POSIX 1b timer... " >&6; }
-            if test "$cross_compiling" = yes; then :
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "cannot run test program while cross compiling
-See \`config.log' for more details" "$LINENO" 5; }
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-                        #include <unistd.h>
-                        #include <stdlib.h>
-                        #include <stdio.h>
-                        #include <time.h>
-                        #include <syscall.h>
-                        main() {
-                            struct timespec t1, t2;
-                            double seconds;
-                            if (syscall(__NR_clock_gettime,CLOCK_REALTIME,&t1) == -1) exit(1);
-                                sleep(1);
-                            if (syscall(__NR_clock_gettime,CLOCK_REALTIME,&t2) == -1) exit(1);
-                                seconds = ((double)t2.tv_sec + (double)t2.tv_nsec/1000000000.0) - ((double)t1.tv_sec + (double)t1.tv_nsec/1000000000.0);
-                            if (seconds > 1.0)
-                                exit(0);
-                            else
-                                exit(1);
-                        }
-
-_ACEOF
-if ac_fn_c_try_run "$LINENO"; then :
-
-                        with_walltimer="clock_realtime"
-                        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+                    with_walltimer="clock_realtime"
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
 $as_echo "yes" >&6; }
 
 else
 
-                        with_walltimer="cycle"
-                        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+                    with_walltimer="cycle"
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
 
 fi
@@ -21746,7 +21697,6 @@ rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext \
   conftest.$ac_objext conftest.beam conftest.$ac_ext
 fi
 
-        fi
     fi
 fi
 
@@ -21756,11 +21706,6 @@ if test "$with_walltimer" = "gettimeofday"; then
 
 $as_echo "#define HAVE_GETTIMEOFDAY 1" >>confdefs.h
 
-elif test "$with_walltimer" = "mmtimer"; then
-
-$as_echo "#define HAVE_MMTIMER 1" >>confdefs.h
-
-    altix="-DALTIX"
 elif test "$with_walltimer" = "clock_realtime_hr"; then
 
 $as_echo "#define HAVE_CLOCK_GETTIME 1" >>confdefs.h
@@ -25761,7 +25706,6 @@ else
   BUILD_X86_TRUE='#'
   BUILD_X86_FALSE=
 fi
-
 
 
 
