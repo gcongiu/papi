@@ -256,7 +256,7 @@ elif "$CC" = "gcc" ; then
             with_mpi_tests=yes
         fi
     fi
-elfi "$CC" = "xlc" ; then
+elif "$CC" = "xlc" ; then
     if test "$MPICC" = "mpicc"; then
         MPI_COMPILER_CHECK=`$MPICC -qversion 2>&1 | grep 'IBM XL C'`
         if test "x$MPI_COMPILER_CHECK" = "x"; then
