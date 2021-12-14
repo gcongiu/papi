@@ -1686,7 +1686,6 @@ AM_CONDITIONAL([BUILD_X86],
                [test "x`echo $host_cpu | grep 'x86'`" != "x"])
 
 AC_SUBST(with_perf_lib_subdir)
-AC_SUBST(prefix)
 AC_SUBST(altix)
 AC_SUBST(tests)
 AC_SUBST(PAPI_HOST_SYSTEM)
