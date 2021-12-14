@@ -428,44 +428,34 @@ AC_ARG_WITH([tests],
 
 if test "$with_tests" = "no" ; then
     AC_MSG_RESULT([$with_tests])
-    with_mpi_tests=no
 else
-    # mpitests is not a target
     tmp_tests=
 
     if test "x`echo $with_tests | grep 'ctests'`" != "x" ; then
         tmp_tests+="ctests "
+        # mpi tests require ctests to build
+        if test "x`echo $with_tests | grep 'mpitests'`" != "x" ; then
+            if test "x$with_mpi_tests" = "xyes" -a "$enable_shared" = "yes"; then
+                tmp_tests+="mpitests "
+            fi
+        fi
     fi
 
     if test "x`echo $with_tests | grep 'ftests'`" != "x" ; then
         tmp_tests+="ftests "
     fi
 
-    if test "x`echo $with_tests | grep 'mpitests'`" != "x" ; then
-        # we already checked if mpicc is working
-        # FIXME: there must be a better way of doing this
-        if test "x$MPICC" != "x" ; then
-            if test "x$with_mpi_tests" = "x" ; then
-                # mpitests only works together with ctests
-                if test "x$tmp_tests" = "x" ; then
-                    AC_MSG_RESULT([no])
-                else
-                    with_mpi_tests=yes
-                    AC_MSG_RESULT([$tmp_tests mpitests])
-                fi
-            fi
-        else
-            with_mpi_tests=no
-            if test "x$tmp_tests" = "x" ; then
-                AC_MSG_RESULT([no])
-            else
-                AC_MSG_RESULT([$tmp_tests])
-            fi
-        fi
-    fi
-    # do not list mpi_tests for makefile target
     tests=$tmp_tests
+    if test "x$tests" = "x"; then
+        AC_MSG_RESULT([no])
+    else
+        AC_MSG_RESULT([$tmp_tests])
+    fi
 fi
+
+AM_CONDITIONAL([BUILD_CTESTS],[test "x`echo $with_tests | grep 'ctests'`" != "x"])
+AM_CONDITIONAL([BUILD_FTESTS],[test "x`echo $with_tests | grep 'ftests'`" != "x"])
+AM_CONDITIONAL([BUILD_MPITESTS],[test "x`echo $with_tests | grep 'mpitests'`" != "x"])
 
 
 AC_MSG_CHECKING([for debug build])
@@ -933,12 +923,6 @@ AC_MSG_RESULT([$with_static_papi_events])
 
 AC_MSG_CHECKING([for whether to build shared library])
 AC_MSG_RESULT([$enable_shared])
-
-if test "$enable_shared" = "no" ; then
-    with_mpi_tests="no"
-fi
-
-AM_CONDITIONAL([BUILD_MPI_PROGRAMS],[test "$with_mpi_tests" = "yes"])
 
 AC_MSG_CHECKING([for static compile of tests and utilities])
 AC_ARG_ENABLE([static-tools],
