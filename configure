@@ -723,6 +723,10 @@ libpfm_la
 BUILD_PFMLIB_VER_4_FALSE
 BUILD_PFMLIB_VER_4_TRUE
 TOOLS_LINK_MODE
+BUILD_FTESTS_FALSE
+BUILD_FTESTS_TRUE
+BUILD_CTESTS_FALSE
+BUILD_CTESTS_TRUE
 BUILD_MPI_PROGRAMS_FALSE
 BUILD_MPI_PROGRAMS_TRUE
 MPICC
@@ -22273,6 +22277,23 @@ else
   BUILD_MPI_PROGRAMS_FALSE=
 fi
 
+ if ; then
+  BUILD_CTESTS_TRUE=
+  BUILD_CTESTS_FALSE='#'
+else
+  BUILD_CTESTS_TRUE='#'
+  BUILD_CTESTS_FALSE=
+fi
+
+ if ; then
+  BUILD_FTESTS_TRUE=
+  BUILD_FTESTS_FALSE='#'
+else
+  BUILD_FTESTS_TRUE='#'
+  BUILD_FTESTS_FALSE=
+fi
+
+
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for static compile of tests and utilities" >&5
 $as_echo_n "checking for static compile of tests and utilities... " >&6; }
@@ -23471,38 +23492,6 @@ else
         CFLAGS=-Wall
         { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
   (: CFLAGS="$CFLAGS") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-
-fi
-
-
-if ${with_tests+:} false; then :
-
-    case " $with_tests " in #(
-  *" bgp_tests "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : with_tests already contains bgp_tests"; } >&5
-  (: with_tests already contains bgp_tests) 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; } ;; #(
-  *) :
-
-            as_fn_append with_tests " bgp_tests"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : with_tests=\"\$with_tests\""; } >&5
-  (: with_tests="$with_tests") 2>&5
-  ac_status=$?
-  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
-  test $ac_status = 0; }
-         ;;
-esac
-
-else
-
-        with_tests=bgp_tests
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : with_tests=\"\$with_tests\""; } >&5
-  (: with_tests="$with_tests") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }
@@ -25855,6 +25844,14 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BUILD_MPI_PROGRAMS_TRUE}" && test -z "${BUILD_MPI_PROGRAMS_FALSE}"; then
   as_fn_error $? "conditional \"BUILD_MPI_PROGRAMS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${BUILD_CTESTS_TRUE}" && test -z "${BUILD_CTESTS_FALSE}"; then
+  as_fn_error $? "conditional \"BUILD_CTESTS\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${BUILD_FTESTS_TRUE}" && test -z "${BUILD_FTESTS_FALSE}"; then
+  as_fn_error $? "conditional \"BUILD_FTESTS\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${BUILD_PFMLIB_VER_4_TRUE}" && test -z "${BUILD_PFMLIB_VER_4_FALSE}"; then

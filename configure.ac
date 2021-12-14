@@ -939,6 +939,9 @@ if test "$enable_shared" = "no" ; then
 fi
 
 AM_CONDITIONAL([BUILD_MPI_PROGRAMS],[test "$with_mpi_tests" = "yes"])
+AM_CONDITIONAL([BUILD_CTESTS],[])
+AM_CONDITIONAL([BUILD_FTESTS],[])
+
 
 AC_MSG_CHECKING([for static compile of tests and utilities])
 AC_ARG_ENABLE([static-tools],
@@ -1330,7 +1333,6 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
 
         AX_APPEND_FLAG([-gdwarf-2],[CFLAGS])
         AX_APPEND_FLAG([-Wall],[CFLAGS])
-        AX_APPEND_FLAG([bgp_tests],[with_tests])
         AX_APPEND_FLAG([-L/bgsys/drivers/ppcfloor/runtime/SPI],[LDFLAGS])
         AX_APPEND_FLAG([-lSPI.cna],[LIBS])
         AX_APPEND_FLAG([-g],[FFLAGS])
