@@ -33,4 +33,4 @@ lib_lib@PAPILIBNAME@_la_LDFLAGS      = $(AM_LDFLAGS) $(AM_FFLAGS) $(PAPI_VERSION
 lib_lib@PAPILIBNAME@_la_LIBADD       = $(LIBS) $(perflib)
 lib_lib@PAPILIBNAME@_la_DEPENDENCIES =
 
-EXTRA_DIST = README.md COPYRIGHT
+EXTRA_DIST = README.md COPYRIGHT maint/gen_comp_makefile.sh
