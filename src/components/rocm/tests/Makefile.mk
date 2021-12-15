@@ -16,3 +16,5 @@ src_components_rocm_tests_rocm_example_SOURCES =                \
 
 src_components_rocm_tests_rocm_all_SOURCES =                    \
                   src/components/rocm/tests/rocm_all.cpp
+
+.cpp.lo:

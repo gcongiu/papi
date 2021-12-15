@@ -23,4 +23,5 @@ src_components_rocm_smi_tests_power_monitor_rocm_SOURCES =              \
 
 src_components_rocm_smi_tests_rocmsmi_example_SOURCES =                 \
                   src/components/rocm_smi/tests/rocmsmi_example.cpp
+
 .cpp.lo:
