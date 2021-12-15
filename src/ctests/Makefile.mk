@@ -106,6 +106,21 @@ profile_programs += src/ctests/profile                  \
                     src/ctests/profile_twoevents        \
                     src/ctests/byte_profile
 
+src_ctests_profile_LDADD =                              \
+                    src/ctests/profile_utils.o
+src_ctests_profile_force_software_SOURCES =             \
+                    src/ctests/profile.c
+src_ctests_profile_force_software_CPPFLAGS =            \
+                    -DSWPROFILE
+src_ctests_profile_force_software_LDADD =               \
+                    src/ctests/profile_utils.o
+src_ctests_sprofile_LDADD =                             \
+                    src/ctests/profile_utils.o
+src_ctests_profile_twoevents_LDADD =                    \
+                    src/ctests/profile_utils.o
+src_ctests_byte_profile_LDADD =                         \
+                    src/ctests/profile_utils.o
+
 attach_programs += src/ctests/multiattach               \
                    src/ctests/multiattach2              \
                    src/ctests/zero_attach               \
@@ -150,11 +165,25 @@ mpx_programs += src/ctests/max_multiplex     \
                 src/ctests/multiplex1        \
                 src/ctests/multiplex2        \
                 src/ctests/mendes-alt        \
-                src/ctests/sdsc-mpx          \
-                src/ctests/sdsc2-mpc         \
+                src/ctests/sdsc2             \
+                src/ctests/sdsc2-mpx         \
                 src/ctests/sdsc2-mpx-noreset \
+                src/ctests/sdsc-mpx          \
                 src/ctests/sdsc4-mpx         \
                 src/ctests/reset_multiplex
+
+src_ctests_sdsc2_mpx_SOURCES =               \
+                src/ctests/sdsc2.c
+src_ctests_sdsc2_mpx_CPPFLAGS =              \
+                -DMPX
+src_ctests_sdsc2_mpx_noreset_SOURCES =       \
+                src/ctests/sdsc2.c
+src_ctests_sdsc2_mpx_noreset_CPPFLAGS =      \
+                -DMPX -DSTARTSTOP
+src_ctests_sdsc_mpx_CPPFLAGS =               \
+                -DMPX
+src_ctests_sdsc4_mpx_CPPFLAGS =              \
+                -DMPX
 
 mpx_pthr_programs += src/ctests/multiplex1_pthreads  \
                      src/ctests/multiplex3_pthreads  \
