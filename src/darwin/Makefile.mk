@@ -5,12 +5,12 @@
 
 if BUILD_DARWIN
 
-noinst_HEADERS += darwin-common.h  \
-                  darwin-context.h \
-                  darwin-lock.h    \
-                  darwin-memory.h
+noinst_HEADERS += src/darwin/darwin-common.h  \
+                  src/darwin/darwin-context.h \
+                  src/darwin/darwin-lock.h    \
+                  src/darwin/darwin-memory.h
 
-papi_sources   += darwin-common.c  \
-                  darwin-memory.c
+papi_sources   += src/darwin/darwin-common.c  \
+                  src/darwin/darwin-memory.c
 
 endif

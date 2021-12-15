@@ -3,7 +3,7 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += fortran_programs
+EXTRA_PROGRAMS += $(fortran_programs)
 
 fortran_programs =
 

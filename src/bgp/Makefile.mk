@@ -5,10 +5,10 @@
 
 if BUILD_BGP
 
-noinst_HEADERS += linux-bgp-native-events.h \
-                  linux-bgp.h
+noinst_HEADERS += src/bgp/linux-bgp-native-events.h \
+                  src/bgp/linux-bgp.h
 
-papi_sources += linux-bgp-memory.c \
-                linux-bgp.c
+papi_sources += src/bgp/linux-bgp-memory.c \
+                src/bgp/linux-bgp.c
 
 endif

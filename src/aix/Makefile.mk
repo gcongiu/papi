@@ -5,11 +5,11 @@
 
 if BUILD_AIX
 
-noinst_HEADERS += aix-context.h \
-                  aix-lock.h    \
-                  aix.h
+noinst_HEADERS += src/aix/aix-context.h \
+                  src/aix/aix-lock.h    \
+                  src/aix/aix.h
 
-papi_sources   += aix-memory.c \
-                  aix.c
+papi_sources   += src/aix/aix-memory.c \
+                  src/aix/aix.c
 
 endif

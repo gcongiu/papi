@@ -5,11 +5,11 @@
 
 if BUILD_BGQ
 
-noinst_HEADERS += linux-bgq-common.h \
-                  linux-bgq.h
+noinst_HEADERS += src/bgq/linux-bgq-common.h \
+                  src/bgq/linux-bgq.h
 
-papi_sources   += linux-bgq-common.c \
-                  linux-bgq-memory.c \
-                  linux-bgq.c
+papi_sources   += src/bgq/linux-bgq-common.c \
+                  src/bgq/linux-bgq-memory.c \
+                  src/bgq/linux-bgq.c
 
 endif

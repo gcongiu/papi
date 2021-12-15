@@ -5,16 +5,16 @@
 
 if BUILD_SOLARIS
 
-noinst_HEADERS += solaris-common.h   \
-                  solaris-context.h  \
-                  solaris-lock.h     \
-                  solaris-memory.h   \
-                  solaris-niagara2.h \
-                  solaris-ultra.h
+noinst_HEADERS += src/solaris/solaris-common.h   \
+                  src/solaris/solaris-context.h  \
+                  src/solaris/solaris-lock.h     \
+                  src/solaris/solaris-memory.h   \
+                  src/solaris/solaris-niagara2.h \
+                  src/solaris/solaris-ultra.h
 
-papi_sources   += solaris-common.c   \
-                  solaris-memory.c   \
-                  solaris-niagara2.c \
-                  solaris-ultra.c
+papi_sources   += src/solaris/solaris-common.c   \
+                  src/solaris/solaris-memory.c   \
+                  src/solaris/solaris-niagara2.c \
+                  src/solaris/solaris-ultra.c
 
 endif

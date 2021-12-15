@@ -4,4 +4,4 @@
 ##
 
 EXTRA_PROGRAMS += src/components/mx/tests/mx_basic  \
-                  src/compenents/mx/tests/mx_elapsed
+                  src/components/mx/tests/mx_elapsed

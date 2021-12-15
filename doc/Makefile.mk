@@ -14,5 +14,5 @@ install-data-hook:
 	cp -r doc/doxygen/man/man1 $(DESTDIR)$(docdir)
 	cp -r doc/doxygen/man/man3 $(DESTDIR)$(docdir)
 
-uninstall-data-hook:
+uninstall-hook:
 	rm -rf $(DESTDIR)$(docdir)
