@@ -1530,17 +1530,6 @@ AC_SUBST(components_vector_list)
 AC_SUBST(components_vector_pointer_list)
 AC_CONFIG_FILES([src/components_config.h])
 
-# check for component tests
-# FIXME: As for previous loop above, comp can be 'path/comp'. Thus, we should be
-# removing the leading part of the path from here too.
-# FIXME: top_srcdir currently set to '.' should be set to absolute srcdir path.
-for comp in $components; do
-    if test -d "$srcdir/components/${comp}/tests" ; then
-        COMPONENTS="$COMPONENTS $comp"
-    fi
-done
-tests="$tests comp_tests"
-
 # Conditionally build components
 AM_CONDITIONAL([BUILD_APPIO],
                [test "x`echo $components | grep 'appio'`" != "x"])
