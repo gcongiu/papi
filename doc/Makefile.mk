@@ -8,7 +8,7 @@ doxygen:
 	doxygen doc/Doxyfile-man1
 	doxygen doc/Doxyfile-man3
 
-install-data-hook:
+install-data-hook: doxygen
 	mkdir -p $(DESTDIR)$(docdir)
 	cp -r doc/doxygen/html $(DESTDIR)$(docdir)
 	cp -r doc/doxygen/man/man1 $(DESTDIR)$(docdir)
