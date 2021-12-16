@@ -449,11 +449,11 @@ else
         tmp_tests+="ftests "
     fi
 
-    tests=$tmp_tests
-    if test "x$tests" = "x"; then
+    with_tests=$tmp_tests
+    if test "x$with_tests" = "x"; then
         AC_MSG_RESULT([no])
     else
-        AC_MSG_RESULT([$tmp_tests])
+        AC_MSG_RESULT([$with_tests])
     fi
 fi
 
