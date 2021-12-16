@@ -24851,8 +24851,8 @@ fi
 
 
 if test "$with_tests" = "no" ; then
-    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $with_tests" >&5
-$as_echo "$with_tests" >&6; }
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
 else
     tmp_tests=
 
@@ -24870,13 +24870,13 @@ else
         tmp_tests+="ftests "
     fi
 
-    tests=$tmp_tests
-    if test "x$tests" = "x"; then
+    with_tests=$tmp_tests
+    if test "x$with_tests" = "x"; then
         { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
 $as_echo "no" >&6; }
     else
-        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $tmp_tests" >&5
-$as_echo "$tmp_tests" >&6; }
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: $with_tests" >&5
+$as_echo "$with_tests" >&6; }
     fi
 fi
 
