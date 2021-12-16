@@ -39,4 +39,4 @@ lib_lib@PAPILIBNAME@_la_DEPENDENCIES =
 
 EXTRA_DIST = README.md COPYRIGHT maint/gen_comp_makefile.sh
 
-test: $(testlist)
+tests: $(testlist) lib/lib@PAPILIBNAME@.la
