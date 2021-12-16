@@ -431,7 +431,7 @@ AC_ARG_WITH([tests],
             [with_tests="ctests ftests mpitests"])
 
 if test "$with_tests" = "no" ; then
-    AC_MSG_RESULT([$with_tests])
+    AC_MSG_RESULT([no])
 else
     tmp_tests=
 
