@@ -3,7 +3,7 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += src/components/rocm_smi/tests/rocm_command_line       \
+testlist       += src/components/rocm_smi/tests/rocm_command_line       \
                   src/components/rocm_smi/tests/rocm_smi_all            \
                   src/components/rocm_smi/tests/rocm_smi_writeTests     \
                   src/components/rocm_smi/tests/power_monitor_rocm      \

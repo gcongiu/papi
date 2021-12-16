@@ -3,4 +3,4 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += src/components/vmware/tests/vmware_basic
+testlist       += src/components/vmware/tests/vmware_basic

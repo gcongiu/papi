@@ -3,7 +3,7 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += src/components/sde/tests/Minimal_Test             \
+testlist       += src/components/sde/tests/Minimal_Test             \
                   src/components/sde/tests/Simple_Test              \
                   src/components/sde/tests/Simple2_Test             \
                   src/components/sde/tests/Simple2_NoPAPI_Test      \

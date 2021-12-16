@@ -3,5 +3,5 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += src/components/rapl/tests/rapl_basic      \
+testlist       += src/components/rapl/tests/rapl_basic      \
                   src/components/rapl/tests/rapl_overflow

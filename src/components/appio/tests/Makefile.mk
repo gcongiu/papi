@@ -3,7 +3,7 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += src/components/appio/tests/appio_list_events          \
+testlist       += src/components/appio/tests/appio_list_events          \
                   src/components/appio/tests/appio_values_by_code       \
                   src/components/appio/tests/appio_values_by_name       \
                   src/components/appio/tests/appio_test_read_write      \

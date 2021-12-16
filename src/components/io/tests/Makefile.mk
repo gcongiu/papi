@@ -3,4 +3,4 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += src/components/io/tests/io_basic
+testlist       += src/components/io/tests/io_basic

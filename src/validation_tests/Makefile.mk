@@ -3,7 +3,7 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += src/validation_tests/fp_validation_hl     \
+testlist       += src/validation_tests/fp_validation_hl     \
                   src/validation_tests/cycles_validation    \
                   src/validation_tests/flops_validation     \
                   src/validation_tests/memleak_check        \

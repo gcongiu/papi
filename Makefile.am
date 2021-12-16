@@ -4,7 +4,8 @@
 ##
 
 ACLOCAL_AMFLAGS = -I confdb
-EXTRA_PROGRAMS =
+EXTRA_PROGRAMS = $(testlist)
+testlist =
 
 AM_CFLAGS   = $(CFLAGS)
 AM_CPPFLAGS = $(CPPFLAGS)
@@ -35,3 +36,5 @@ lib_lib@PAPILIBNAME@_la_LIBADD       = $(LIBS) $(perflib)
 lib_lib@PAPILIBNAME@_la_DEPENDENCIES =
 
 EXTRA_DIST = README.md COPYRIGHT maint/gen_comp_makefile.sh
+
+test: $(testlist)

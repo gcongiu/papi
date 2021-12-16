@@ -3,4 +3,4 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += src/components/lustre/tests/lustre_basic
+testlist       += src/components/lustre/tests/lustre_basic

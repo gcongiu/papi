@@ -3,4 +3,4 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += src/components/libmsr/tests/libmsr_basic
+testlist       += src/components/libmsr/tests/libmsr_basic

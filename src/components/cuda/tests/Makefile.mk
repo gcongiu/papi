@@ -3,7 +3,7 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += src/components/cuda/tests/HelloWorld                  \
+testlist       += src/components/cuda/tests/HelloWorld                  \
                   src/components/cuda/tests/simpleMultiGPU              \
                   src/components/cuda/tests/HelloWorld_CUPTI11          \
                   src/components/cuda/tests/HelloWorld_NP_Ctx           \

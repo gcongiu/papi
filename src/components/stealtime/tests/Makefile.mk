@@ -3,4 +3,4 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += src/components/stealtime/tests/stealtime_basic
+testlist       += src/components/stealtime/tests/stealtime_basic

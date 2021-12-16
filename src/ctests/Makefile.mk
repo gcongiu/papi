@@ -3,7 +3,7 @@
 ##     See copyright in top-level directory
 ##
 
-EXTRA_PROGRAMS += $(serial_programs)    \
+testlist       += $(serial_programs)    \
                   $(forkexec_programs)  \
                   $(overflow_programs)  \
                   $(profile_programs)   \
