@@ -4,7 +4,9 @@
 ##
 
 ACLOCAL_AMFLAGS = -I confdb
+
 EXTRA_PROGRAMS = $(testlist)
+CLEANFILES = $(testlist)
 testlist =
 
 AM_CFLAGS   = $(CFLAGS)
