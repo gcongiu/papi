@@ -238,6 +238,15 @@ AC_PROG_CXX
 AC_PROG_FC([xlf ifort gfortran f95 f90])
 AC_PROG_F77([xlf ifort gfortran f77])
 AC_CHECK_PROG([MPICC], [mpicc], [mpicc], [])
+AC_PATH_PROG([MPICC_PATH],[mpicc])
+
+if test "x$MPICC_PATH" != "x" ; then
+    MPI_INST_PATH=`echo $MPICC_PATH | sed 's/\/bin\/mpicc//g'`
+    MPI_INC_PATH="$MPI_INST_PATH/include"
+    MPI_LIB_PATH="$MPI_INST_PATH/lib"
+    AC_SUBST([MPI_INC_PATH])
+    AC_SUBST([MPI_LIB_PATH])
+fi
 
 AC_PATH_PROG([PERL],[perl])
 
@@ -250,24 +259,24 @@ if test "$CC" = "icc" ; then
         MPI_COMPILER_CHECK=`$MPICC -V 2>&1 | grep '^Intel(R) C'`
         if test "x$MPI_COMPILER_CHECK" = "x"; then
             AC_MSG_WARN([$MPICC is using a different compiler than $CC. MPI tests disabled.])
-            with_mpi_tests=yes
         fi
+        with_mpi_tests=yes
     fi
-elif "$CC" = "gcc" ; then
+elif test "$CC" = "gcc" ; then
     if test "$MPICC" = "mpicc"; then
         MPI_COMPILER_CHECK=`$MPICC -v 2>&1 | grep 'gcc version'`
         if test "x$MPI_COMPILER_CHECK" = "x"; then
             AC_MSG_WARN([$MPICC is using a different compiler than $CC. MPI tests disabled.])
-            with_mpi_tests=yes
         fi
+        with_mpi_tests=yes
     fi
-elif "$CC" = "xlc" ; then
+elif test "$CC" = "xlc" ; then
     if test "$MPICC" = "mpicc"; then
         MPI_COMPILER_CHECK=`$MPICC -qversion 2>&1 | grep 'IBM XL C'`
         if test "x$MPI_COMPILER_CHECK" = "x"; then
             AC_MSG_WARN([$MPICC is using a different compiler than $CC. MPI tests disabled.])
-            with_mpi_tests=yes
         fi
+        with_mpi_tests=yes
     fi
 fi
 
@@ -1397,7 +1406,6 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
         AX_APPEND_FLAG([-G],[LDFLAGS]) # this might not be necessary with libtool
         AX_APPEND_FLAG([-bnoentry],[LDFLAGS]) # this might not be necessary with libtool
 
-        AC_CHECK_PROGS([MPICC],[mpicc mpcc],[])
         F77=xlf
 
         AC_CONFIG_LINKS([src/powerpc_events.h:$with_arch_events_h])

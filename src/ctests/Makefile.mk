@@ -292,7 +292,34 @@ mpx_pthr_programs += src/ctests/multiplex1_pthreads  \
 endif
 
 if BUILD_MPITESTS
-mpi_programs += src/ctests/mpi_hl        \
-                src/ctests/mpi_omp_hl    \
+mpi_programs += src/ctests/mpi_hl           \
+                src/ctests/mpi_omp_hl       \
                 src/ctests/mpifirst
+
+src_ctests_mpi_hl_CPPFLAGS =                \
+                -I@MPI_INC_PATH@            \
+                -I$(top_srcdir)/src         \
+                -I$(top_srcdir)/src/testlib \
+                -I$(top_srcdir)/src/validation_tests
+
+src_ctests_mpi_hl_LDFLAGS =                 \
+                -L@MPI_LIB_PATH@ -lmpi
+
+src_ctests_mpi_omp_hl_CPPFLAGS =            \
+                -I@MPI_INC_PATH@            \
+                -I$(top_srcdir)/src         \
+                -I$(top_srcdir)/src/testlib \
+                -I$(top_srcdir)/src/validation_tests
+
+src_ctests_mpi_omp_hl_LDFLAGS =             \
+                -L@MPI_LIB_PATH@ -lmpi
+
+src_ctests_mpifirst_CPPFLAGS =              \
+                -I@MPI_INC_PATH@            \
+                -I$(top_srcdir)/src         \
+                -I$(top_srcdir)/src/testlib \
+                -I$(top_srcdir)/src/validation_tests
+
+src_ctests_mpifirst_LDFLAGS =               \
+                -L@MPI_LIB_PATH@ -lmpi
 endif
