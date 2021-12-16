@@ -21,10 +21,12 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <mpi.h>
 
 #include "papi.h"
 #include "papi_test.h"
+#include "do_loops.h"
 
 int
 main( int argc, char **argv )
@@ -40,7 +42,7 @@ main( int argc, char **argv )
 	quiet=tests_quiet( argc, argv );
 
 
-	MPI_Init( argc, argv );
+	MPI_Init( &argc, &argv );
 
 	retval = PAPI_library_init( PAPI_VER_CURRENT );
 	if ( retval != PAPI_VER_CURRENT )
@@ -60,7 +62,7 @@ main( int argc, char **argv )
 		test_fail( __FILE__, __LINE__, "PAPI_event_code_to_name", retval );
 	sprintf( add_event_str, "PAPI_add_event[%s]", event_name );
 
-	EventSet = add_test_events( &num_events, &mask );
+	EventSet = add_test_events( &num_events, &mask, 1 );
 
 	values = allocate_test_space( num_tests, num_events );
 
@@ -170,7 +172,7 @@ main( int argc, char **argv )
 			test_fail( __FILE__, __LINE__, "PAPI_TOT_CYC", 1 );
 		}
 	}
-	test_pass( __FILE__, values, num_tests );
+	test_pass( __FILE__ );
 
 	MPI_Finalize(  );
 	exit( 1 );
