@@ -730,6 +730,9 @@ BUILD_FTESTS_TRUE
 BUILD_CTESTS_FALSE
 BUILD_CTESTS_TRUE
 PERL
+MPI_LIB_PATH
+MPI_INC_PATH
+MPICC_PATH
 MPICC
 ac_ct_F77
 FFLAGS
@@ -23777,6 +23780,54 @@ $as_echo "no" >&6; }
 fi
 
 
+# Extract the first word of "mpicc", so it can be a program name with args.
+set dummy mpicc; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_MPICC_PATH+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $MPICC_PATH in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_MPICC_PATH="$MPICC_PATH" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_MPICC_PATH="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+MPICC_PATH=$ac_cv_path_MPICC_PATH
+if test -n "$MPICC_PATH"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MPICC_PATH" >&5
+$as_echo "$MPICC_PATH" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+
+if test "x$MPICC_PATH" != "x" ; then
+    MPI_INST_PATH=`echo $MPICC_PATH | sed 's/\/bin\/mpicc//g'`
+    MPI_INC_PATH="$MPI_INST_PATH/include"
+    MPI_LIB_PATH="$MPI_INST_PATH/lib"
+
+
+fi
 
 # Extract the first word of "perl", so it can be a program name with args.
 set dummy perl; ac_word=$2
@@ -23829,26 +23880,26 @@ if test "$CC" = "icc" ; then
         if test "x$MPI_COMPILER_CHECK" = "x"; then
             { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $MPICC is using a different compiler than $CC. MPI tests disabled." >&5
 $as_echo "$as_me: WARNING: $MPICC is using a different compiler than $CC. MPI tests disabled." >&2;}
-            with_mpi_tests=yes
         fi
+        with_mpi_tests=yes
     fi
-elif "$CC" = "gcc" ; then
+elif test "$CC" = "gcc" ; then
     if test "$MPICC" = "mpicc"; then
         MPI_COMPILER_CHECK=`$MPICC -v 2>&1 | grep 'gcc version'`
         if test "x$MPI_COMPILER_CHECK" = "x"; then
             { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $MPICC is using a different compiler than $CC. MPI tests disabled." >&5
 $as_echo "$as_me: WARNING: $MPICC is using a different compiler than $CC. MPI tests disabled." >&2;}
-            with_mpi_tests=yes
         fi
+        with_mpi_tests=yes
     fi
-elif "$CC" = "xlc" ; then
+elif test "$CC" = "xlc" ; then
     if test "$MPICC" = "mpicc"; then
         MPI_COMPILER_CHECK=`$MPICC -qversion 2>&1 | grep 'IBM XL C'`
         if test "x$MPI_COMPILER_CHECK" = "x"; then
             { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: $MPICC is using a different compiler than $CC. MPI tests disabled." >&5
 $as_echo "$as_me: WARNING: $MPICC is using a different compiler than $CC. MPI tests disabled." >&2;}
-            with_mpi_tests=yes
         fi
+        with_mpi_tests=yes
     fi
 fi
 
@@ -28366,48 +28417,6 @@ else
 
 fi
  # this might not be necessary with libtool
-
-        for ac_prog in mpicc mpcc
-do
-  # Extract the first word of "$ac_prog", so it can be a program name with args.
-set dummy $ac_prog; ac_word=$2
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
-$as_echo_n "checking for $ac_word... " >&6; }
-if ${ac_cv_prog_MPICC+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  if test -n "$MPICC"; then
-  ac_cv_prog_MPICC="$MPICC" # Let the user override the test.
-else
-as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
-for as_dir in $PATH
-do
-  IFS=$as_save_IFS
-  test -z "$as_dir" && as_dir=.
-    for ac_exec_ext in '' $ac_executable_extensions; do
-  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
-    ac_cv_prog_MPICC="$ac_prog"
-    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
-    break 2
-  fi
-done
-  done
-IFS=$as_save_IFS
-
-fi
-fi
-MPICC=$ac_cv_prog_MPICC
-if test -n "$MPICC"; then
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $MPICC" >&5
-$as_echo "$MPICC" >&6; }
-else
-  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-$as_echo "no" >&6; }
-fi
-
-
-  test -n "$MPICC" && break
-done
 
         F77=xlf
 
