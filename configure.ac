@@ -240,6 +240,8 @@ AC_PROG_F77([xlf ifort gfortran f77])
 AC_CHECK_PROG([MPICC], [mpicc], [mpicc], [])
 AC_PATH_PROG([MPICC_PATH],[mpicc])
 
+# FIXME: this should be replaced by --with-mpi= --with-mpi-incdir=
+# --with-mpi-libdir= instead.
 if test "x$MPICC_PATH" != "x" ; then
     MPI_INST_PATH=`echo $MPICC_PATH | sed 's/\/bin\/mpicc//g'`
     MPI_INC_PATH="$MPI_INST_PATH/include"
