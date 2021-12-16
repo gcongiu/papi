@@ -28,7 +28,10 @@ Each thread inside the Thread routine:
    - Return flops
 */
 
+#include <stdlib.h>
+#include "papi.h"
 #include "papi_test.h"
+#include "do_loops.h"
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -150,7 +153,8 @@ main( int argc, char **argv )
 	flopper = Thread( 65536 ) / 65536;
 	printf( "flopper=%d\n", flopper );
 
-	for ( int i = 0; i < 100000; i++ )
+    int i;
+	for ( i = 0; i < 100000; i++ )
 #pragma omp parallel private(tid)
 	{
 		tid = omp_get_thread_num(  );
@@ -160,10 +164,12 @@ main( int argc, char **argv )
 #pragma omp master
 		if ( flops[tid] < flopi[tid] ) {
 			printf( "test iteration=%d\n", i );
-			for ( int j = 0; j < omp_get_num_threads(  ); j++ ) {
+            int j;
+			for ( j = 0; j < omp_get_num_threads(  ); j++ ) {
 				printf( "Thread %#x Value %6lld %c %6lld", j, flops[j],
 						( flops[j] < flopi[j] ) ? '<' : '=', flopi[j] );
-				for ( int k = 0; k < omp_get_num_threads(  ); k++ )
+                int k;
+				for ( k = 0; k < omp_get_num_threads(  ); k++ )
 					if ( ( k != j ) && ( flops[k] == flops[j] ) )
 						printf( " == Thread %#x!", k );
 				printf( "\n" );
@@ -173,6 +179,6 @@ main( int argc, char **argv )
 		}
 	}
 
-	test_pass( __FILE__, NULL, 0 );
+	test_pass( __FILE__ );
 	exit( 0 );
 }

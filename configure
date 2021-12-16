@@ -23821,6 +23821,7 @@ fi
 
 # Lets figure out what CC actually is...
 # Used in later checks to set compiler specific options
+with_mpi_tests=no
 if test "$CC" = "icc" ; then
     if test "$MPICC" = "mpicc"; then
         # Check if mpiicc is available
@@ -28683,20 +28684,20 @@ else
 fi
 
 
-if ${CPPFLAGS+:} false; then :
+if ${CFLAGS+:} false; then :
 
-    case " $CPPFLAGS " in #(
+    case " $CFLAGS " in #(
   *" -xopenmp "*) :
-    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS already contains -xopenmp"; } >&5
-  (: CPPFLAGS already contains -xopenmp) 2>&5
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -xopenmp"; } >&5
+  (: CFLAGS already contains -xopenmp) 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; } ;; #(
   *) :
 
-            as_fn_append CPPFLAGS " -xopenmp"
-            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
+            as_fn_append CFLAGS " -xopenmp"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }
@@ -28705,9 +28706,9 @@ esac
 
 else
 
-        CPPFLAGS=-xopenmp
-        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CPPFLAGS=\"\$CPPFLAGS\""; } >&5
-  (: CPPFLAGS="$CPPFLAGS") 2>&5
+        CFLAGS=-xopenmp
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }
@@ -29037,7 +29038,71 @@ fi
 fi
 
 if test "$CC" = "icc"; then
-    OMPCFLGS=-qopenmp
+
+if ${CFLAGS+:} false; then :
+
+    case " $CFLAGS " in #(
+  *" -qopenmp "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -qopenmp"; } >&5
+  (: CFLAGS already contains -qopenmp) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CFLAGS " -qopenmp"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CFLAGS=-qopenmp
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
+elif test "$CC" = "gcc" ; then
+
+if ${CFLAGS+:} false; then :
+
+    case " $CFLAGS " in #(
+  *" -fopenmp "*) :
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS already contains -fopenmp"; } >&5
+  (: CFLAGS already contains -fopenmp) 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; } ;; #(
+  *) :
+
+            as_fn_append CFLAGS " -fopenmp"
+            { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+         ;;
+esac
+
+else
+
+        CFLAGS=-fopenmp
+        { { $as_echo "$as_me:${as_lineno-$LINENO}: : CFLAGS=\"\$CFLAGS\""; } >&5
+  (: CFLAGS="$CFLAGS") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }
+
+fi
+
 fi
 
 # Check for additional hardware components to build in

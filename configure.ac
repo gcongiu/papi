@@ -243,6 +243,7 @@ AC_PATH_PROG([PERL],[perl])
 
 # Lets figure out what CC actually is...
 # Used in later checks to set compiler specific options
+with_mpi_tests=no
 if test "$CC" = "icc" ; then
     if test "$MPICC" = "mpicc"; then
         # Check if mpiicc is available
@@ -1453,7 +1454,7 @@ case $PAPI_HOST_SYSTEM,$PAPI_HOST_OS,$with_perf_api,$with_perf_lib in
         F77=f90
 
         AX_APPEND_FLAG([-DNO_VARARG_MACRO],[CPPFLAGS])
-        AX_APPEND_FLAG([-xopenmp],[CPPFLAGS])
+        AX_APPEND_FLAG([-xopenmp],[CFLAGS])
         ;;
     *,darwin*,*,*)
         oslock="$srcdir/src/darwin/darwin-lock.h"
@@ -1495,7 +1496,9 @@ elif test "$F77" != "xlf"; then
 fi
 
 if test "$CC" = "icc"; then
-    OMPCFLGS=-qopenmp
+    AX_APPEND_FLAG([-qopenmp],[CFLAGS])
+elif test "$CC" = "gcc" ; then
+    AX_APPEND_FLAG([-fopenmp],[CFLAGS])
 fi
 
 # Check for additional hardware components to build in

@@ -3,14 +3,16 @@
 ##     See copyright in top-level directory
 ##
 
+LDADD =
+
 AM_CPPFLAGS += -I$(top_srcdir)/src -I$(top_builddir)/src
 
 include $(top_srcdir)/src/high-level/Makefile.mk
 include $(top_srcdir)/src/components/Makefile.mk
 include $(top_srcdir)/src/counter_analysis_toolkit/Makefile.mk
+include $(top_srcdir)/src/validation_tests/Makefile.mk
 include $(top_srcdir)/src/ctests/Makefile.mk
 include $(top_srcdir)/src/ftests/Makefile.mk
-include $(top_srcdir)/src/validation_tests/Makefile.mk
 include $(top_srcdir)/src/utils/Makefile.mk
 include $(top_srcdir)/src/testlib/Makefile.mk
 include $(top_srcdir)/src/x86/Makefile.mk

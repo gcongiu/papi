@@ -3,6 +3,12 @@
 ##     See copyright in top-level directory
 ##
 
+LDADD          += $(top_builddir)/lib/lib@PAPILIBNAME@.la   \
+                  $(top_builddir)/src/testlib/libtestlib.la
+
+AM_CPPFLAGS    += -I$(top_srcdir)/src/validation_tests      \
+                  -I$(top_srcdir)/src/testlib
+
 testlist       += $(serial_programs)    \
                   $(forkexec_programs)  \
                   $(overflow_programs)  \
@@ -74,6 +80,16 @@ serial_programs += src/ctests/serial_hl             \
                    src/ctests/zero_flip             \
                    src/ctests/zero_named
 
+src_ctests_branches_LDADD =                                                 \
+                   $(top_builddir)/src/validation_tests/flops_testcode.o    \
+                   $(top_builddir)/lib/lib@PAPILIBNAME@.la                  \
+                   $(top_builddir)/src/testlib/libtestlib.la
+
+src_ctests_zero_LDADD =                                                         \
+                   $(top_builddir)/src/validation_tests/instructions_testcode.o \
+                   $(top_builddir)/lib/lib@PAPILIBNAME@.la                      \
+                   $(top_builddir)/src/testlib/libtestlib.la
+
 forkexec_programs += src/ctests/fork                    \
                      src/ctests/fork2                   \
                      src/ctests/exec                    \
@@ -89,6 +105,16 @@ forkexec_programs += src/ctests/fork                    \
                      src/ctests/system_overflow         \
                      src/ctests/burn                    \
                      src/ctests/zero_fork
+
+src_ctests_exec_overflow_LDADD =                                        \
+                     $(top_builddir)/src/validation_tests/busy_work.o   \
+                     $(top_builddir)/lib/lib@PAPILIBNAME@.la            \
+                     $(top_builddir)/src/testlib/libtestlib.la
+
+src_ctests_child_overflow_LDADD =                                       \
+                     $(top_builddir)/src/validation_tests/busy_work.o   \
+                     $(top_builddir)/lib/lib@PAPILIBNAME@.la            \
+                     $(top_builddir)/src/testlib/libtestlib.la
 
 overflow_programs += src/ctests/overflow                \
                      src/ctests/overflow_force_software \
@@ -106,20 +132,38 @@ profile_programs += src/ctests/profile                  \
                     src/ctests/profile_twoevents        \
                     src/ctests/byte_profile
 
-src_ctests_profile_LDADD =                              \
-                    src/ctests/profile_utils.o
-src_ctests_profile_force_software_SOURCES =             \
+src_ctests_profile_LDADD =                                      \
+                    src/ctests/prof_utils.o                     \
+                    $(top_builddir)/lib/lib@PAPILIBNAME@.la     \
+                    $(top_builddir)/src/testlib/libtestlib.la
+
+src_ctests_profile_force_software_SOURCES =                     \
                     src/ctests/profile.c
-src_ctests_profile_force_software_CPPFLAGS =            \
+
+src_ctests_profile_force_software_CPPFLAGS =                    \
+                    -I$(top_srcdir)/src/testlib                 \
+                    -I$(top_srcdir)/src                         \
                     -DSWPROFILE
-src_ctests_profile_force_software_LDADD =               \
-                    src/ctests/profile_utils.o
-src_ctests_sprofile_LDADD =                             \
-                    src/ctests/profile_utils.o
-src_ctests_profile_twoevents_LDADD =                    \
-                    src/ctests/profile_utils.o
-src_ctests_byte_profile_LDADD =                         \
-                    src/ctests/profile_utils.o
+
+src_ctests_profile_force_software_LDADD =                       \
+                    src/ctests/prof_utils.o                     \
+                    $(top_builddir)/lib/lib@PAPILIBNAME@.la     \
+                    $(top_builddir)/src/testlib/libtestlib.la
+
+src_ctests_sprofile_LDADD =                                     \
+                    src/ctests/prof_utils.o                     \
+                    $(top_builddir)/lib/lib@PAPILIBNAME@.la     \
+                    $(top_builddir)/src/testlib/libtestlib.la
+
+src_ctests_profile_twoevents_LDADD =                            \
+                    src/ctests/prof_utils.o                     \
+                    $(top_builddir)/lib/lib@PAPILIBNAME@.la     \
+                    $(top_builddir)/src/testlib/libtestlib.la
+
+src_ctests_byte_profile_LDADD =                                 \
+                    src/ctests/prof_utils.o                     \
+                    $(top_builddir)/lib/lib@PAPILIBNAME@.la     \
+                    $(top_builddir)/src/testlib/libtestlib.la
 
 attach_programs += src/ctests/multiattach               \
                    src/ctests/multiattach2              \
@@ -132,9 +176,19 @@ attach_programs += src/ctests/multiattach               \
                    src/ctests/attach_cpu_validate       \
                    src/ctests/attach_cpu_sys_validate
 
+src_ctests_attach_validate_LDADD =                                              \
+                   $(top_builddir)/src/validation_tests/instructions_testcode.o \
+                   $(top_builddir)/lib/lib@PAPILIBNAME@.la                      \
+                   $(top_builddir)/src/testlib/libtestlib.la
+
 p4_test_programs += src/ctests/p4_lst_ins
 
 ear_programs += src/ctests/earprofile
+
+src_ctests_earprofile_LDADD =                               \
+                src/ctests/prof_utils.o                     \
+                $(top_builddir)/lib/lib@PAPILIBNAME@.la     \
+                $(top_builddir)/src/testlib/libtestlib.la
 
 range_programs += src/ctests/data_range
 
@@ -172,18 +226,65 @@ mpx_programs += src/ctests/max_multiplex     \
                 src/ctests/sdsc4-mpx         \
                 src/ctests/reset_multiplex
 
-src_ctests_sdsc2_mpx_SOURCES =               \
+src_ctests_sdsc2_LDADD =                                                \
+                $(top_builddir)/src/validation_tests/flops_testcode.o   \
+                $(top_builddir)/src/testlib/libtestlib.la               \
+                $(top_builddir)/lib/lib@PAPILIBNAME@.la                 \
+                -lm
+
+src_ctests_sdsc2_mpx_SOURCES =                                          \
                 src/ctests/sdsc2.c
-src_ctests_sdsc2_mpx_CPPFLAGS =              \
+
+src_ctests_sdsc2_mpx_CPPFLAGS =                                         \
+                -I$(top_srcdir)/src                                     \
+                -I$(top_srcdir)/src/testlib                             \
+                -I$(top_srcdir)/src/validation_tests                    \
                 -DMPX
-src_ctests_sdsc2_mpx_noreset_SOURCES =       \
+
+src_ctests_sdsc2_mpx_LDADD =                                            \
+                $(top_builddir)/src/validation_tests/flops_testcode.o   \
+                $(top_builddir)/src/testlib/libtestlib.la               \
+                $(top_builddir)/lib/lib@PAPILIBNAME@.la                 \
+                -lm
+
+src_ctests_sdsc2_mpx_noreset_SOURCES =                                  \
                 src/ctests/sdsc2.c
-src_ctests_sdsc2_mpx_noreset_CPPFLAGS =      \
+
+src_ctests_sdsc2_mpx_noreset_CPPFLAGS =                                 \
+                -I$(top_srcdir)/src                                     \
+                -I$(top_srcdir)/src/testlib                             \
+                -I$(top_srcdir)/src/validation_tests                    \
                 -DMPX -DSTARTSTOP
-src_ctests_sdsc_mpx_CPPFLAGS =               \
+
+src_ctests_sdsc2_mpx_noreset_LDADD =                                    \
+                $(top_builddir)/src/validation_tests/flops_testcode.o   \
+                $(top_builddir)/src/testlib/libtestlib.la               \
+                $(top_builddir)/lib/lib@PAPILIBNAME@.la                 \
+                -lm
+
+src_ctests_sdsc_mpx_CPPFLAGS =                                          \
+                -I$(top_srcdir)/src                                     \
+                -I$(top_srcdir)/src/testlib                             \
+                -I$(top_srcdir)/src/validation_tests                    \
                 -DMPX
-src_ctests_sdsc4_mpx_CPPFLAGS =              \
+
+src_ctests_sdsc_mpx_LDADD =                                             \
+                $(top_builddir)/src/validation_tests/flops_testcode.o   \
+                $(top_builddir)/src/testlib/libtestlib.la               \
+                $(top_builddir)/lib/lib@PAPILIBNAME@.la                 \
+                -lm
+
+src_ctests_sdsc4_mpx_CPPFLAGS =                                         \
+                -I$(top_srcdir)/src                                     \
+                -I$(top_srcdir)/src/testlib                             \
+                -I$(top_srcdir)/src/validation_tests                    \
                 -DMPX
+
+src_ctests_sdsc4_mpx_LDADD =                                            \
+                $(top_builddir)/src/validation_tests/flops_testcode.o   \
+                $(top_builddir)/src/testlib/libtestlib.la               \
+                $(top_builddir)/lib/lib@PAPILIBNAME@.la                 \
+                -lm
 
 mpx_pthr_programs += src/ctests/multiplex1_pthreads  \
                      src/ctests/multiplex3_pthreads  \
