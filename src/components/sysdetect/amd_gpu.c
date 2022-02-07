@@ -218,13 +218,13 @@ void
 fill_dev_info( PAPI_gpu_info_u *dev_info )
 {
     hsa_status_t status;
-    const char *string = NULL;
+    char string[PAPI_MAX_STR_LEN];
 
     ROCM_CALL((*hsa_iterate_agentsPtr)(&get_device_properties, dev_info),
              status = _status);
 
     if (status != HSA_STATUS_SUCCESS) {
-        (*hsa_status_stringPtr)(status, &string);
+        (*hsa_status_stringPtr)(status, string);
         SUBDBG( "error: %s\n", string );
     }
 }
@@ -247,7 +247,7 @@ load_hsa_sym( char *status )
     char pathname[PAPI_MAX_STR_LEN] = { 0 };
     char *rocm_root = getenv("PAPI_ROCM_ROOT");
     if (rocm_root == NULL) {
-        *status = "Can't load libhsa-runtime64.so, PAPI_ROCM_ROOT not set.";
+        sprintf(status, "Can't load libhsa-runtime64.so, PAPI_ROCM_ROOT not set.");
         return -1;
     }
 
