@@ -2739,3 +2739,39 @@ _papi_hwi_get_context( EventSetInfo_t * ESI, int *is_dirty )
 	}
 	return( ctx );
 }
+
+int
+_papi_hwi_enum_dev_type(int enum_modifier, void **handle)
+{
+    _papi_hwi_sysdetect_t args;
+    args.query_type = PAPI_SYSDETECT_QUERY__DEV_TYPE_ENUM;
+    args.query.enumerate.modifier = enum_modifier;
+
+    /* sysdetect is the 0 component by default */
+    return _papi_hwd[0]->user(0, &args, handle);
+}
+
+int
+_papi_hwi_get_dev_type_attr(void *handle, PAPI_dev_type_attr_e attr, void *value)
+{
+    _papi_hwi_sysdetect_t args;
+    args.query_type = PAPI_SYSDETECT_QUERY__DEV_TYPE_ATTR;
+    args.query.dev_type.handle = handle;
+    args.query.dev_type.attr = attr;
+
+    /* sysdetect is the 0 component by default */
+    return _papi_hwd[0]->user(0, &args, value);
+}
+
+int
+_papi_hwi_get_dev_attr(void *handle, int id, PAPI_dev_attr_e attr, void *value)
+{
+    _papi_hwi_sysdetect_t args;
+    args.query_type = PAPI_SYSDETECT_QUERY__DEV_ATTR;
+    args.query.dev.handle = handle;
+    args.query.dev.id = id;
+    args.query.dev.attr = attr;
+
+    /* sysdetect is the 0 component by default */
+    return _papi_hwd[0]->user(0, &args, value);
+}
