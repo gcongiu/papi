@@ -19,7 +19,7 @@ HEADERS  = $(MISCHDRS) $(OSFILESHDR) $(PAPI_EVENTS_TABLE) \
 	extras.h sw_multiplex.h \
 	papi_common_strings.h components_config.h
 
-LIBCFLAGS += -I. $(CFLAGS) -DOSLOCK=\"$(OSLOCK)\" -DOSCONTEXT=\"$(OSCONTEXT)\"
+LIBCFLAGS += -I. $(CPPFLAGS) $(CFLAGS)
 FHEADERS = fpapi.h f77papi.h f90papi.h
 # pkgconfig directory
 LIBPC = $(LIBDIR)/pkgconfig

@@ -116,7 +116,22 @@ extern char **_papi_errlist;
 #include "config.h"
 #endif
 
-#include OSCONTEXT
+#if   defined(AIX)
+#include "aix-context.h"
+#elif defined(LINUX_BGP)
+#include "linux-bgp-context.h"
+#elif defined(LINUX)
+#include "linux-context.h"
+#elif defined(FREEBSD)
+#include "freebsd-context.h"
+#elif defined(SOLARIS)
+#include "solaris-context.h"
+#elif defined(DARWIN)
+#include "darwin-context.h"
+#else
+#error   "No context available."
+#endif
+
 #include "papi_preset.h"
 
 #ifndef inline_static

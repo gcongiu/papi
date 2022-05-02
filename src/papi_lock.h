@@ -17,7 +17,23 @@
 #define NUM_INNER_LOCK  9
 #define PAPI_MAX_LOCK   (NUM_INNER_LOCK + PAPI_NUM_LOCK + PAPI_NUM_COMP)
 
-#include OSLOCK
+#if   defined(AIX)
+#include "aix-lock.h"
+#elif defined(LINUX_BGP)
+#include "linux-bgp-lock.h"
+#elif defined(LINUX_BGQ)
+#include "linux-bgq-lock.h"
+#elif defined(FREEBSD)
+#include "freebsd-lock.h"
+#elif defined(LINUX)
+#include "linux-lock.h"
+#elif defined(SOLARIS)
+#include "solaris-lock.h"
+#elif defined(DARWIN)
+#include "darwin-lock.h"
+#else
+#error   "No lock available."
+#endif
 
 
 #endif
