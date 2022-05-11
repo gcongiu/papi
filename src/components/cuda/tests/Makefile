@@ -5,7 +5,7 @@ PAPI_CUDA_ROOT ?= /opt/cuda
 PAPI_CUPTI_ROOT ?= $(PAPI_CUDA_ROOT)/extras/CUPTI
 CUDRV_DIR ?= $(PAPI_CUDA_ROOT)
 
-TESTS = cupti_multi_kernel_launch_monitoring simpleMultiGPU simpleMultiGPU_no_counters
+TESTS = cupti_multi_kernel_launch_monitoring hello_cupti_primary_ctx hello_cupti_no_primary_ctx simpleMultiGPU simpleMultiGPU_no_counters 
 cuda_tests: $(TESTS) 
 
 PAPI_CUDA_ROOT ?= $(CUDA_PATH)
@@ -24,6 +24,12 @@ default: $(TESTS)
 
 cupti_multi_kernel_launch_monitoring: cupti_multi_kernel_launch_monitoring.o $(UTILOBJS)
 	$(NVCC) $(NVCFLAGS) -o cupti_multi_kernel_launch_monitoring cupti_multi_kernel_launch_monitoring.o $(UTILOBJS) $(PAPILIB) $(CUDALIBS) $(LDFLAGS)
+
+hello_cupti_primary_ctx: hello_cupti.cu $(UTILOBJS)
+	$(NVCC) $(NVCFLAGS) $(INCLUDE) -o $@ $^ $(PAPILIB) $(CUDALIBS) $(LDFLAGS)
+
+hello_cupti_no_primary_ctx: hello_cupti.cu $(UTILOBJS)
+	$(NVCC) $(NVCFLAGS) $(INCLUDE) -o $@ $^ $(PAPILIB) $(CUDALIBS) $(LDFLAGS) -DRUN_WITH_NON_PRIMARY_CONTEXT
 
 simpleMultiGPU: simpleMultiGPU.cu $(UTILOBJS)
 	$(NVCC) $(NVCFLAGS) $(INCLUDE) -DPAPI -g -o $@ $+ $(UTILOBJS) $(PAPILIB) $(CUDALIBS) $(LDFLAGS)
