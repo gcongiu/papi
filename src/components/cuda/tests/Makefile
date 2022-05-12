@@ -5,15 +5,24 @@ PAPI_CUDA_ROOT ?= /opt/cuda
 PAPI_CUPTI_ROOT ?= $(PAPI_CUDA_ROOT)/extras/CUPTI
 CUDRV_DIR ?= $(PAPI_CUDA_ROOT)
 
-TESTS = hello_cupti_primary_ctx hello_cupti_no_primary_ctx simpleMultiGPU simpleMultiGPU_no_counters 
+TESTS = hello_cupti_primary_ctx        \
+        hello_cupti_no_primary_ctx     \
+        simpleMultiGPU                 \
+        simpleMultiGPU_no_counters
+
 cuda_tests: $(TESTS) 
 
-PAPI_CUDA_ROOT ?= $(CUDA_PATH)
-NVCC = $(PAPI_CUDA_ROOT)/bin/nvcc 
+NVCC     = $(PAPI_CUDA_ROOT)/bin/nvcc
 NVCFLAGS = -g -ccbin='$(CC)'
-INCLUDE += -I$(PAPI_CUDA_ROOT)/include -I$(PAPI_CUPTI_ROOT)/include 
-CUDALIBS = -L$(CUDRV_DIR)/lib64 -L$(PAPI_CUDA_ROOT)/lib64 -L$(PAPI_CUDA_ROOT)/lib64/stubs -L$(PAPI_CUPTI_ROOT)/lib64 -lcudart -lcupti -lcuda 
-PAPILIB += -L../../../libpfm4/lib -lpfm
+INCLUDE += -I$(PAPI_CUDA_ROOT)/include -I$(PAPI_CUPTI_ROOT)/include
+CUDALIBS = -L$(CUDRV_DIR)/lib64 -lcuda        \
+           -L$(PAPI_CUDA_ROOT)/lib64 -lcudart \
+           -L$(PAPI_CUDA_ROOT)/lib64/stubs    \
+           -L$(PAPI_CUPTI_ROOT)/lib64 -lcupti \
+           -Xlinker=-rpath="$(PAPI_CUDA_ROOT)/extras/CUPTI/lib64"
+PAPILIB += -L../../../libpfm4/lib -lpfm       \
+           -Xlinker=-rpath="../../../libpfm4/lib"
+
 default: $(TESTS)
 
 %.o:%.cu
