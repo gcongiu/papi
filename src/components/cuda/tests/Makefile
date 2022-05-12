@@ -5,7 +5,7 @@ PAPI_CUDA_ROOT ?= /opt/cuda
 PAPI_CUPTI_ROOT ?= $(PAPI_CUDA_ROOT)/extras/CUPTI
 CUDRV_DIR ?= $(PAPI_CUDA_ROOT)
 
-TESTS = HelloWorld simpleMultiGPU simpleMultiGPU_no_counters 
+TESTS = simpleMultiGPU simpleMultiGPU_no_counters 
 cuda_tests: $(TESTS) 
 
 PAPI_CUDA_ROOT ?= $(CUDA_PATH)
@@ -21,15 +21,6 @@ default: $(TESTS)
 
 %.mac:%.cu
 	$(NVCC) $(INCLUDE) $(NVCFLAGS) -E -c -o $@ $<
-
-HelloWorld_CUPTI11: HelloWorld_CUPTI11.o $(UTILOBJS)
-	$(NVCC) $(NVCFLAGS) -o HelloWorld_CUPTI11 HelloWorld_CUPTI11.o $(UTILOBJS) $(PAPILIB) $(CUDALIBS) $(LDFLAGS)
-
-HelloWorld: HelloWorld.o $(UTILOBJS)
-	$(NVCC) $(NVCFLAGS) -o HelloWorld HelloWorld.o $(UTILOBJS) $(PAPILIB) $(CUDALIBS) $(LDFLAGS)
-
-HelloWorld_NP_Ctx: HelloWorld_NP_Ctx.o $(UTILOBJS)
-	$(NVCC) $(NVCFLAGS) -o HelloWorld_NP_Ctx HelloWorld_NP_Ctx.o $(UTILOBJS) $(PAPILIB) $(CUDALIBS) $(LDFLAGS)
 
 simpleMultiGPU: simpleMultiGPU.cu $(UTILOBJS)
 	$(NVCC) $(NVCFLAGS) $(INCLUDE) -DPAPI -g -o $@ $+ $(UTILOBJS) $(PAPILIB) $(CUDALIBS) $(LDFLAGS)
@@ -67,9 +58,6 @@ cuda_ld_preload_example.so: simpleMultiGPU_no_counters cuda_ld_preload_example.c
 	gcc -Wall -fPIC -shared -o cuda_ld_preload_example.so $(LDFLAGS) $(INCLUDE) cuda_ld_preload_example.c ../../../libpapi.so
 
 run: 
-	( cd ~/icl/papi/papi/src/ && make )
-	( make HelloWorld )
-	./HelloWorld
 	( cd ~/icl/papi/papi/src/ && make )
 	( make simpleMultiGPU )
 	./simpleMultiGPU
