@@ -31,7 +31,6 @@
 #include <cuda_runtime.h>
 #include <cuda_runtime_api.h>
 #include <cupti.h>
-#include <timer.h>
 
 #include "papi.h"
 #include "papi_test.h"
