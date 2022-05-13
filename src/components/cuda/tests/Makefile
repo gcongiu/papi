@@ -9,7 +9,8 @@ TESTS = hello_cupti_primary_ctx        \
         hello_cupti_no_primary_ctx     \
         simpleMultiGPU                 \
         simpleMultiGPU_no_counters     \
-        cupti_multi_kernel_launch_monitoring
+        cupti_multi_kernel_launch_monitoring \
+        cupti_single_thread_monitoring
 
 cuda_tests: $(TESTS) 
 
@@ -40,6 +41,9 @@ hello_cupti_primary_ctx: hello_cupti.cu $(UTILOBJS)
 
 hello_cupti_no_primary_ctx: hello_cupti.cu $(UTILOBJS)
 	$(NVCC) $(NVCFLAGS) $(INCLUDE) -o $@ $^ $(PAPILIB) $(CUDALIBS) $(LDFLAGS) -DRUN_WITH_NON_PRIMARY_CONTEXT
+
+cupti_single_thread_monitoring: cupti_single_thread_monitoring.cu $(UTILOBJS)
+	$(NVCC) $(NVCFLAGS) $(INCLUDE) -o $@ $^ $(PAPILIB) $(CUDALIBS) $(LDFLAGS)
 
 simpleMultiGPU: simpleMultiGPU.cu $(UTILOBJS)
 	$(NVCC) $(NVCFLAGS) $(INCLUDE) -DPAPI -g -o $@ $+ $(UTILOBJS) $(PAPILIB) $(CUDALIBS) $(LDFLAGS)

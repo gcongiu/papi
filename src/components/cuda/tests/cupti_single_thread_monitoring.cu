@@ -370,7 +370,7 @@ int main(int argc, char **argv)
         cu_errno = cuCtxPushCurrent(ctx[i]);
         if (cu_errno != CUDA_SUCCESS) {
             test_fail(__FILE__, __LINE__, "cuCtxPushCurrnet failed.", 0);
-        } 
+        }
 
         cu_errno = cuCtxSynchronize();
         if (cu_errno != CUDA_SUCCESS) {
