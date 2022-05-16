@@ -21,7 +21,8 @@ CUDALIBS = -L$(CUDRV_DIR)/lib64 -lcuda        \
            -L$(PAPI_CUPTI_ROOT)/lib64 -lcupti \
            -Xlinker=-rpath="$(PAPI_CUDA_ROOT)/extras/CUPTI/lib64"
 PAPILIB += -L../../../libpfm4/lib -lpfm       \
-           -Xlinker=-rpath="../../../libpfm4/lib"
+           -Xlinker=-rpath="../../../libpfm4/lib" \
+           -Xlinker=-rpath="libpfm4/lib"
 
 default: $(TESTS)
 
