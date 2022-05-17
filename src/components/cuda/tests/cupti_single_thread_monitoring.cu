@@ -265,15 +265,12 @@ int main(int argc, char **argv)
                   papi_errno);
     }
 
-    int numEventNames = 2;
-
-    char const *EventNames[2];
+    const int numEventNames = 1;
+    char const *EventNames[numEventNames];
     if (cc_major < 7 || (cc_major == 7 && cc_minor == 0)) {
-        EventNames[0] = "cuda:::event:active_cycles_pm";
-        EventNames[1] = "cuda:::event:active_warps_pm";
+        EventNames[0] = "cuda:::event:warps_launched";
     } else {
-        EventNames[0] = "cuda:::dram__bytes_read.sum";
-        EventNames[1] = "cuda:::sm__warps_launched.sum";
+        EventNames[0] = "cuda:::sm__warps_launched.sum";
     }
 
     // Add events at a GPU specific level ... eg cuda:::device:2:elapsed_cycles_sm
@@ -412,7 +409,7 @@ int main(int argc, char **argv)
     int events_per_dev = eventCount / GPU_N;
     for (i = 0; i < GPU_N; i++) {
         cuDeviceGetAttribute(&warp_size[i], CU_DEVICE_ATTRIBUTE_WARP_SIZE, device[i]);
-        if (values[(i * events_per_dev) + 1] != ((BLOCK_N * THREAD_N) / warp_size[i])) {
+        if (values[i * events_per_dev] != ((BLOCK_N * THREAD_N) / warp_size[i])) {
             test_fail(__FILE__, __LINE__, "", 0);
         }
     }
