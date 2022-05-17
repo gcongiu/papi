@@ -73,6 +73,8 @@ int main(int argc, char **argv)
     const int THREAD_N = 256;
     const int ACCUM_N = BLOCK_N * THREAD_N;
 
+    int quiet = tests_quiet(argc, argv);
+
     CUcontext ctx[MAX_GPU_COUNT];
     CUcontext poppedCtx;
     CUresult cu_errno = CUDA_SUCCESS;
@@ -216,7 +218,10 @@ int main(int argc, char **argv)
         }
     }
 
-    printf("Setup PAPI counters internally (PAPI)\n");
+    if (!quiet) {
+        printf("Setup PAPI counters internally (PAPI)\n");
+    }
+
     int EventSet = PAPI_NULL;
     int NUM_EVENTS = MAX_GPU_COUNT * MAX_NUM_EVENTS;
     long long values[NUM_EVENTS];
@@ -241,11 +246,13 @@ int main(int argc, char **argv)
 
     if (cid < 0) {
         fprintf(stderr, "Failed to find cuda component among %i "
-            "reported components.\n", k);
+                "reported components.\n", k);
         test_fail(__FILE__, __LINE__, "", 0);
     }
 
-    printf("Found CUDA Component at id %d\n", cid);
+    if (!quiet) {
+        printf("Found CUDA Component at id %d\n", cid);
+    }
 
     papi_errno = PAPI_create_eventset(&EventSet);
     if (papi_errno != PAPI_OK) {
@@ -293,13 +300,17 @@ int main(int argc, char **argv)
             snprintf(tmpEventName, 64, "%s:device=%d\0", EventNames[ee], i);
             papi_errno = PAPI_add_named_event(EventSet, tmpEventName);
             if (papi_errno == PAPI_OK) {
-                printf("Add event success: '%s' GPU %i\n", tmpEventName, i);
+                if (!quiet) {
+                    printf("Add event success: '%s' GPU %i\n", tmpEventName, i);
+                }
                 EventName[eventCount] = (char *)calloc(64, sizeof(char));
                 snprintf(EventName[eventCount], 64, "%s", tmpEventName);
                 eventCount++;
             } else {
-                printf("Add event failure: '%s' GPU %i error=%s\n",
-                       tmpEventName, i, PAPI_strerror(papi_errno));
+                if (!quiet) {
+                    printf("Add event failure: '%s' GPU %i error=%s\n",
+                           tmpEventName, i, PAPI_strerror(papi_errno));
+                }
             }
         }
     }
@@ -314,7 +325,9 @@ int main(int argc, char **argv)
         test_fail(__FILE__, __LINE__, "PAPI_start failed.", papi_errno);
     }
 
-    printf("Computing with %d GPUs...\n", GPU_N);
+    if (!quiet) {
+        printf("Computing with %d GPUs...\n", GPU_N);
+    }
 
     for (i = 0; i < GPU_N; i++) {
         cu_errno = cuCtxPushCurrent(ctx[i]);
@@ -342,7 +355,10 @@ int main(int argc, char **argv)
         }
     }
 
-    printf("Process GPU results on %d GPUs...\n", GPU_N);
+    if (!quiet) {
+        printf("Process GPU results on %d GPUs...\n", GPU_N);
+    }
+
     for (i = 0; i < GPU_N; i++) {
         float sum;
         cu_errno = cuCtxPushCurrent(ctx[i]);
@@ -387,8 +403,10 @@ int main(int argc, char **argv)
         test_fail(__FILE__, __LINE__, "PAPI_stop failed.", papi_errno);
     }
 
-    for (i = 0; i < eventCount; i++)
-        printf("PAPI counterValue %12lld \t\t --> %s \n", values[i], EventName[i]);
+    if (!quiet) {
+        for (i = 0; i < eventCount; i++)
+            printf("PAPI counterValue %12lld \t\t --> %s \n", values[i], EventName[i]);
+    }
 
     int warp_size[GPU_N];
     int events_per_dev = eventCount / GPU_N;
@@ -416,7 +434,10 @@ int main(int argc, char **argv)
         sumGPU += h_SumGPU[i];
     }
 
-    printf("Computing the same result with Host CPU...\n");
+    if (!quiet) {
+        printf("Computing the same result with Host CPU...\n");
+    }
+
     sumCPU = 0;
     for (i = 0; i < GPU_N; i++) {
         for (j = 0; j < plan[i].dataN; j++) {
@@ -424,10 +445,16 @@ int main(int argc, char **argv)
         }
     }
 
-    printf("Comparing GPU and Host CPU results...\n");
+    if (!quiet) {
+        printf("Comparing GPU and Host CPU results...\n");
+    }
+
     diff = fabs(sumCPU - sumGPU) / fabs(sumCPU);
-    printf("  GPU sum: %f\n  CPU sum: %f\n", sumGPU, sumCPU);
-    printf("  Relative difference: %E \n", diff);
+
+    if (!quiet) {
+        printf("  GPU sum: %f\n  CPU sum: %f\n", sumGPU, sumCPU);
+        printf("  Relative difference: %E \n", diff);
+    }
 
     for (i = 0; i < GPU_N; i++) {
         cudaFreeHost(plan[i].h_Sum_from_device);
