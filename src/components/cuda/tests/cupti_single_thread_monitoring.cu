@@ -79,7 +79,7 @@ int main(int argc, char **argv)
     CUcontext poppedCtx;
     CUresult cu_errno = CUDA_SUCCESS;
 
-    printf("Starting simpleMultiGPU\n");
+    printf("Starting cupti_single_thread_monitoring\n");
 
     int papi_errno = PAPI_library_init(PAPI_VER_CURRENT);
     if (papi_errno != PAPI_VER_CURRENT) {
