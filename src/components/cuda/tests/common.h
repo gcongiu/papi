@@ -3,6 +3,30 @@
 
 #include <cuda.h>
 
+static int
+get_cuda_component_id(void)
+{
+    int cid = -1;
+    int cmp_count = PAPI_num_components();
+    int i;
+
+    for (i = 0; i < cmp_count; ++i) {
+        const PAPI_component_info_t *cmp_info =
+            PAPI_get_component_info(i);
+        if (cmp_info == NULL) {
+            test_fail(__FILE__, __LINE__, "PAPI_get_component_info failed.",
+                      0);
+        }
+
+        if (strcmp("cuda", cmp_info->name) == 0) {
+            cid = i;
+            break;
+        }
+    }
+
+    return cid;
+}
+
 static inline int
 is_compute_capability_pre_cupti11()
 {

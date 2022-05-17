@@ -42,13 +42,6 @@ int main(int argc, char** argv)
     int eventCount = 0;
     int quiet;
 
-    const char *EventName[NUM_EVENTS];
-    if (is_compute_capability_pre_cupti11()) {
-        EventName[0] = "cuda:::event:elapsed_cycles_sm:device=0";
-    } else {
-        EventName[0] = "cuda:::dram__bytes_read.sum:device=0";
-    }
-
     quiet = tests_quiet(argc, argv);
 
     /* PAPI Initialization */
@@ -67,6 +60,22 @@ int main(int argc, char** argv)
                PAPI_VERSION_REVISION(PAPI_VERSION));
     }
 
+    int cid = get_cuda_component_id();
+    events[0] = 0 | PAPI_NATIVE_MASK;
+    retval = PAPI_enum_cmp_event(&events[0], PAPI_ENUM_FIRST, cid);
+    if (retval != PAPI_OK) {
+        test_fail(__FILE__, __LINE__, "PAPI_enum_cmp_event failed.", retval);
+    }
+
+    PAPI_event_info_t event_info;
+    retval = PAPI_get_event_info(events[0], &event_info);
+    if (retval != PAPI_OK) {
+        test_fail(__FILE__, __LINE__, "PAPI_get_event_info failed.", retval);
+    }
+
+    const char *EventName[NUM_EVENTS];
+    EventName[0] = event_info.symbol;
+
 #ifdef RUN_WITH_NON_PRIMARY_CONTEXT
     CUresult cuErr;
     CUcontext sessionCtx = NULL;
@@ -82,11 +91,6 @@ int main(int argc, char** argv)
 #endif
 
     for (i = 0; i < NUM_EVENTS; i++) {
-        retval = PAPI_event_name_to_code((char *)EventName[i], &events[i]);
-        if (retval != PAPI_OK) {
-            fprintf(stderr, "PAPI_event_name_to_code failed\n");
-            continue;
-        }
         eventCount++;
         if (!quiet) {
             printf("Name %s --- Code: %#x\n", EventName[i], events[i]);
