@@ -2232,11 +2232,11 @@ static int _cuda_init_component(int cidx)
     sprintf(_cuda_vector.cmp_info.disabled_reason,
             "Not initialized. Access component events to initialize it.");
 
-    err = PAPI_EDELAY_INIT;
+    papi_errno = PAPI_EDELAY_INIT;
 
   fn_exit:
     PAPI_unlock(COMPONENT_LOCK);
-    return err;
+    return papi_errno;
   fn_fail:
     goto fn_exit;
 } // END _cuda_init_component.
@@ -2247,13 +2247,13 @@ static int _cuda_init_component(int cidx)
 // but not all applications use the cuda component.
 int _cuda_init_private(void)
 {
-    int rv, err = PAPI_OK;
+    int rv, papi_errno = PAPI_OK;
     // The entire init, for cupti11, timed at 913 ms.
     // The entire init, for legalcy cupti, timed at 2376 ms.
 
     if (_cuda_vector.cmp_info.initialized) {
         // copy any previous disabled error code.
-        err = _cuda_vector.cmp_info.disabled;
+        papi_errno = _cuda_vector.cmp_info.disabled;
         goto cuda_init_private_exit;
     }
 
@@ -2264,7 +2264,7 @@ int _cuda_init_private(void)
     if(_cuda_linkCudaLibraries() != PAPI_OK) {
         SUBDBG("Dynamic link of CUDA libraries failed, component will be disabled.\n");
         SUBDBG("See disable reason in papi_component_avail output for more details.\n");
-        err = (PAPI_ENOSUPP);
+        papi_errno = (PAPI_ENOSUPP);
         goto cuda_init_private_exit;
     }
 
@@ -2276,7 +2276,7 @@ int _cuda_init_private(void)
                 "Could not allocate %lu bytes of memory for global_cuda_context.", sizeof(cuda_context_t));
             _cuda_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;    // force null termination.
             if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
-            err = (PAPI_ENOMEM);
+            papi_errno = (PAPI_ENOMEM);
             goto cuda_init_private_exit;
         }
     }
@@ -2284,7 +2284,7 @@ int _cuda_init_private(void)
     /* Get list of all native CUDA events supported */
     rv = _cuda_add_native_events(global_cuda_context);
     if(rv != 0) {
-        err = (rv);
+        papi_errno = (rv);
         goto cuda_init_private_exit;
     }
     /* Export some information */
@@ -2294,11 +2294,11 @@ int _cuda_init_private(void)
     // is the maximum counters in an EventSet. The memory for that is already 
     // allocated; if we increase num_mpx_cntrs beyond that we can get a segfault
     // in the PAPI side of PAPI_cleanup_eventset. -TonyC
-    err = PAPI_OK;
+    papi_errno = PAPI_OK;
 
 cuda_init_private_exit:
     _cuda_vector.cmp_info.initialized = 1;
-    _cuda_vector.cmp_info.disabled = err;
+    _cuda_vector.cmp_info.disabled = papi_errno;
 
     PAPI_unlock(COMPONENT_LOCK);
 
@@ -2310,14 +2310,14 @@ cuda_init_private_exit:
     }
 
     // We double check; if err != 0 and the disabled reason is null, we have a problem.
-    if (err != 0 && strlen(_cuda_vector.cmp_info.disabled_reason) < 1) {
+    if (papi_errno != 0 && strlen(_cuda_vector.cmp_info.disabled_reason) < 1) {
             int strErr=snprintf(_cuda_vector.cmp_info.disabled_reason, PAPI_MAX_STR_LEN,
                 "CUDA init failed. Code failed to record a reason.");
             _cuda_vector.cmp_info.disabled_reason[PAPI_MAX_STR_LEN-1]=0;    // force null termination.
             if (strErr > PAPI_MAX_STR_LEN) HANDLE_STRING_ERROR;
     }
 
-    return (err);
+    return (papi_errno);
 } // end _cuda_init_private
 
 
