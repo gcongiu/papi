@@ -4609,6 +4609,7 @@ static int _cuda11_update_control_state(hwd_control_state_t * ctrl,
         if (err != PAPI_OK) {
             if (0) fprintf(stderr, "%s:%s:%i cuda11_getMetricDetails() failed, index=%d err=%d '%s'.\n",
                      __FILE__, __func__, __LINE__, idx, err, PAPI_strerror(err));
+            _papi_hwi_unlock( COMPONENT_LOCK );
             return(err);
         }
     }
