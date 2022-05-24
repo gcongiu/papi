@@ -4036,35 +4036,6 @@ static int _cuda11_add_native_events(cuda_context_t * gctxt)
                 cuda11_numEvents++; 
             }
         } else {
-            // Collect the names for this device.
-            //----------------SECTION----------------
-            // Collect Counter Names.
-            // Actually, we don't need to collect counter names! counters cannot be
-            // read directly, you MUST read a metric that consists of the counter
-            // name + .sum, .avg, .min, .max, or for sum additional suffixes.
-            // perfworks ONLY deals with metrics. You can collect these here, but
-            // then you must decorate the name with these suffixes.  See
-            // https://docs.nvidia.com/cupti/Cupti/r_main.html#r_host_metrics_api
-
-            // This is the code to get counters, which we don't need.
-    //      NVPW_MetricsContext_GetCounterNames_Begin_Params getCounterNames;
-    //      getCounterNames.structSize = NVPW_MetricsContext_GetCounterNames_Begin_Params_STRUCT_SIZE;
-    //      getCounterNames.pPriv = NULL;
-    //      getCounterNames.pMetricsContext = pMCCP->pMetricsContext;
-    //      NVPW_CALL((*NVPW_MetricsContext_GetCounterNames_BeginPtr)(&getCounterNames),
-    //          return(PAPI_ENOSUPP));
-    //      
-    //      fprintf(stderr, "%s:%i Counters Found: %zu.\n", __func__, __LINE__, getCounterNames.numCounters);
-    //      for (i=0; i< (int) getCounterNames.numCounters; i++) {
-    //          fprintf(stderr, "%s:%i Counter name='%s'\n", __func__, __LINE__, getCounterNames.ppCounterNames[i]);
-    //      }
-    //      NVPW_MetricsContext_GetCounterNames_End_Params endCounterNames;
-    //      endCounterNames.structSize = NVPW_MetricsContext_GetCounterNames_End_Params_STRUCT_SIZE;
-    //      endCounterNames.pPriv = NULL;
-    //      endCounterNames.pMetricsContext = MetricsContextCreateParams.pMetricsContext;
-    //      NVPW_CALL((*NVPW_MetricsContext_GetCounterNames_EndPtr)(&endCounterNames),
-    //          return(PAPI_ENOSUPP));
-                  
             //----------------SECTION----------------
             // Collect Metric Names, and get Metrics Data.
             NVPW_MetricsContext_GetMetricNames_Begin_Params GetMetricNameBeginParams;
@@ -4986,67 +4957,6 @@ static int _cuda11_read(hwd_context_t * ctx, hwd_control_state_t * ctrl, long lo
         // Note: This is a "metricsContext", not the same as cuGetCurrentContext.
         // Eval.cpp:PrintMetricValues:121 pChipName='GV100'
         // Eval.cpp:PrintMetricValues:122 Call: NVPW_CUDA_MetricsContext_Create(&metricsContextCreateParams)
-        
-/******* The commented out code here compiles and worked correctly in development, but it is
- ******* not necessary in PAPI, and eliminated for efficiency. We don't need the multiple
- ******* ranges or their names; we have only one range per device.
-
-        // Not necessary, we always have 1 range. 
-        // Eval.cpp:PrintMetricValues:130 Call: NVPW_CounterData_GetNumRanges(&getNumRangesParams)
-        NVPW_CounterData_GetNumRanges_Params getNumRangesParams;
-        memset(&getNumRangesParams, 0,  NVPW_CounterData_GetNumRanges_Params_STRUCT_SIZE);
-        getNumRangesParams.structSize = NVPW_CounterData_GetNumRanges_Params_STRUCT_SIZE;
-        getNumRangesParams.pCounterDataImage = mydevice->cuda11_CounterDataImage;
-        CUPTI_CALL(
-            (*NVPW_CounterData_GetNumRangesPtr) (&getNumRangesParams),
-            CU_CALL((*cuCtxPopCurrentPtr) (&currCuCtx),);
-            _papi_hwi_unlock(COMPONENT_LOCK); 
-            return(PAPI_EMISC)
-        );
-
-        // Eval.cpp:PrintMetricValues:132 numRanges=1
-        fprintf(stderr, "%s:%s:%i dev=%d getNumRangesParams.numRanges=%zd.\n", 
-            __FILE__, __func__, __LINE__, dev, getNumRangesParams.numRanges); // DEBUG.
-
-        // sample code loops over ranges here. We only have 1 in test code.
-        // Eval.cpp:PrintMetricValues:137 metricNames.size()=1
-        // Eval.cpp:PrintMetricValues:148 metricNames[0]='fe__cycles_elapsed.sum'
-
-        // Eval.cpp:PrintMetricValues:158 getRangeDescParams.rangeIndex=0
-        // Eval.cpp:PrintMetricValues:159 Call: NVPW_Profiler_CounterData_GetRangeDescriptions(&getRangeDescParams)
-        // Setup params for "GetRangeDescriptions".
-        NVPW_Profiler_CounterData_GetRangeDescriptions_Params getRangeDescParams;
-        memset(&getRangeDescParams, 0,  NVPW_Profiler_CounterData_GetRangeDescriptions_Params_STRUCT_SIZE);
-        getRangeDescParams.structSize = NVPW_Profiler_CounterData_GetRangeDescriptions_Params_STRUCT_SIZE;
-        getRangeDescParams.pCounterDataImage = mydevice->cuda11_CounterDataImage;
-        getRangeDescParams.rangeIndex = 0;
-        // Call GetRangeDescriptions, but just to get NUMBER of descriptions.
-        NVPW_CALL((*NVPW_Profiler_CounterData_GetRangeDescriptionsPtr) (&getRangeDescParams),
-            CU_CALL(
-            (*cuCtxPopCurrentPtr) (&currCuCtx),);
-            _papi_hwi_unlock(COMPONENT_LOCK); 
-            return(PAPI_EMISC)
-        );
-
-        // Now we know the number, allocate space for range descriptions.
-        char **rangeDescriptions = calloc(getRangeDescParams.numDescriptions, sizeof(char*));
-        getRangeDescParams.ppDescriptions = (const char **) rangeDescriptions;
-
-        // Eval.cpp:PrintMetricValues:161 getRangeDescParams.numDescriptions=1
-        // Eval.cpp:PrintMetricValues:166 Call: NVPW_Profiler_CounterData_GetRangeDescriptions(&getRangeDescParams)
-        // Call Get Range Descriptions again, get actual descriptions this time.
-        NVPW_CALL((*NVPW_Profiler_CounterData_GetRangeDescriptionsPtr) (&getRangeDescParams),
-            CU_CALL(
-            (*cuCtxPopCurrentPtr) (&currCuCtx),);
-            _papi_hwi_unlock(COMPONENT_LOCK); 
-            return(PAPI_EMISC)
-        );
-
-        fprintf(stderr, "%s:%s:%i dev=%d numRangeDescriptions=%zd, rangeDescription[0]='%s'\n", 
-            __FILE__, __func__, __LINE__, dev, getRangeDescParams.numDescriptions, rangeDescriptions[0]);
-******
-******   END OF working but unnecessary code.
-*****/
 
         // Space to receive values from profiler.        
         double *gpuValues = calloc(mydevice->cuda11_numMetricNames, sizeof(double) );
