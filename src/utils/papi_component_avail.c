@@ -118,7 +118,7 @@ main( int argc, char **argv )
 
 	  printf( "Name:   %-23s %s\n", cmpinfo->name ,cmpinfo->description);
 
-      if (cmpinfo->disabled == PAPI_EDELAY_INIT) {
+      if (cmpinfo->disabled == PAPI_EEVTDELAY_INIT) {
           force_cmp_init(cid);
       }
 	  if (cmpinfo->disabled) {

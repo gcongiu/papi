@@ -3520,7 +3520,7 @@ static int _rocm_smi_init_component(int cidx)
     sprintf(_rocm_smi_vector.cmp_info.disabled_reason,
             "Not initialized. Access component events to initialize it.");
 
-    return PAPI_EDELAY_INIT;
+    return PAPI_EEVTDELAY_INIT;
 }
 
 static int _rocm_smi_init_private(void)

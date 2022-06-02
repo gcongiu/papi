@@ -507,7 +507,7 @@ _papi_hwi_init_errors(void) {
 	/* 23 PAPI_ECOUNT */	_papi_hwi_add_error("Too many events or attributes");
 	/* 24 PAPI_ECOMBO */	_papi_hwi_add_error("Bad combination of features");
 	/* 25 PAPI_ECMP_DISABLED */_papi_hwi_add_error("Component containing event is disabled");
-    /* 26 PAPI_EDELAY_INIT */ _papi_hwi_add_error("Delayed initialization component");
+    /* 26 PAPI_EEVTDELAY_INIT */ _papi_hwi_add_error("Delayed initialization component");
 }
 
 int
@@ -1346,7 +1346,7 @@ _papi_hwi_add_event( EventSetInfo_t * ESI, int EventCode )
 		return PAPI_ENOCMP;
 	}
 	if (_papi_hwd[cidx]->cmp_info.disabled &&
-        _papi_hwd[cidx]->cmp_info.disabled != PAPI_EDELAY_INIT) {
+        _papi_hwd[cidx]->cmp_info.disabled != PAPI_EEVTDELAY_INIT) {
 		return PAPI_ECMP_DISABLED;
 	}
 
@@ -2464,7 +2464,7 @@ _papi_hwi_native_name_to_code( const char *in, int *out )
 	for(cidx=0; cidx < papi_num_components; cidx++) {
 
 		if (_papi_hwd[cidx]->cmp_info.disabled &&
-            _papi_hwd[cidx]->cmp_info.disabled != PAPI_EDELAY_INIT)
+            _papi_hwd[cidx]->cmp_info.disabled != PAPI_EEVTDELAY_INIT)
             continue;
 
 		// if this component does not support the pmu
@@ -2592,7 +2592,7 @@ _papi_hwi_get_native_event_info( unsigned int EventCode,
     if (cidx<0) return PAPI_ENOCMP;
 
     if (_papi_hwd[cidx]->cmp_info.disabled &&
-        _papi_hwd[cidx]->cmp_info.disabled != PAPI_EDELAY_INIT)
+        _papi_hwd[cidx]->cmp_info.disabled != PAPI_EEVTDELAY_INIT)
         return PAPI_ENOCMP;
 
     if ( EventCode & PAPI_NATIVE_MASK ) {

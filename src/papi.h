@@ -278,7 +278,7 @@ failure.
 #define PAPI_ECOUNT		-23    /**< Too many events or attributes */
 #define PAPI_ECOMBO		-24    /**< Bad combination of features */
 #define PAPI_ECMP_DISABLED	-25    /**< Component containing event is disabled */
-#define PAPI_EDELAY_INIT -26
+#define PAPI_EEVTDELAY_INIT -26
 #define PAPI_NUM_ERRORS	 27    /**< Number of error messages specified in this API */
 
 #define PAPI_NOT_INITED		0

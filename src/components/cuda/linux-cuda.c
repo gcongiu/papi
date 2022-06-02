@@ -2234,7 +2234,7 @@ static int _cuda_init_component(int cidx)
 
     PAPI_unlock(COMPONENT_LOCK);
 
-    return PAPI_EDELAY_INIT;
+    return PAPI_EEVTDELAY_INIT;
 } // END _cuda_init_component.
 
 // This is the "delayed initialization", called when the application user of
