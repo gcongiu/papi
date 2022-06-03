@@ -6,7 +6,7 @@ INCLUDE = -I. -I..
 
 TESTLIBOBJS:= test_utils.o
 
-UTILOBJS:= do_loops.o test_utils.o clockcore.o
+UTILOBJS:= do_loops.o test_utils.o clockcore.o pet.o
 ifneq ($(F77),)
 UTILOBJS+= ftests_util.o
 TESTLIBOBJS+= ftests_util.o
@@ -29,6 +29,9 @@ test_utils.o: test_utils.c
 
 ftests_util.o: ftests_util.F fpapi_test.h 
 	$(F77) $(INCLUDE) $(FFLAGS) $(FTOPTFLAGS) -c ftests_util.F
+
+pet.o: pet.c pet.h
+	$(CC) $(INCLUDE) $(CFLAGS) -c pet.c
 
 clean:
 	rm -f *.o *genmod.f90 *genmod.mod *.stderr *.stdout core *~ $(ALL) libtestlib.a libtestlib.so
