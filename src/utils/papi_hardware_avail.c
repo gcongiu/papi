@@ -322,7 +322,7 @@ main( int argc, char **argv )
                 printf( "SIMD per compute unit                 : %u\n", simd_per_cu );
                 printf( "Max threads per workgroup             : %u\n", wg_size );
                 printf( "Max waves per compute unit            : %u\n", wf_per_cu );
-                printf( "Max shared memory per workgroup       : %u\n", shm_per_wg );
+                printf( "Max shared memory per workgroup       : %uKB\n", shm_per_wg );
                 printf( "Max workgroup dim x                   : %u\n", wg_dim_x );
                 printf( "Max workgroup dim y                   : %u\n", wg_dim_y );
                 printf( "Max workgroup dim z                   : %u\n", wg_dim_z );
