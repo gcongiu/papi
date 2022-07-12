@@ -28,6 +28,10 @@ typedef union {
         int can_overlap_comp_and_data_xfer;
         int unified_addressing;
         int managed_memory;
+        int l2_cache_size;
+        int glb_l1_cache_supp;
+        int lcl_l1_cache_supp;
+        int max_persisting_l2_cache_size;
         int major;
         int minor;
         struct {

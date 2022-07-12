@@ -166,6 +166,22 @@ fill_dev_info( _sysdetect_gpu_info_u *dev_info, int dev )
                                        CU_DEVICE_ATTRIBUTE_MANAGED_MEMORY,
                                        device),
             dev_info->nvidia.managed_memory = -1);
+    CU_CALL((*cuDeviceGetAttributePtr)(&dev_info->nvidia.l2_cache_size,
+                                       CU_DEVICE_ATTRIBUTE_L2_CACHE_SIZE,
+                                       device),
+            dev_info->nvidia.l2_cache_size = -1);
+    CU_CALL((*cuDeviceGetAttributePtr)(&dev_info->nvidia.glb_l1_cache_supp,
+                                       CU_DEVICE_ATTRIBUTE_GLOBAL_L1_CACHE_SUPPORTED,
+                                       device),
+            dev_info->nvidia.glb_l1_cache_supp = -1);
+    CU_CALL((*cuDeviceGetAttributePtr)(&dev_info->nvidia.lcl_l1_cache_supp,
+                                       CU_DEVICE_ATTRIBUTE_LOCAL_L1_CACHE_SUPPORTED,
+                                       device),
+            dev_info->nvidia.lcl_l1_cache_supp = -1);
+    CU_CALL((*cuDeviceGetAttributePtr)(&dev_info->nvidia.max_persisting_l2_cache_size,
+                                       CU_DEVICE_ATTRIBUTE_MAX_PERSISTING_L2_CACHE_SIZE,
+                                       device),
+            dev_info->nvidia.max_persisting_l2_cache_size = -1);
     CU_CALL((*cuDeviceGetAttributePtr)(&dev_info->nvidia.major,
                                        CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR,
                                        device),

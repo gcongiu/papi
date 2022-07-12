@@ -224,6 +224,8 @@ main( int argc, char **argv )
                 unsigned int grd_dim_x, grd_dim_y, grd_dim_z;
                 unsigned int sm_count, multi_kernel, map_host_mem, async_memcpy;
                 unsigned int unif_addr, managed_mem;
+                unsigned int l2_cache_size;
+                unsigned int glb_cache_supp, lcl_cache_supp, pers_cache_size;
                 unsigned int cc_major, cc_minor;
                 const char *dev_name;
                 const unsigned int *list;
@@ -250,6 +252,10 @@ main( int argc, char **argv )
                 PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__CUDA_UINT_MANAGED_MEM, &managed_mem);
                 PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__CUDA_UINT_CPU_THR_AFFINITY_LIST, &list);
                 PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__CUDA_UINT_CPU_THR_PER_DEVICE, &list_len);
+                PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__CUDA_UINT_L2_CACHE_SIZE, &l2_cache_size);
+                PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__CUDA_UINT_L1_GLOBAL_CACHE_SUPPORTED, &glb_cache_supp);
+                PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__CUDA_UINT_L1_LOCAL_CACHE_SUPPORTED, &lcl_cache_supp);
+                PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__CUDA_UINT_L2_MAX_PERSISTING_CACHE_SIZE, &pers_cache_size);
                 PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__CUDA_UINT_COMP_CAP_MAJOR, &cc_major);
                 PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__CUDA_UINT_COMP_CAP_MINOR, &cc_minor);
 
@@ -273,6 +279,10 @@ main( int argc, char **argv )
                 printf( "Can overlap compute and data transfer : %s\n", async_memcpy ? "yes" : "no" );
                 printf( "Has unified addressing                : %s\n", unif_addr ? "yes" : "no" );
                 printf( "Has managed memory                    : %s\n", managed_mem ? "yes" : "no" );
+                printf( "L1 global cache support               : %s\n", glb_cache_supp ? "yes" : "no"  );
+                printf( "L1 local cache support                : %s\n", lcl_cache_supp ? "yes" : "no"  );
+                printf( "L2 cache size                         : %uB\n", l2_cache_size  );
+                printf( "L2 max persisting cache size          : %uB\n", pers_cache_size  );
                 printf( "Compute capability                    : %u.%u\n", cc_major, cc_minor );
 
                 if (list_len > 0) {

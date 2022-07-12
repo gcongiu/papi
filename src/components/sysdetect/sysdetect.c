@@ -380,6 +380,18 @@ _sysdetect_get_dev_attr( void *handle, int id, PAPI_dev_attr_e attr, void *val )
         case PAPI_DEV_ATTR__CUDA_UINT_CPU_THR_PER_DEVICE:
             *(unsigned int *) val = gpu_info->nvidia.affinity.proc_count;
             break;
+        case PAPI_DEV_ATTR__CUDA_UINT_L2_CACHE_SIZE:
+            *(unsigned int *) val = gpu_info->nvidia.l2_cache_size;
+            break;
+        case PAPI_DEV_ATTR__CUDA_UINT_L1_GLOBAL_CACHE_SUPPORTED:
+            *(unsigned int *) val = gpu_info->nvidia.glb_l1_cache_supp;
+            break;
+        case PAPI_DEV_ATTR__CUDA_UINT_L1_LOCAL_CACHE_SUPPORTED:
+            *(unsigned int *) val = gpu_info->nvidia.lcl_l1_cache_supp;
+            break;
+        case PAPI_DEV_ATTR__CUDA_UINT_L2_MAX_PERSISTING_CACHE_SIZE:
+            *(unsigned int *) val = gpu_info->nvidia.max_persisting_l2_cache_size;
+            break;
         /* AMD GPU attributes */
         case PAPI_DEV_ATTR__ROCM_ULONG_UID:
             *(unsigned long *) val = gpu_info->amd.uid;
