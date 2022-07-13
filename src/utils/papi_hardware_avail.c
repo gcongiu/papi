@@ -259,8 +259,8 @@ main( int argc, char **argv )
                 printf( "Warp size                             : %u\n", warp_size );
                 printf( "Max threads per block                 : %u\n", thread_per_block );
                 printf( "Max blocks per multiprocessor         : %u\n", block_per_sm );
-                printf( "Max shared memory per block           : %u\n", shm_per_block );
-                printf( "Max shared memory per multiprocessor  : %u\n", shm_per_sm );
+                printf( "Max shared memory per block           : %uB\n", shm_per_block );
+                printf( "Max shared memory per multiprocessor  : %uB\n", shm_per_sm );
                 printf( "Max block dim x                       : %u\n", blk_dim_x );
                 printf( "Max block dim y                       : %u\n", blk_dim_y );
                 printf( "Max block dim z                       : %u\n", blk_dim_z );
