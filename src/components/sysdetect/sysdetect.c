@@ -423,6 +423,12 @@ _sysdetect_get_dev_attr( void *handle, int id, PAPI_dev_attr_e attr, void *val )
         case PAPI_DEV_ATTR__ROCM_UINT_CU_COUNT:
             *(unsigned int *) val = gpu_info->amd.compute_unit_count;
             break;
+        case PAPI_DEV_ATTR__ROCM_UINT_L1_CACHE_SIZE:
+            *(unsigned int *) val = gpu_info->amd.l1_cache_size;
+            break;
+        case PAPI_DEV_ATTR__ROCM_UINT_L2_CACHE_SIZE:
+            *(unsigned int *) val = gpu_info->amd.l2_cache_size;
+            break;
         case PAPI_DEV_ATTR__ROCM_UINT_COMP_CAP_MAJOR:
             *(unsigned int *) val = gpu_info->amd.major;
             break;

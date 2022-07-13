@@ -51,6 +51,8 @@ typedef union {
         unsigned int max_grid_dim_y;
         unsigned int max_grid_dim_z;
         unsigned int compute_unit_count;
+        unsigned int l1_cache_size;
+        unsigned int l2_cache_size;
         unsigned int major;
         unsigned int minor;
         struct {

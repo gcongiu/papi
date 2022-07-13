@@ -296,6 +296,7 @@ main( int argc, char **argv )
             unsigned int wf_per_cu, shm_per_wg, wg_dim_x, wg_dim_y, wg_dim_z;
             unsigned int grd_dim_x, grd_dim_y, grd_dim_z;
             unsigned int cu_count;
+            unsigned int l1_cache_size, l2_cache_size;
             unsigned int cc_major, cc_minor;
 
             for ( i = 0; i < dev_count; ++i ) {
@@ -313,6 +314,8 @@ main( int argc, char **argv )
                 PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__ROCM_UINT_GRD_DIM_Y, &grd_dim_y);
                 PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__ROCM_UINT_GRD_DIM_Z, &grd_dim_z);
                 PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__ROCM_UINT_CU_COUNT, &cu_count);
+                PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__ROCM_UINT_L1_CACHE_SIZE, &l1_cache_size);
+                PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__ROCM_UINT_L2_CACHE_SIZE, &l2_cache_size);
                 PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__ROCM_UINT_COMP_CAP_MAJOR, &cc_major);
                 PAPI_get_dev_attr(handle, i, PAPI_DEV_ATTR__ROCM_UINT_COMP_CAP_MINOR, &cc_minor);
 
@@ -323,6 +326,8 @@ main( int argc, char **argv )
                 printf( "Max threads per workgroup             : %u\n", wg_size );
                 printf( "Max waves per compute unit            : %u\n", wf_per_cu );
                 printf( "Max shared memory per workgroup       : %uKB\n", shm_per_wg );
+                printf( "L1 cache size                         : %uKB\n", l1_cache_size );
+                printf( "L2 cache size                         : %uKB\n", l2_cache_size );
                 printf( "Max workgroup dim x                   : %u\n", wg_dim_x );
                 printf( "Max workgroup dim y                   : %u\n", wg_dim_y );
                 printf( "Max workgroup dim z                   : %u\n", wg_dim_z );

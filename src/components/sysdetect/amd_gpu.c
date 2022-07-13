@@ -40,6 +40,12 @@ hsa_status_t (*hsa_amd_agent_iterate_memory_poolsPtr)( hsa_agent_t agent,
 hsa_status_t (*hsa_amd_memory_pool_get_infoPtr)( hsa_amd_memory_pool_t pool,
                                                  hsa_amd_memory_pool_info_t attribute,
                                                  void *value ) = NULL;
+hsa_status_t (*hsa_agent_iterate_cachesPtr)( hsa_agent_t agent,
+                                             hsa_status_t (*)(hsa_cache_t cache,
+                                                              void *data),
+                                             void *data ) = NULL;
+hsa_status_t (*hsa_cache_get_infoPtr)( hsa_cache_t cache, hsa_cache_info_t attr,
+                                       void *value ) = NULL;
 hsa_status_t (*hsa_status_stringPtr)( hsa_status_t status,
                                       const char **string ) = NULL;
 
@@ -55,6 +61,7 @@ static hsa_status_t count_devices( hsa_agent_t agent, void *data );
 static hsa_status_t get_device_count( int *count );
 static hsa_status_t get_device_memory( hsa_amd_memory_pool_t pool, void *info );
 static hsa_status_t get_device_properties( hsa_agent_t agent, void *info );
+static hsa_status_t get_device_cache( hsa_cache_t cache, void *data );
 
 static void fill_dev_info( _sysdetect_gpu_info_u *dev_info );
 static int hsa_is_enabled( void );
@@ -136,6 +143,29 @@ get_device_memory( hsa_amd_memory_pool_t pool, void *info )
 }
 
 hsa_status_t
+get_device_cache( hsa_cache_t cache, void *info )
+{
+    _sysdetect_gpu_info_u *dev_info = info;
+    uint8_t cache_level;
+    int cache_size;
+
+    ROCM_CALL((*hsa_cache_get_infoPtr)(cache, HSA_CACHE_INFO_LEVEL, &cache_level),
+              return _status);
+    ROCM_CALL((*hsa_cache_get_infoPtr)(cache, HSA_CACHE_INFO_SIZE, &cache_size),
+              return _status);
+
+    if (cache_level == 1) {
+        dev_info->amd.l1_cache_size = (unsigned int) cache_size;
+    } else if (cache_level == 2) {
+        dev_info->amd.l2_cache_size = (unsigned int) cache_size;
+    } else {
+        ;
+    }
+
+    return HSA_STATUS_SUCCESS;
+}
+
+hsa_status_t
 get_device_properties( hsa_agent_t agent, void *info )
 {
     static int count;
@@ -194,6 +224,10 @@ get_device_properties( hsa_agent_t agent, void *info )
                                                            &get_device_memory,
                                                            dev_info),
                   return _status);
+        ROCM_CALL((*hsa_agent_iterate_cachesPtr)(agent,
+                                                 &get_device_cache,
+                                                 dev_info),
+                  return _status);
 
         dev_info->amd.max_workgroup_dim_x = wg_dims[0];
         dev_info->amd.max_workgroup_dim_y = wg_dims[1];
@@ -232,6 +266,8 @@ hsa_is_enabled( void )
             hsa_agent_get_infoPtr                 != NULL &&
             hsa_amd_agent_iterate_memory_poolsPtr != NULL &&
             hsa_amd_memory_pool_get_infoPtr       != NULL &&
+            hsa_agent_iterate_cachesPtr           != NULL &&
+            hsa_cache_get_infoPtr                 != NULL &&
             hsa_status_stringPtr                  != NULL);
 }
 
@@ -273,6 +309,8 @@ load_hsa_sym( char *status )
     hsa_amd_agent_iterate_memory_poolsPtr = dlsym(rocm_dlp, "hsa_amd_agent_iterate_memory_pools");
     hsa_amd_memory_pool_get_infoPtr       = dlsym(rocm_dlp, "hsa_amd_memory_pool_get_info");
     hsa_status_stringPtr                  = dlsym(rocm_dlp, "hsa_status_string");
+    hsa_agent_iterate_cachesPtr           = dlsym(rocm_dlp, "hsa_agent_iterate_caches");
+    hsa_cache_get_infoPtr                 = dlsym(rocm_dlp, "hsa_cache_get_info");
 
     if (!hsa_is_enabled() || (*hsa_initPtr)()) {
         const char *message = "dlsym() of HSA symbols failed or hsa_init() "
