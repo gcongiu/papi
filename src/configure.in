@@ -414,6 +414,23 @@ else
 fi
 AC_MSG_RESULT($debug)
 
+AC_MSG_CHECKING(for coverage testing support)
+AC_ARG_WITH(coverage,
+            [AS_HELP_STRING([--with-coverage],
+                            [compile with code coverage support])],
+            [with_coverage=yes],
+            [with_coverage=no])
+if test "x$with_coverage" = "xyes" ; then
+    if test "x$CC" = "xgcc" ; then
+        OPTFLAGS="-O0"
+        CFLAGS="$CFLAGS --coverage"
+        LDFLAGS="$LDFLAGS -lgcov"
+    else
+        with_coverage = "no"
+    fi
+fi
+AC_MSG_RESULT($with_coverage)
+
 if test "$CC_COMMON_NAME" = "gcc"; then
   gcc_version=`gcc -v 2>&1 | tail -n 1 | awk '{printf $3}'`
   major=`echo $gcc_version | sed 's/\([[^.]][[^.]]*\).*/\1/'`

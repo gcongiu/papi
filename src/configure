@@ -768,6 +768,7 @@ with_bgpm_installdir
 with_nativecc
 with_tests
 with_debug
+with_coverage
 with_CPU
 with_pthread_mutexes
 with_ffsll
@@ -1445,6 +1446,7 @@ Optional Packages:
   --with-debug=<yes,memory,no>
                           Build a debug version, debug version plus memory
                           tracker or none
+  --with-coverage         compile with code coverage support
   --with-CPU=<cpu>        Specify CPU type
   --with-pthread-mutexes  Specify use of pthread mutexes rather than custom
                           PAPI locks
@@ -4713,6 +4715,28 @@ else
 fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $debug" >&5
 $as_echo "$debug" >&6; }
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for coverage testing support" >&5
+$as_echo_n "checking for coverage testing support... " >&6; }
+
+# Check whether --with-coverage was given.
+if test "${with_coverage+set}" = set; then :
+  withval=$with_coverage; with_coverage=yes
+else
+  with_coverage=no
+fi
+
+if test "x$with_coverage" = "xyes" ; then
+    if test "x$CC" = "xgcc" ; then
+        OPTFLAGS="-O0"
+        CFLAGS="$CFLAGS --coverage"
+        LDFLAGS="$LDFLAGS -lgcov"
+    else
+        with_coverage = "no"
+    fi
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $with_coverage" >&5
+$as_echo "$with_coverage" >&6; }
 
 if test "$CC_COMMON_NAME" = "gcc"; then
   gcc_version=`gcc -v 2>&1 | tail -n 1 | awk '{printf $3}'`
