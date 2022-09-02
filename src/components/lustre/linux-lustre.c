@@ -82,6 +82,7 @@ typedef struct LUSTRE_context
 const char proc_base_path[] = "./components/lustre/fake_proc/fs/lustre/";
 #else
 const char proc_base_path[] = "/proc/fs/lustre/";
+const char proc_base_path_alter[] = "/sys/kernel/debug/lustre/";
 #endif
 
 static counter_info **lustre_native_table = NULL;
@@ -272,8 +273,12 @@ init_lustre_counters( void  )
 
 	proc_dir = opendir( lustre_dir );
 	if ( proc_dir == NULL ) {
-      SUBDBG("EXIT: PAPI_ESYS (Cannot open %s)\n",lustre_dir);
-	   return PAPI_ESYS;
+        sprintf(lustre_dir, "%s/llite", proc_base_path_alter);
+        proc_dir = opendir( lustre_dir );
+        if ( proc_dir == NULL ) {
+            SUBDBG("EXIT: PAPI_ESYS (Cannot open %s)\n",lustre_dir);
+            return PAPI_ESYS;
+        }
 	}
 
    while ( (entry = readdir( proc_dir )) != NULL ) {
