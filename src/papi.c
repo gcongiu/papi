@@ -2878,29 +2878,32 @@ PAPI_stop( int EventSet, long long *values )
 	int cidx, retval;
 
 	ESI = _papi_hwi_lookup_EventSet( EventSet );
-	if ( ESI == NULL )
-		papi_return( PAPI_ENOEVST );
+    if ( ESI == NULL ) {
+        retval = PAPI_ENOEVST;
+        goto fn_fail_no_update;
+    }
 
 	cidx = valid_ESI_component( ESI );
-	if ( cidx < 0 )
-		papi_return( cidx );
+    if ( cidx < 0 ) {
+        retval = cidx;
+        goto fn_exit;
+    }
 
-	if ( !( ESI->state & PAPI_RUNNING ) )
-		papi_return( PAPI_ENOTRUN );
+    if ( !( ESI->state & PAPI_RUNNING ) ) {
+        retval = PAPI_ENOTRUN;
+        goto fn_fail_no_update;
+    }
 
 	/* If multiplexing is enabled for this eventset, turn if off */
 
 	if ( _papi_hwi_is_sw_multiplex( ESI ) ) {
 		retval = MPX_stop( ESI->multiplex.mpx_evset, values );
 		if ( retval != PAPI_OK )
-			papi_return( retval );
+            goto fn_fail;
 
-		/* Update the state of this EventSet */
-
-		ESI->state ^= PAPI_RUNNING;
-		ESI->state |= PAPI_STOPPED;
-
-		return ( PAPI_OK );
+        ESI->state ^= PAPI_RUNNING;
+        ESI->state |= PAPI_STOPPED;
+        goto fn_exit;
 	}
 
 	/* get the context we should use for this event set */
@@ -2908,12 +2911,12 @@ PAPI_stop( int EventSet, long long *values )
 	/* Read the current counter values into the EventSet */
 	retval = _papi_hwi_read( context, ESI, ESI->sw_stop );
 	if ( retval != PAPI_OK )
-		papi_return( retval );
+		goto fn_fail;
 
 	/* Remove the control bits from the active counter config. */
 	retval = _papi_hwd[cidx]->stop( context, ESI->ctl_state );
 	if ( retval != PAPI_OK )
-		papi_return( retval );
+		goto fn_fail;
 	if ( values )
 		memcpy( values, ESI->sw_stop,
 				( size_t ) ESI->NumberOfEvents * sizeof ( long long ) );
@@ -2925,7 +2928,7 @@ PAPI_stop( int EventSet, long long *values )
 			 !( ESI->profile.flags & PAPI_PROFIL_FORCE_SW ) ) {
 			retval = _papi_hwd[cidx]->stop_profiling( ESI->master, ESI );
 			if ( retval < PAPI_OK )
-				papi_return( retval );
+				goto fn_fail;
 		}
 	}
 
@@ -2936,15 +2939,10 @@ PAPI_stop( int EventSet, long long *values )
 			retval = _papi_hwi_stop_timer( _papi_os_info.itimer_num,
 						       _papi_os_info.itimer_sig );
 			if ( retval != PAPI_OK )
-				papi_return( retval );
+				goto fn_fail;
 			_papi_hwi_stop_signal( _papi_os_info.itimer_sig );
 		}
 	}
-
-	/* Update the state of this EventSet */
-
-	ESI->state ^= PAPI_RUNNING;
-	ESI->state |= PAPI_STOPPED;
 
 	/* Update the running event set for this thread */
 	if ( !(ESI->state & PAPI_CPU_ATTACHED) ) {
@@ -2963,7 +2961,16 @@ PAPI_stop( int EventSet, long long *values )
 	}
 #endif
 
-	return ( PAPI_OK );
+    ESI->state ^= PAPI_RUNNING;
+    ESI->state |= PAPI_STOPPED;
+
+  fn_exit:
+    papi_return(retval);
+  fn_fail:
+    ESI->state ^= PAPI_RUNNING;
+    ESI->state |= PAPI_STOPPED;
+  fn_fail_no_update:
+    goto fn_exit;
 }
 
 /** @class PAPI_reset
