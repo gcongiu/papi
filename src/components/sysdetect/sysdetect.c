@@ -468,6 +468,8 @@ get_threads_per_numa( _sysdetect_cpu_info_t *cpu_info )
     int threads = cpu_info->threads * cpu_info->cores * cpu_info->sockets;
     for (k = 0; k < threads; ++k) {
         int node = cpu_info->numa_affinity[k];
+        if (node >= cpu_info->numas)
+            break;
         cpu_info->numa_threads[node][numa_threads_cnt[node]++] = k;
     }
 
