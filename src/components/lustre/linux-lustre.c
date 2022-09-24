@@ -82,7 +82,7 @@ typedef struct LUSTRE_context
 const char proc_base_path[] = "./components/lustre/fake_proc/fs/lustre/";
 #else
 const char proc_base_path[] = "/proc/fs/lustre/";
-const char proc_base_path_alter[] = "/sys/kernel/debug/lustre/";
+const char proc_base_path_alter[] = "/sys/fs/lustre/";
 #endif
 
 static counter_info **lustre_native_table = NULL;
