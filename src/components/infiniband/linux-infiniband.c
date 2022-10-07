@@ -82,6 +82,7 @@ typedef struct _infiniband_native_event_entry
     char *description;
     char* file_name;
     char *ev_file;
+    FILE *ev_file_hnd;
     ib_device_t* device;
     int extended;   /* if this is an extended (64-bit) counter */
 } infiniband_native_event_entry_t;
@@ -394,12 +395,16 @@ find_ib_device_events(ib_device_t *dev, int extended)
         if (ev_name[0] == '.')
             continue;
 
-        /* Check that we can read an integer from the counter file */
+	FILE *fh = NULL;
         snprintf(event_path, sizeof(event_path), "%s/%s", counters_path, ev_name);
-        if (pscanf(event_path, "%lld", &value) != 1) {
+	fh = fopen(event_path, "r");
+        /* Check that we can read an integer from the counter file */
+        if (pscanf(fh, "%lld", &value) != 1) {
             SUBDBG("cannot read value for event '%s'\n", ev_name);
             continue;
         }
+	if (fh)
+            fclose(fh);
 
         /* Adding 3 exceptions to the counter size
          * https://community.mellanox.com/s/article/understanding-mlx5-linux-counters-and-status-parameters
@@ -470,10 +475,13 @@ find_ib_devices()
             int state = -1;
             char state_path[FILENAME_MAX];
             snprintf(state_path, sizeof(state_path), "%s/%s/ports/%d/state", ib_dir_path, hca, port);
-            if (pscanf(state_path, "%d", &state) != 1) {
+            FILE *state_path_fh = fopen(state_path, "r");
+            if (pscanf(state_path_fh, "%d", &state) != 1) {
                 SUBDBG("cannot read state of IB HCA `%s' port %d\n", hca, port);
                 continue;
             }
+            if (state_path_fh)
+                fclose(state_path_fh);
 
             if (state != 4) {
                 SUBDBG("skipping inactive IB HCA `%s', port %d, state %d\n", hca, port, state);
@@ -545,7 +553,7 @@ read_ib_counter_value(int index)
     long long value = 0ll;
     infiniband_native_event_entry_t *iter = &infiniband_native_events[index];
 
-    if (pscanf(iter->ev_file, "%lld", &value) != 1) {
+    if (pscanf(iter->ev_file_hnd, "%lld", &value) != 1) {
         PAPIERROR("cannot read value for counter '%s'\n", iter->name);
     } else
     {
@@ -659,6 +667,8 @@ _infiniband_start( hwd_context_t *ctx, hwd_control_state_t *ctl )
 
     for (i=0 ; i<INFINIBAND_MAX_COUNTERS ; ++i) {
         if (control->being_measured[i] && control->need_difference[i]) {
+            infiniband_native_event_entry_t *iter = &infiniband_native_events[i];
+            iter->ev_file_hnd = fopen(iter->ev_file, "r");
             context->start_value[i] = read_ib_counter_value(i);
         }
     }
@@ -683,7 +693,10 @@ _infiniband_stop( hwd_context_t *ctx, hwd_control_state_t *ctl )
     for (i=0 ; i<INFINIBAND_MAX_COUNTERS ; ++i) {
         if (control->being_measured[i])
         {
+            infiniband_native_event_entry_t *iter = &infiniband_native_events[i];
             temp = read_ib_counter_value(i);
+            if (iter->ev_file_hnd)
+                fclose(iter->ev_file_hnd);
             if (context->start_value[i] && control->need_difference[i]) {
                 /* Must subtract values, but check for wraparound. 
                  * We cannot even detect all wraparound cases. Using the short,
@@ -717,7 +730,36 @@ _infiniband_read( hwd_context_t *ctx, hwd_control_state_t *ctl,
 {
     ( void ) flags;
 
-    _infiniband_stop(ctx, ctl);  /* we cannot actually stop the counters */
+    infiniband_context_t* context = (infiniband_context_t*) ctx;
+    infiniband_control_state_t* control = (infiniband_control_state_t*) ctl;
+    long long now = PAPI_get_real_usec();
+    int i;
+    long long temp;
+
+    for (i=0 ; i<INFINIBAND_MAX_COUNTERS ; ++i) {
+        if (control->being_measured[i])
+        {
+            temp = read_ib_counter_value(i);
+            if (context->start_value[i] && control->need_difference[i]) {
+                /* Must subtract values, but check for wraparound. 
+                 * We cannot even detect all wraparound cases. Using the short,
+                 * auto-resetting IB counters is error prone.
+                 */
+                if (temp < context->start_value[i]) {
+                    SUBDBG("Wraparound!\nstart:\t%#016x\ttemp:\t%#016x",
+                            (unsigned)context->start_value[i], (unsigned)temp);
+                    /* The counters auto-reset. I cannot even adjust them to 
+                     * account for a simple wraparound. 
+                     * Just use the current reading of the counter, which is useless.
+                     */
+                } else
+                    temp -= context->start_value[i];
+            }
+            control->counts[i] = temp;
+        }
+    }
+    control->lastupdate = now;
+
     /* Pass back a pointer to our results */
     *events = ((infiniband_control_state_t*) ctl)->counts;
 
