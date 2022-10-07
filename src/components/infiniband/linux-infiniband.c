@@ -81,6 +81,7 @@ typedef struct _infiniband_native_event_entry
     char *name;
     char *description;
     char* file_name;
+    char *ev_file;
     ib_device_t* device;
     int extended;   /* if this is an extended (64-bit) counter */
 } infiniband_native_event_entry_t;
@@ -541,44 +542,10 @@ out:
     static long long
 read_ib_counter_value(int index)
 {
-    char ev_file[FILENAME_MAX];
-    char counters_path[FILENAME_MAX];
-    DIR *cnt_dir = NULL;
     long long value = 0ll;
     infiniband_native_event_entry_t *iter = &infiniband_native_events[index];
 
-    if ( iter->extended == 1 || iter->extended == 2 ) {
-        /* extended == 1, counter is 32b, in the 32b location || 2, counter is 64b in the 64b dir */
-        /* mofed driver version <4.0 */
-        snprintf(counters_path, sizeof(counters_path), "%s/%s/ports/%d/counters%s",
-                ib_dir_path, iter->device->dev_name, iter->device->dev_port, "_ext");
-
-        cnt_dir = opendir(counters_path);
-        if (cnt_dir == NULL) {
-            /* directory counters_ext in sysfs fs has changed to hw_counters */
-            /* in 4.0 version of mofed driver */
-            snprintf(counters_path, sizeof(counters_path), "%s/%s/ports/%d/%scounters",
-                    ib_dir_path, iter->device->dev_name, iter->device->dev_port, "hw_");
-
-            cnt_dir = opendir(counters_path);
-        }
-    }
-    else {
-        /* extended == 0, counter is 32b, in the 64b location || 3, counter is 64b in the 32b dir */
-        snprintf(counters_path, sizeof(counters_path), "%s/%s/ports/%d/counters",
-                ib_dir_path, iter->device->dev_name, iter->device->dev_port );
-        cnt_dir = opendir(counters_path);
-    }
-
-
-    if (cnt_dir != NULL)
-        closedir(cnt_dir);
-
-
-    snprintf(ev_file, strlen(counters_path) + strlen(iter->file_name) + 2, "%s/%s",
-            counters_path, iter->file_name);
-
-    if (pscanf(ev_file, "%lld", &value) != 1) {
+    if (pscanf(iter->ev_file, "%lld", &value) != 1) {
         PAPIERROR("cannot read value for counter '%s'\n", iter->name);
     } else
     {
@@ -812,6 +779,37 @@ _infiniband_update_control_state( hwd_control_state_t *ctl,
             infiniband_native_events[index].resources.selector - 1;
         control->being_measured[index] = 1;
         control->need_difference[index] = 1;
+
+        char counters_path[FILENAME_MAX];
+        char ev_file[FILENAME_MAX];
+        DIR *cnt_dir;
+        infiniband_native_event_entry_t *iter = &infiniband_native_events[index];
+        if ( iter->extended == 1 || iter->extended == 2 ) {
+            /* extended == 1, counter is 32b, in the 32b location || 2, counter is 64b in the 64b dir */
+            /* mofed driver version <4.0 */
+            snprintf(counters_path, sizeof(counters_path), "%s/%s/ports/%d/counters%s",
+                    ib_dir_path, iter->device->dev_name, iter->device->dev_port, "_ext");
+
+            cnt_dir = opendir(counters_path);
+            if (cnt_dir == NULL) {
+                /* directory counters_ext in sysfs fs has changed to hw_counters */
+                /* in 4.0 version of mofed driver */
+                snprintf(counters_path, sizeof(counters_path), "%s/%s/ports/%d/%scounters",
+                        ib_dir_path, iter->device->dev_name, iter->device->dev_port, "hw_");
+            } else {
+                closedir(cnt_dir);
+            }
+        }
+        else {
+            /* extended == 0, counter is 32b, in the 64b location || 3, counter is 64b in the 32b dir */
+            snprintf(counters_path, sizeof(counters_path), "%s/%s/ports/%d/counters",
+                    ib_dir_path, iter->device->dev_name, iter->device->dev_port );
+        }
+
+        snprintf(ev_file, strlen(counters_path) + strlen(iter->file_name) + 2, "%s/%s",
+                 counters_path, iter->file_name);
+
+        iter->ev_file = strdup(ev_file);
     }
     return PAPI_OK;
 }
