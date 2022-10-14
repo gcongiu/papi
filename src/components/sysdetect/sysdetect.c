@@ -50,7 +50,7 @@ static int _sysdetect_get_dev_type_attr( void *handle,
                                          PAPI_dev_type_attr_e attr, void *val );
 static int _sysdetect_get_dev_attr( void *handle, int id, PAPI_dev_attr_e attr,
                                     void *val );
-static void get_num_threads_per_numa( _sysdetect_cpu_info_t *cpu_info );
+static int get_seq_numa_num( _sysdetect_cpu_info_t *cpu_info, int numa_id );
 static void get_threads_per_numa( _sysdetect_cpu_info_t *cpu_info );
 
 static void
@@ -314,7 +314,6 @@ _sysdetect_get_dev_attr( void *handle, int id, PAPI_dev_attr_e attr, void *val )
             *(int *) val = cpu_info->threads * cpu_info->cores * cpu_info->sockets;
             break;
         case PAPI_DEV_ATTR__CPU_UINT_NUMA_THR_LIST:
-            get_num_threads_per_numa(cpu_info);
             get_threads_per_numa(cpu_info);
             *(int **) val = cpu_info->numa_threads[id];
             break;
@@ -447,22 +446,17 @@ _sysdetect_get_dev_attr( void *handle, int id, PAPI_dev_attr_e attr, void *val )
     return papi_errno;
 }
 
-void
-get_num_threads_per_numa( _sysdetect_cpu_info_t *cpu_info )
+int
+get_seq_numa_num( _sysdetect_cpu_info_t *cpu_info, int numa_id )
 {
-    static int initialized;
-    int k;
-
-    if (initialized) {
-        return;
+    int i;
+    for (i = 0; i < cpu_info->numas; ++i) {
+        if (cpu_info->numa_id[i] == numa_id) {
+            return i;
+        }
     }
 
-    int threads = cpu_info->threads * cpu_info->cores * cpu_info->sockets;
-    for (k = 0; k < threads; ++k) {
-        cpu_info->num_threads_per_numa[cpu_info->numa_affinity[k]]++;
-    }
-
-    initialized = 1;
+    return i;
 }
 
 void
@@ -478,7 +472,7 @@ get_threads_per_numa( _sysdetect_cpu_info_t *cpu_info )
     int *numa_threads_cnt = calloc(cpu_info->numas, sizeof(*numa_threads_cnt));
     int threads = cpu_info->threads * cpu_info->cores * cpu_info->sockets;
     for (k = 0; k < threads; ++k) {
-        int node = cpu_info->numa_affinity[k];
+        int node = get_seq_numa_num(cpu_info, cpu_info->numa_affinity[k]);
         cpu_info->numa_threads[node][numa_threads_cnt[node]++] = k;
     }
 
