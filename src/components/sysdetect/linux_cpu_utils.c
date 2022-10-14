@@ -49,6 +49,18 @@ static void decode_vendor_string( char *s, int *vendor );
 static int get_vendor_id( void );
 
 int
+linux_cpu_init( void )
+{
+    return CPU_SUCCESS;
+}
+
+int
+linux_cpu_finalize( void )
+{
+    return CPU_SUCCESS;
+}
+
+int
 linux_cpu_get_vendor( char *vendor )
 {
     const char *namekey_x86  = "vendor_id";

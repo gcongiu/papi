@@ -129,6 +129,8 @@ fill_cpu_info( _sysdetect_cpu_info_t *info )
 void
 open_cpu_dev_type( _sysdetect_dev_type_info_t *dev_type_info )
 {
+    CPU_CALL(cpu_init(), return);
+
     memset(dev_type_info, 0, sizeof(*dev_type_info));
     dev_type_info->id = PAPI_DEV_TYPE_ID__CPU;
 
@@ -150,4 +152,5 @@ void
 close_cpu_dev_type( _sysdetect_dev_type_info_t *dev_type_info )
 {
     papi_free(dev_type_info->dev_info_arr);
+    CPU_CALL(cpu_finalize(), );
 }

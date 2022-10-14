@@ -3,6 +3,30 @@
 #include "linux_cpu_utils.h"
 
 int
+os_cpu_init( void )
+{
+#if defined(__linux__)
+    return linux_cpu_init();
+#elif defined(__APPLE__) || defined(__MACH__)
+    #warning "WARNING! Darwin support of " __func__ " not yet implemented."
+    return CPU_ERROR;
+#endif
+    return CPU_ERROR;
+}
+
+int
+os_cpu_finalize( void )
+{
+#if defined(__linux__)
+    return linux_cpu_finalize();
+#elif defined(__APPLE__) || defined(__MACH__)
+    #warning "WARNING! Darwin support of " __func__ " not yet implemented."
+    return CPU_ERROR;
+#endif
+    return CPU_ERROR;
+}
+
+int
 os_cpu_get_vendor( char *vendor )
 {
 #if defined(__linux__)

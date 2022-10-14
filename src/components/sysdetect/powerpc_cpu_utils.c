@@ -172,13 +172,15 @@ static int get_cache_info( CPU_attr_e attr, int level, int *value );
 int
 powerpc_cpu_init( void )
 {
-    return CPU_SUCCESS;
+    int status = os_cpu_init();
+    return status;
 }
 
 int
 powerpc_cpu_finalize( void )
 {
-    return CPU_SUCCESS;
+    int status = os_cpu_finalize();
+    return status;
 }
 
 int

@@ -26,6 +26,32 @@
 #include "os_cpu_utils.h"
 
 int
+cpu_init( void )
+{
+#if defined(__x86_64__) || defined(__amd64__)
+    return x86_cpu_init();
+#elif defined(__powerpc__)
+    return powerpc_cpu_init();
+#elif defined(__arm__) || defined(__aarch64__)
+    return arm_cpu_init();
+#endif
+    return os_cpu_init();
+}
+
+int
+cpu_finalize( void )
+{
+#if defined(__x86_64__) || defined(__amd64__)
+    return x86_cpu_finalize();
+#elif defined(__powerpc__)
+    return powerpc_cpu_finalize();
+#elif defined(__arm__) || defined(__aarch64__)
+    return arm_cpu_finalize();
+#endif
+    return os_cpu_finalize();
+}
+
+int
 cpu_get_vendor( char *vendor )
 {
 #if defined(__x86_64__) || defined(__amd64__)

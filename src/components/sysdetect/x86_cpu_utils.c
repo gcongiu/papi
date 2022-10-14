@@ -69,13 +69,15 @@ x86_cpu_init( void )
      * allocate and free objects; init/finalize
      * functions are a good place for doing that.
      */
-    return CPU_SUCCESS;
+    int status = os_cpu_init();
+    return status;
 }
 
 int
 x86_cpu_finalize( void )
 {
-    return CPU_SUCCESS;
+    int status = os_cpu_init();
+    return status;
 }
 
 int

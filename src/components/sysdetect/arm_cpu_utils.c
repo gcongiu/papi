@@ -56,13 +56,15 @@ static int name_id_qualcomm_cpu_get_name( int name_id, char *name );
 int
 arm_cpu_init( void )
 {
-    return CPU_SUCCESS;
+    int status = os_cpu_init();
+    return status;
 }
 
 int
 arm_cpu_finalize( void )
 {
-    return CPU_SUCCESS;
+    int status = os_cpu_finalize();
+    return status;
 }
 
 int

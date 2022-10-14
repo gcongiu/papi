@@ -3,6 +3,8 @@
 
 #include "cpu_utils.h"
 
+int linux_cpu_init( void );
+int linux_cpu_finalize( void );
 int linux_cpu_get_vendor( char *vendor );
 int linux_cpu_get_name( char *name );
 int linux_cpu_get_attribute( CPU_attr_e attr, int *value );
