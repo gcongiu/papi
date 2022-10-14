@@ -77,12 +77,11 @@ typedef struct {
     int cache_levels;
     _sysdetect_cache_level_info_t clevel[PAPI_MAX_MEM_HIERARCHY_LEVELS];
 #define PAPI_MAX_NUM_NODES 8
-    int numa_memory[PAPI_MAX_NUM_NODES];
 #define PAPI_MAX_NUM_THREADS 512
-    int numa_affinity[PAPI_MAX_NUM_THREADS];
 #define PAPI_MAX_THREADS_PER_NUMA (PAPI_MAX_NUM_THREADS / PAPI_MAX_NUM_NODES)
     int numa_threads[PAPI_MAX_NUM_NODES][PAPI_MAX_THREADS_PER_NUMA];
-    int num_threads_per_numa[PAPI_MAX_THREADS_PER_NUMA];
+    int *numa_memory;
+    int *numa_affinity;
 } _sysdetect_cpu_info_t;
 
 typedef union {

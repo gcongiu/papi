@@ -32,8 +32,12 @@ typedef enum {
     CPU_ATTR__CACHE_UNIF_ASSOCIATIVITY,
     /* Hardware Thread Affinity Attributes */
     CPU_ATTR__HWTHREAD_NUMA_AFFINITY,
+    /* Numa Hardware Thread Count*/
+    CPU_ATTR__NUMA_HWTHREAD_COUNT,
     /* Memory Attributes */
     CPU_ATTR__NUMA_MEM_SIZE,
+    /* Numa number to id */
+    CPU_ATTR__NUMA_ID,
 } CPU_attr_e;
 
 int cpu_init( void );

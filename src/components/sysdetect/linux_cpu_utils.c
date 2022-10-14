@@ -8,6 +8,8 @@
 #include <dirent.h>
 
 #include "sysdetect.h"
+#include "cpu_utils.h"
+#include "htable.h"
 #include "linux_cpu_utils.h"
 
 #define VENDOR_UNKNOWN       -1
@@ -42,21 +44,27 @@ static int get_cache_partition_count( const char *dirname, int *value );
 static int get_cache_set_count( const char *dirname, int *value );
 static int get_mem_info( int node, int *value );
 static int get_thread_affinity( int thread, int *value );
+static int get_num_threads_per_numa( int numa, int *value );
+static int get_numa_id( int numa, int *value );
 static int path_sibling( const char *path, ... );
 static char *search_cpu_info( FILE *fp, const char *key );
 static int path_exist( const char *path, ... );
 static void decode_vendor_string( char *s, int *vendor );
 static int get_vendor_id( void );
 
+static void *numa_id_ht;
+
 int
 linux_cpu_init( void )
 {
+    htable_init(&numa_id_ht);
     return CPU_SUCCESS;
 }
 
 int
 linux_cpu_finalize( void )
 {
+    htable_shutdown(numa_id_ht);
     return CPU_SUCCESS;
 }
 
@@ -259,6 +267,12 @@ linux_cpu_get_attribute_at( CPU_attr_e attr, int loc, int *value )
             break;
         case CPU_ATTR__HWTHREAD_NUMA_AFFINITY:
             status = get_thread_affinity(loc, value);
+            break;
+        case CPU_ATTR__NUMA_HWTHREAD_COUNT:
+            status = get_num_threads_per_numa(loc, value);
+            break;
+        case CPU_ATTR__NUMA_ID:
+            status = get_numa_id(loc, value);
             break;
         default:
             status = CPU_ERROR;
@@ -781,6 +795,81 @@ get_thread_affinity( int thread, int *val )
     *val = i;
 
     return CPU_SUCCESS;
+}
+
+int
+get_num_threads_per_numa( int numa, int *val )
+{
+    int status, threads, cores, sockets, nodes;
+    status  = cpu_get_attribute(CPU_ATTR__NUM_THREADS, &threads);
+    status |= cpu_get_attribute(CPU_ATTR__NUM_CORES, &cores);
+    status |= cpu_get_attribute(CPU_ATTR__NUM_SOCKETS, &sockets);
+    if (status != CPU_SUCCESS) {
+        return status;
+    }
+
+    int tot_threads = threads * cores * sockets;
+    int k, num_threads_per_numa = 0;
+    for (k = 0; k < tot_threads; ++k) {
+        int numa_affinity;
+        status = cpu_get_attribute_at(CPU_ATTR__HWTHREAD_NUMA_AFFINITY,
+                                      k, &numa_affinity);
+        if (status != CPU_SUCCESS) {
+            goto fn_fail;
+        }
+
+        if (numa == numa_affinity) {
+            num_threads_per_numa++;
+        }
+    }
+
+    *val = num_threads_per_numa;
+
+  fn_exit:
+    return status;
+  fn_fail:
+    free(num_threads_per_numa);
+    goto fn_exit;
+}
+
+int
+get_numa_id( int numa, int *val )
+{
+    static int initialized;
+    static int numa_id[PAPI_MAX_NUM_NODES];
+    int status = CPU_SUCCESS;
+    char key[2] = { 0 };
+
+    if (initialized) {
+        key[0] = numa;
+        htable_find(numa_id_ht, key, &val);
+        return status;
+    }
+
+    int numas, threads, cores, sockets;
+    status |= cpu_get_attribute(CPU_ATTR__NUM_THREADS, &threads);
+    status |= cpu_get_attribute(CPU_ATTR__NUM_CORES, &cores);
+    status |= cpu_get_attribute(CPU_ATTR__NUM_SOCKETS, &sockets);
+    if (status != CPU_SUCCESS) {
+        return status;
+    }
+
+    int i, j, n;
+    for (i = 0, j = 0; i < threads * cores * sockets; ++i) {
+        void *value;
+        status = cpu_get_attribute(CPU_ATTR__HWTHREAD_NUMA_AFFINITY, i, &n);
+        if (htable_find(numa_id_ht, n, &value) == HTABLE_ENOVAL) {
+            key[0] = j;
+            htable_insert(numa_id_ht, key, &numa_id[j]);
+            numa_id[j++] = n;
+        }
+    }
+
+    key = numa;
+    htable_find(numa_id_ht, key, &val);
+    initialized = 1;
+
+    return status;
 }
 
 static char pathbuf[PATH_MAX] = "/";

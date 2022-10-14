@@ -226,6 +226,8 @@ powerpc_cpu_get_attribute_at( CPU_attr_e attr, int loc, int *value )
             break;
         case CPU_ATTR__NUMA_MEM_SIZE:
         case CPU_ATTR__HWTHREAD_NUMA_AFFINITY:
+        case CPU_ATTR__NUMA_HWTHREAD_COUNT:
+        case CPU_ATTR__NUMA_ID:
             status = os_cpu_get_attribute_at(attr, loc, value);
             break;
         default:

@@ -210,6 +210,10 @@ arm_cpu_get_attribute_at( CPU_attr_e attr, int loc, int *value )
         case CPU_ATTR__NUMA_MEM_SIZE:
             //fall through
         case CPU_ATTR__HWTHREAD_NUMA_AFFINITY:
+            //fall through
+        case CPU_ATTR__NUMA_HWTHREAD_COUNT:
+            //fall through
+        case CPU_ATTR__NUMA_ID:
             status = os_cpu_get_attribute_at(attr, loc, value);
             break;
         default:

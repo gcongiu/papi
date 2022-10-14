@@ -116,6 +116,9 @@ fill_cpu_info( _sysdetect_cpu_info_t *info )
     for (a = 0; a < info->numas; ++a) {
         CPU_CALL(cpu_get_attribute_at(CPU_ATTR__NUMA_MEM_SIZE, a, &info->numa_memory[a]),
                  info->numa_memory[a] = 0);
+        CPU_CALL(cpu_get_attribute_at(CPU_ATTR__NUMA_HWTHREAD_COUNT, a,
+                                      &info->num_threads_per_numa[a]),
+                 info->num_threads_per_numa[a] = 0);
     }
 
     for (a = 0; a < info->threads * info->cores * info->sockets; ++a) {
@@ -144,6 +147,19 @@ open_cpu_dev_type( _sysdetect_dev_type_info_t *dev_type_info )
     dev_type_info->num_devices = 1;
 
     _sysdetect_cpu_info_t *arr = papi_calloc(1, sizeof(*arr));
+    assert(arr);
+
+    int numa_thread_count;
+    CPU_CALL(cpu_get_attribute(CPU_ATTR__NUMA_HWTHREAD_COUNT,
+                               &numa_thread_count),);
+    arr->numa_affinity = papi_calloc(numa_thread_count, sizeof(int));
+    assert(arr->numa_affinity);
+
+    int numas;
+    CPU_CALL(cpu_get_attribute(CPU_ATTR__NUM_NODES, &numas),);
+    arr->numa_memory = papi_calloc(numas, sizeof(int));
+    assert(arr->numa_memory);
+
     fill_cpu_info(arr);
     dev_type_info->dev_info_arr = (_sysdetect_dev_info_u *)arr;
 }
@@ -151,6 +167,8 @@ open_cpu_dev_type( _sysdetect_dev_type_info_t *dev_type_info )
 void
 close_cpu_dev_type( _sysdetect_dev_type_info_t *dev_type_info )
 {
+    papi_free(dev_type_info->dev_info_arr->numa_affinity);
+    papi_free(dev_type_info->dev_info_arr->numa_memory);
     papi_free(dev_type_info->dev_info_arr);
     CPU_CALL(cpu_finalize(), );
 }
