@@ -16,6 +16,9 @@
 #include "sysdetect.h"
 #include "cpu.h"
 #include "cpu_utils.h"
+#include "htable.h"
+
+static void *numa_id_map_ht;
 
 #define CPU_CALL(call, err_handle) do {                                         \
     int _status = (call);                                                       \
@@ -118,9 +121,15 @@ fill_cpu_info( _sysdetect_cpu_info_t *info )
                  info->numa_memory[a] = 0);
     }
 
-    for (a = 0; a < info->threads * info->cores * info->sockets; ++a) {
+    int *id;
+    for (a = 0, b = 0; a < info->threads * info->cores * info->sockets; ++a) {
         CPU_CALL(cpu_get_attribute_at(CPU_ATTR__HWTHREAD_NUMA_AFFINITY, a, &info->numa_affinity[a]),
                  info->numa_affinity[a] = 0);
+        char key[2] = { info->numa_affinity[a], 0 };
+        if (htable_find(numa_id_map_ht, key, &id) != HTABLE_SUCCESS) {
+            info->numa_id_map[b++] = info->numa_affinity[a];
+            htable_insert(numa_id_map_ht, key, id);
+        }
     }
 
     info->cache_levels = level;
@@ -144,10 +153,13 @@ open_cpu_dev_type( _sysdetect_dev_type_info_t *dev_type_info )
     _sysdetect_cpu_info_t *arr = papi_calloc(1, sizeof(*arr));
     fill_cpu_info(arr);
     dev_type_info->dev_info_arr = (_sysdetect_dev_info_u *)arr;
+
+    htable_init(&numa_id_map_ht);
 }
 
 void
 close_cpu_dev_type( _sysdetect_dev_type_info_t *dev_type_info )
 {
     papi_free(dev_type_info->dev_info_arr);
+    htable_shutdown(numa_id_map_ht);
 }
