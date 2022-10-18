@@ -2032,7 +2032,44 @@ for comp in $components; do
   fi
 done
 
-AC_CHECK_HEADER([mpi.h],[CFLAGS="$CFLAGS -DHAVE_MPI"],[])
+AC_ARG_WITH([mpi],
+            [AS_HELP_STRING([--with-mpi=@<:@DIR@:>@],
+                            [MPI installation directory])],,)
+
+AC_ARG_WITH([mpi_include],
+            [AS_HELP_STRING([--with-mpi-include=@<:@DIR@:>@],
+                            [MPI include directory])],,)
+
+AC_ARG_WITH([mpi_lib],
+            [AS_HELP_STRING([--with-mpi-lib=@<:@DIR@:>@],
+                            [MPI library directory])],,)
+
+SAVED_CPPFLAGS="$CPPFLAGS"
+SAVED_LDFLAGS="$LDFLAGS"
+SAVED_LIBS="$LIBS"
+LIBS=-lmpi
+
+if test "x$with_mpi" != "x" ; then
+    CPPFLAGS="-I$with_mpi/include"
+    LDFLAGS="-L$with_mpi/lib"
+    AC_CHECK_HEADER([mpi.h])
+    AC_CHECK_LIB([mpi],[MPI_Init])
+fi
+
+if test "x$with_mpi_include" != "x" -a "x$with_mpi_lib" != "x"; then
+    CPPFLAGS="-I$with_mpi_include"
+    LDFLAGS="-L$with_mpi_lib"
+    AC_CHECK_HEADER([mpi.h])
+    AC_CHECK_LIB([mpi],[MPI_Init])
+fi
+
+if test "$ac_cv_header_mpi_h" = "yes" -a "$ac_cv_lib_mpi_MPI_Init" = "yes" ; then
+    CFLAGS="$CFLAGS -DHAVE_MPI $CPPFLAGS"
+fi
+
+CPPFLAGS="$SAVED_CPPFLAGS"
+LDFLAGS="$SAVED_LDFLAGS"
+LIBS="$SAVED_LIBS"
 
 CFLAGS="$CFLAGS -DPAPI_NUM_COMP=$PAPI_NUM_COMP"
 

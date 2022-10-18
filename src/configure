@@ -800,6 +800,9 @@ enable_perfevent_rdpmc
 with_pe_incdir
 enable_perf_event_uncore
 with_components
+with_mpi
+with_mpi_include
+with_mpi_lib
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1501,6 +1504,10 @@ Optional Packages:
   --with-pe-incdir=<path> Specify path to the correct perf header file
   --with-components=<"component1 component2">
                           Specify which components to build
+  --with-mpi=[DIR]        MPI installation directory
+  --with-mpi-include=[DIR]
+                          MPI include directory
+  --with-mpi-lib=[DIR]    MPI library directory
 
 Some influential environment variables:
   CC          C compiler command
@@ -7133,12 +7140,151 @@ for comp in $components; do
   fi
 done
 
-ac_fn_c_check_header_mongrel "$LINENO" "mpi.h" "ac_cv_header_mpi_h" "$ac_includes_default"
-if test "x$ac_cv_header_mpi_h" = xyes; then :
-  CFLAGS="$CFLAGS -DHAVE_MPI"
+
+# Check whether --with-mpi was given.
+if test "${with_mpi+set}" = set; then :
+  withval=$with_mpi;
 fi
 
 
+
+# Check whether --with-mpi_include was given.
+if test "${with_mpi_include+set}" = set; then :
+  withval=$with_mpi_include;
+fi
+
+
+
+# Check whether --with-mpi_lib was given.
+if test "${with_mpi_lib+set}" = set; then :
+  withval=$with_mpi_lib;
+fi
+
+
+SAVED_CPPFLAGS="$CPPFLAGS"
+SAVED_LDFLAGS="$LDFLAGS"
+SAVED_LIBS="$LIBS"
+LIBS=-lmpi
+
+if test "x$with_mpi" != "x" ; then
+    CPPFLAGS="-I$with_mpi/include"
+    LDFLAGS="-L$with_mpi/lib"
+    ac_fn_c_check_header_mongrel "$LINENO" "mpi.h" "ac_cv_header_mpi_h" "$ac_includes_default"
+if test "x$ac_cv_header_mpi_h" = xyes; then :
+
+fi
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for MPI_Init in -lmpi" >&5
+$as_echo_n "checking for MPI_Init in -lmpi... " >&6; }
+if ${ac_cv_lib_mpi_MPI_Init+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmpi  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char MPI_Init ();
+int
+main ()
+{
+return MPI_Init ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_mpi_MPI_Init=yes
+else
+  ac_cv_lib_mpi_MPI_Init=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mpi_MPI_Init" >&5
+$as_echo "$ac_cv_lib_mpi_MPI_Init" >&6; }
+if test "x$ac_cv_lib_mpi_MPI_Init" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMPI 1
+_ACEOF
+
+  LIBS="-lmpi $LIBS"
+
+fi
+
+fi
+
+if test "x$with_mpi_include" != "x" -a "x$with_mpi_lib" != "x"; then
+    CPPFLAGS="-I$with_mpi_include"
+    LDFLAGS="-L$with_mpi_lib"
+    ac_fn_c_check_header_mongrel "$LINENO" "mpi.h" "ac_cv_header_mpi_h" "$ac_includes_default"
+if test "x$ac_cv_header_mpi_h" = xyes; then :
+
+fi
+
+
+    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for MPI_Init in -lmpi" >&5
+$as_echo_n "checking for MPI_Init in -lmpi... " >&6; }
+if ${ac_cv_lib_mpi_MPI_Init+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lmpi  $LIBS"
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+/* Override any GCC internal prototype to avoid an error.
+   Use char because int might match the return type of a GCC
+   builtin and then its argument prototype would still apply.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+char MPI_Init ();
+int
+main ()
+{
+return MPI_Init ();
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_lib_mpi_MPI_Init=yes
+else
+  ac_cv_lib_mpi_MPI_Init=no
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_mpi_MPI_Init" >&5
+$as_echo "$ac_cv_lib_mpi_MPI_Init" >&6; }
+if test "x$ac_cv_lib_mpi_MPI_Init" = xyes; then :
+  cat >>confdefs.h <<_ACEOF
+#define HAVE_LIBMPI 1
+_ACEOF
+
+  LIBS="-lmpi $LIBS"
+
+fi
+
+fi
+
+if test "$ac_cv_header_mpi_h" = "yes" -a "$ac_cv_lib_mpi_MPI_Init" = "yes" ; then
+    CFLAGS="$CFLAGS -DHAVE_MPI $CPPFLAGS"
+fi
+
+CPPFLAGS="$SAVED_CPPFLAGS"
+LDFLAGS="$SAVED_LDFLAGS"
+LIBS="$SAVED_LIBS"
 
 CFLAGS="$CFLAGS -DPAPI_NUM_COMP=$PAPI_NUM_COMP"
 
