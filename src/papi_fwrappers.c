@@ -1445,7 +1445,7 @@ PAPI_FCALL( papif_get_dev_type_attr, PAPIF_GET_DEV_TYPE_ATTR, (int *handle_index
                                                                int *value,
                                                                char *string,
                                                                int *check,
-                                                               int string_len) )
+                                                               int string_len __attribute__((unused))) )
 #else
 PAPI_FCALL( papif_get_dev_type_attr, PAPIF_GET_DEV_TYPE_ATTR, (int *handle_index,
                                                                int *attribute,
@@ -1476,8 +1476,8 @@ PAPI_FCALL( papif_get_dev_type_attr, PAPIF_GET_DEV_TYPE_ATTR, (int *handle_index
                 break;
             }
 #if defined(_FORTRAN_STRLEN_AT_END)
-            strncpy(string, string_ptr, string_len);
-            for ( i = ( int ) string_len; i < PAPI_MAX_STR_LEN;
+            strncpy(string, string_ptr, strlen(string_ptr));
+            for ( i = ( int ) strlen(string_ptr); i < PAPI_MAX_STR_LEN;
                 string[i++] = ' ' );
 #else
             strcpy(string, string_ptr);
@@ -1510,7 +1510,7 @@ PAPI_FCALL( papif_get_dev_attr, PAPIF_GET_DEV_ATTR, (int *handle_index,
                                                      int *value,
                                                      char *string,
                                                      int *check,
-                                                     int string_len) )
+                                                     int string_len __attribute__((unused))) )
 #else
 PAPI_FCALL( papif_get_dev_attr, PAPIF_GET_DEV_ATTR, (int *handle_index,
                                                      int *id,
@@ -1599,7 +1599,7 @@ PAPI_FCALL( papif_get_dev_attr, PAPIF_GET_DEV_ATTR, (int *handle_index,
                 break;
             }
 #if defined(_FORTRAN_STRLEN_AT_END)
-            strncpy(string, string_ptr, (size_t) string_len);
+            strncpy(string, string_ptr, (size_t) strlen(string_ptr));
             for ( i = ( int ) strlen(string_ptr); i < PAPI_MAX_STR_LEN;
                 string[i++] = ' ' );
 #else
