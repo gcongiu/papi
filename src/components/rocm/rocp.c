@@ -639,7 +639,7 @@ init_rocp_env(void)
     rocm_prof_mode = (rocp_mode != NULL) ?
         atoi(rocp_mode) : ROCM_PROFILE_SAMPLING_MODE;
 
-    char pathname[PAPI_MAX_STR_LEN];
+    char pathname[PATH_MAX];
     char *rocm_root = getenv("PAPI_ROCM_ROOT");
     if (rocm_root == NULL) {
         ROCP_REC_ERR_STR("Can't set HSA_TOOLS_LIB. PAPI_ROCM_ROOT not set.");
@@ -648,7 +648,6 @@ init_rocp_env(void)
 
     int err;
     int override_hsa_tools_lib = 1;
-    int expect;
     struct stat stat_info;
     char *hsa_tools_lib = getenv("HSA_TOOLS_LIB");
     if (hsa_tools_lib) {
@@ -661,21 +660,11 @@ init_rocp_env(void)
     if (override_hsa_tools_lib) {
         /* Account for change of librocprofiler64.so file location in rocm-5.2.0
          * directory structure */
-        expect = snprintf(pathname, PAPI_MAX_STR_LEN,
-                          "%s/lib/librocprofiler64.so",
-                          rocm_root);
-        if (expect > PAPI_MAX_STR_LEN) {
-            SUBDBG("Error string truncated");
-        }
+        sprintf(pathname, "%s/lib/librocprofiler64.so", rocm_root);
 
         err = stat(pathname, &stat_info);
         if (err < 0) {
-            expect = snprintf(pathname, PAPI_MAX_STR_LEN,
-                              "%s/rocprofiler/lib/libprofiler64.so",
-                              rocm_root);
-            if (expect > PAPI_MAX_STR_LEN) {
-                SUBDBG("Error string truncated");
-            }
+            sprintf(pathname, "%s/rocprofiler/lib/libprofiler64.so", rocm_root);
 
             err = stat(pathname, &stat_info);
             if (err < 0) {
@@ -700,21 +689,11 @@ init_rocp_env(void)
     if (override_rocp_metrics) {
         /* Account for change of metrics file location in rocm-5.2.0
          * directory structure */
-        expect = snprintf(pathname, PAPI_MAX_STR_LEN,
-                          "%s/lib/rocprofiler/metrics.xml",
-                          rocm_root);
-        if (expect > PAPI_MAX_STR_LEN) {
-            SUBDBG("Error string truncated");
-        }
+        sprintf(pathname, "%s/lib/rocprofiler/metrics.xml", rocm_root);
 
         err = stat(pathname, &stat_info);
         if (err < 0) {
-            expect = snprintf(pathname, PAPI_MAX_STR_LEN,
-                              "%s/rocprofiler/lib/metrics.xml",
-                              rocm_root);
-            if (expect > PAPI_MAX_STR_LEN) {
-                SUBDBG("Error string truncated");
-            }
+            sprintf(pathname, "%s/rocprofiler/lib/metrics.xml", rocm_root);
 
             err = stat(pathname, &stat_info);
             if (err < 0) {
