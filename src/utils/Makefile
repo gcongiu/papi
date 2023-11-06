@@ -9,7 +9,7 @@ DOLOOPS = $(testlibdir)/do_loops.o
 ALL = papi_avail papi_mem_info papi_cost papi_clockres papi_native_avail \
 	papi_command_line papi_event_chooser papi_decode papi_xml_event_info \
 	papi_version papi_multiplex_cost papi_component_avail papi_error_codes \
-	papi_hardware_avail
+	papi_hardware_avail papi_name_to_info
 
 %.o:%.c
 	$(CC) $(CFLAGS) $(OPTFLAGS) $(INCLUDE) -c $<
@@ -61,7 +61,8 @@ papi_version: papi_version.o $(PAPILIB)
 papi_xml_event_info: papi_xml_event_info.o $(PAPILIB)
 	$(CC) -o papi_xml_event_info papi_xml_event_info.o $(PAPILIB) $(LDFLAGS)
 
-
+papi_name_to_info: papi_name_to_info.o $(PAPILIB)
+	$(CC) -o papi_name_to_info papi_name_to_info.o $(PAPILIB) $(LDFLAGS)
 
 cost_utils.o: ../testlib/papi_test.h cost_utils.c
 	$(CC) $(INCLUDE) $(CFLAGS) $(OPTFLAGS) -c cost_utils.c
